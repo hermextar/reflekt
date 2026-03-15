@@ -36,6 +36,9 @@
         --color-primary-hover: #7a5fe0;
         --color-primary-active: #6a4dd8;
         --color-primary-bg: rgba(139, 114, 232, 0.12);
+        --color-error: #f87171;
+        --color-error-bg: rgba(248, 113, 113, 0.1);
+        --color-error-border: rgba(248, 113, 113, 0.25);
         --radius-sm: 6px;
         --radius-md: 10px;
         --radius-lg: 16px;
@@ -55,6 +58,9 @@
         --color-primary-hover: #5a3cd0;
         --color-primary-active: #4829c2;
         --color-primary-bg: rgba(108, 77, 223, 0.08);
+        --color-error: #dc2626;
+        --color-error-bg: rgba(220, 38, 38, 0.08);
+        --color-error-border: rgba(220, 38, 38, 0.2);
       }
       *,
       *::before,
@@ -173,6 +179,7 @@
       .header-actions {
         display: flex;
         gap: 4px;
+        align-items: center;
       }
       .icon-btn {
         width: 34px;
@@ -207,6 +214,29 @@
         height: 16px;
       }
 
+      /* ─── Logout button ─── */
+      .logout-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--color-text-muted);
+        padding: 6px 10px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--color-border);
+        transition: all var(--transition);
+      }
+      .logout-btn:hover {
+        color: var(--color-error);
+        border-color: var(--color-error-border);
+        background: var(--color-error-bg);
+      }
+      .logout-btn svg {
+        width: 14px;
+        height: 14px;
+      }
+
       /* ─── Pages ─── */
       .page {
         display: none;
@@ -215,6 +245,169 @@
       }
       .page.active {
         display: flex;
+      }
+
+      /* ─── Auth page ─── */
+      .auth-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 32px 24px;
+        gap: 0;
+      }
+      .auth-logo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 36px;
+      }
+      .auth-logo-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: var(--color-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 24px rgba(139, 114, 232, 0.35);
+      }
+      .auth-logo-icon svg {
+        width: 24px;
+        height: 24px;
+        stroke: white;
+        fill: none;
+      }
+      .auth-logo-name {
+        font-family: var(--font-display);
+        font-size: 28px;
+        font-weight: 500;
+        letter-spacing: -0.5px;
+        color: var(--color-text);
+      }
+      .auth-logo-sub {
+        font-size: 13px;
+        color: var(--color-text-muted);
+        text-align: center;
+        line-height: 1.5;
+        margin-top: -4px;
+      }
+      .auth-card {
+        width: 100%;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-xl);
+        padding: 24px;
+      }
+      .auth-tabs {
+        display: flex;
+        gap: 4px;
+        background: var(--color-bg);
+        border-radius: var(--radius-md);
+        padding: 4px;
+        margin-bottom: 24px;
+      }
+      .auth-tab {
+        flex: 1;
+        padding: 8px;
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--color-text-muted);
+        transition: all var(--transition);
+        text-align: center;
+      }
+      .auth-tab.active {
+        background: var(--color-surface);
+        color: var(--color-text);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+      }
+      .auth-form {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .form-label {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--color-text-muted);
+        letter-spacing: 0.02em;
+      }
+      .form-input {
+        width: 100%;
+        padding: 10px 14px;
+        background: var(--color-bg);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        color: var(--color-text);
+        transition: border-color var(--transition);
+        outline: none;
+      }
+      .form-input::placeholder {
+        color: var(--color-text-faint);
+      }
+      .form-input:focus {
+        border-color: var(--color-primary);
+      }
+      .form-input.error {
+        border-color: var(--color-error);
+      }
+      .auth-error {
+        display: none;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        background: var(--color-error-bg);
+        border: 1px solid var(--color-error-border);
+        border-radius: var(--radius-md);
+        font-size: 13px;
+        color: var(--color-error);
+      }
+      .auth-error.visible {
+        display: flex;
+      }
+      .auth-error svg {
+        width: 15px;
+        height: 15px;
+        flex-shrink: 0;
+      }
+      .auth-submit {
+        width: 100%;
+        padding: 12px;
+        border-radius: var(--radius-md);
+        background: var(--color-primary);
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all var(--transition);
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      .auth-submit:hover:not(:disabled) {
+        background: var(--color-primary-hover);
+        box-shadow: 0 4px 16px rgba(139, 114, 232, 0.3);
+      }
+      .auth-submit:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .auth-footer {
+        text-align: center;
+        font-size: 12px;
+        color: var(--color-text-faint);
+        margin-top: 20px;
+        line-height: 1.6;
       }
 
       /* ─── Home ─── */
@@ -805,8 +998,74 @@
   </head>
   <body>
     <div class="app">
+
+      <!-- ═══════════════════ AUTH PAGE ═══════════════════ -->
+      <div id="page-auth" class="page active">
+        <div class="auth-body">
+          <div class="auth-logo">
+            <div class="auth-logo-icon">
+              <svg viewBox="0 0 24 24" stroke-width="2.5">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+            </div>
+            <span class="auth-logo-name">Reflekt</span>
+            <p class="auth-logo-sub">A safe space to think out loud.<br>AI helps you go deeper, not give you answers.</p>
+          </div>
+
+          <div class="auth-card">
+            <!-- Tab switcher -->
+            <div class="auth-tabs">
+              <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign in</button>
+              <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Create account</button>
+            </div>
+
+            <!-- Error banner -->
+            <div class="auth-error" id="auth-error">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
+              </svg>
+              <span id="auth-error-text">Something went wrong.</span>
+            </div>
+
+            <!-- Login form -->
+            <form class="auth-form" id="form-login" onsubmit="handleLogin(event)">
+              <div class="form-group">
+                <label class="form-label" for="login-email">Email</label>
+                <input class="form-input" id="login-email" type="email" placeholder="you@example.com" autocomplete="email" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="login-password">Password</label>
+                <input class="form-input" id="login-password" type="password" placeholder="••••••••" autocomplete="current-password" required />
+              </div>
+              <button class="auth-submit" id="login-submit" type="submit">
+                Sign in
+              </button>
+            </form>
+
+            <!-- Register form (hidden by default) -->
+            <form class="auth-form" id="form-register" style="display:none" onsubmit="handleRegister(event)">
+              <div class="form-group">
+                <label class="form-label" for="reg-email">Email</label>
+                <input class="form-input" id="reg-email" type="email" placeholder="you@example.com" autocomplete="email" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="reg-password">Password</label>
+                <input class="form-input" id="reg-password" type="password" placeholder="At least 8 characters" autocomplete="new-password" required minlength="8" />
+              </div>
+              <button class="auth-submit" id="register-submit" type="submit">
+                Create account
+              </button>
+            </form>
+          </div>
+
+          <p class="auth-footer">
+            Your entries are private and only visible to you.
+          </p>
+        </div>
+      </div>
+
       <!-- ═══════════════════ HOME PAGE ═══════════════════ -->
-      <div id="page-home" class="page active">
+      <div id="page-home" class="page">
         <header class="header">
           <div class="logo">
             <div class="logo-icon">
@@ -851,6 +1110,14 @@
                 />
               </svg>
             </button>
+            <button class="logout-btn" id="logout-btn" onclick="logout()" aria-label="Sign out">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+              Sign out
+            </button>
           </div>
         </header>
         <div class="home-body">
@@ -876,7 +1143,6 @@
             <div class="skeleton" style="height: 72px; opacity: 0.3"></div>
           </div>
         </div>
-        <!--<div class="pplx-footer"><a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a></div>-->
       </div>
 
       <!-- ═══════════════════ NEW ENTRY PAGE ═══════════════════ -->
@@ -1024,12 +1290,126 @@
     </div>
 
     <script>
-      // ─── State ───
+      // ─── Config ───
       const API = "https://reflekt-production.up.railway.app";
+
+      // ─── State ───
       let currentEntryId = null;
       let recognition = null;
       let isRecording = false;
       let entries = [];
+
+      // ─── Auth helpers ───
+      function getToken() {
+        return localStorage.getItem("reflekt_token");
+      }
+      function setToken(token) {
+        localStorage.setItem("reflekt_token", token);
+      }
+      function clearToken() {
+        localStorage.removeItem("reflekt_token");
+        localStorage.removeItem("reflekt_email");
+      }
+      function isLoggedIn() {
+        return !!getToken();
+      }
+
+      // ─── Auth tab switcher ───
+      function switchAuthTab(tab) {
+        const isLogin = tab === "login";
+        document.getElementById("tab-login").classList.toggle("active", isLogin);
+        document.getElementById("tab-register").classList.toggle("active", !isLogin);
+        document.getElementById("form-login").style.display = isLogin ? "flex" : "none";
+        document.getElementById("form-register").style.display = isLogin ? "none" : "flex";
+        hideAuthError();
+      }
+
+      function showAuthError(msg) {
+        const el = document.getElementById("auth-error");
+        document.getElementById("auth-error-text").textContent = msg;
+        el.classList.add("visible");
+      }
+      function hideAuthError() {
+        document.getElementById("auth-error").classList.remove("visible");
+      }
+
+      async function handleLogin(e) {
+        e.preventDefault();
+        hideAuthError();
+        const email = document.getElementById("login-email").value.trim();
+        const password = document.getElementById("login-password").value;
+        const btn = document.getElementById("login-submit");
+        btn.disabled = true;
+        btn.innerHTML = '<div class="spinner"></div>';
+        try {
+          const res = await fetch(API + "/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            showAuthError(data.error || "Invalid email or password.");
+            return;
+          }
+          setToken(data.token);
+          localStorage.setItem("reflekt_email", data.email);
+          onAuthSuccess();
+        } catch (err) {
+          showAuthError("Could not connect to the server. Please try again.");
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = "Sign in";
+        }
+      }
+
+      async function handleRegister(e) {
+        e.preventDefault();
+        hideAuthError();
+        const email = document.getElementById("reg-email").value.trim();
+        const password = document.getElementById("reg-password").value;
+        const btn = document.getElementById("register-submit");
+        btn.disabled = true;
+        btn.innerHTML = '<div class="spinner"></div>';
+        try {
+          const res = await fetch(API + "/api/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            showAuthError(data.error || "Registration failed. Please try again.");
+            return;
+          }
+          setToken(data.token);
+          localStorage.setItem("reflekt_email", data.email);
+          onAuthSuccess();
+        } catch (err) {
+          showAuthError("Could not connect to the server. Please try again.");
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = "Create account";
+        }
+      }
+
+      function onAuthSuccess() {
+        showPage("home");
+        loadEntries();
+      }
+
+      function logout() {
+        clearToken();
+        entries = [];
+        // Reset auth form
+        document.getElementById("login-email").value = "";
+        document.getElementById("login-password").value = "";
+        document.getElementById("reg-email").value = "";
+        document.getElementById("reg-password").value = "";
+        hideAuthError();
+        switchAuthTab("login");
+        showPage("auth");
+      }
 
       // ─── Theme ───
       const html = document.documentElement;
@@ -1043,7 +1423,6 @@
         document.getElementById("theme-icon-light").style.display =
           t === "light" ? "inline" : "none";
       }
-      // init from system preference
       if (window.matchMedia("(prefers-color-scheme: light)").matches)
         setTheme("light");
       document.getElementById("theme-toggle").addEventListener("click", () => {
@@ -1060,9 +1439,14 @@
       }
 
       // ─── API helpers ───
+      // Every request automatically includes the JWT Bearer token
       async function apiFetch(path, opts = {}) {
+        const token = getToken();
         const res = await fetch(API + path, {
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { "Authorization": "Bearer " + token } : {}),
+          },
           ...opts,
           body:
             opts.body ?
@@ -1071,6 +1455,12 @@
               : JSON.stringify(opts.body)
             : undefined,
         });
+        // If the server returns 401, the token is expired/invalid — force logout
+        if (res.status === 401) {
+          clearToken();
+          showPage("auth");
+          throw new Error("Session expired. Please sign in again.");
+        }
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       }
@@ -1098,9 +1488,10 @@
       }
 
       // ─── Time formatting ───
+      // Handles both ISO strings (from Supabase) and Unix timestamps
       function timeAgo(ts) {
-        const now = Date.now(),
-          d = now - ts * 1000;
+        const date = typeof ts === "string" ? new Date(ts) : new Date(ts * 1000);
+        const d = Date.now() - date.getTime();
         if (d < 60000) return "just now";
         if (d < 3600000) return `${Math.floor(d / 60000)}m ago`;
         if (d < 86400000) return `${Math.floor(d / 3600000)}h ago`;
@@ -1126,7 +1517,9 @@
           entries = await apiFetch("/api/entries");
           renderEntries();
         } catch (e) {
-          renderEntries([]);
+          // If 401, apiFetch already redirected to auth page
+          if (!isLoggedIn()) return;
+          renderEntries();
         }
       }
 
@@ -1144,11 +1537,11 @@
           .map((e) => {
             const mood = getMood(e.mood);
             const preview = e.content.replace(/\n/g, " ").slice(0, 120);
-            return `<div class="entry-card" onclick="openEntry(${e.id})">
+            return `<div class="entry-card" onclick="openEntry('${e.id}')">
           <div class="entry-card-body">
             <div class="entry-card-meta">
               <span class="mood-badge ${mood.cls}">${mood.emoji} ${mood.label}</span>
-              <span class="entry-time">${timeAgo(e.createdAt)}</span>
+              <span class="entry-time">${timeAgo(e.created_at || e.createdAt)}</span>
             </div>
             <p class="entry-preview">${escHtml(preview)}${e.content.length > 120 ? "…" : ""}</p>
           </div>
@@ -1261,7 +1654,9 @@
           charCount.textContent = "";
           await openEntry(entry.id);
         } catch (e) {
-          alert("Something went wrong. Please try again.");
+          if (isLoggedIn()) {
+            alert("Something went wrong. Please try again.");
+          }
           submitBtn.disabled = false;
           submitBtn.innerHTML =
             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit entry';
@@ -1311,12 +1706,14 @@
           ]);
           entryOrigText.textContent = entry.content;
           document.getElementById("entry-header-time").textContent = timeAgo(
-            entry.createdAt,
+            entry.created_at || entry.createdAt,
           );
           renderMessages(msgs);
         } catch (e) {
-          chatContainer.innerHTML =
-            '<p style="text-align:center;color:var(--color-text-muted);padding:20px;font-size:13px">Could not load this entry.</p>';
+          if (isLoggedIn()) {
+            chatContainer.innerHTML =
+              '<p style="text-align:center;color:var(--color-text-muted);padding:20px;font-size:13px">Could not load this entry.</p>';
+          }
         }
         showPage("entry");
       }
@@ -1380,16 +1777,23 @@
           scrollChat();
         } catch (e) {
           hideTyping();
-          appendMessage(
-            "assistant",
-            "I'm having trouble connecting right now. Please try again in a moment.",
-          );
-          scrollChat();
+          if (isLoggedIn()) {
+            appendMessage(
+              "assistant",
+              "I'm having trouble connecting right now. Please try again in a moment.",
+            );
+            scrollChat();
+          }
         }
       }
 
       // ─── Init ───
-      loadEntries();
+      // Check for existing token on page load
+      if (isLoggedIn()) {
+        showPage("home");
+        loadEntries();
+      }
+      // If not logged in, page-auth is already active by default
     </script>
   </body>
 </html>
