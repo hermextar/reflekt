@@ -989,6 +989,11 @@
         color: #818cf8;
       }
 
+      /* Hide sidebar header-actions on mobile */
+      .sidebar-header .header-actions {
+        display: none;
+      }
+
       /* ═══════════════════════════════════════════════
          DESKTOP LAYOUT — activates at 900px+
          Mobile layout is completely untouched below 900px
@@ -1051,6 +1056,13 @@
           position: sticky;
           top: 0;
           z-index: 10;
+        }
+
+        /* Show sidebar header-actions on desktop */
+        .sidebar-header .header-actions {
+          display: flex;
+          align-items: center;
+          gap: 8px;
         }
 
         .sidebar-entries {
