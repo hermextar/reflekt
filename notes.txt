@@ -1,9 +1,20 @@
-have the option to dictate beyond just the first entry (after ai responds and you go to follow up the dictation feature is gone)
+❗have the option to dictate beyond just the first entry (after ai responds and you go to follow up the dictation feature is gone)
 
 
-supabase entries encrypted?
+✅supabase entries encrypted?
 
-desktop UX
+❗desktop UX
 
-new name?
+❗new name?
+❗logo
 
+❗once signed in, stay signed in
+
+❗ask for microphone permissions once
+
+❗personal context
+
+❗how to check API / other costs
+
+❗how to get on appstore 
+❗how to handle things like subscriptions and API 

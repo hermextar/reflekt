@@ -1,16 +1,6 @@
 <!doctype html>
 <html lang="en" data-theme="dark">
   <head>
-    <!--
-     ______                            __
-    / ____/___  ____ ___  ____  __  __/ /____  _____
-   / /   / __ \/ __ `__ \/ __ \/ / / / __/ _ \/ ___/
-  / /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
-  \____/\____/_/ /_/ /_/ .___/\__,_/\__/\___/_/
-                      /_/
-      Created with Perplexity Computer
-      https://www.perplexity.ai/computer
-  -->
     <meta name="generator" content="Perplexity Computer" />
     <meta name="author" content="Perplexity Computer" />
     <meta charset="UTF-8" />
@@ -120,7 +110,7 @@
         border-radius: var(--radius-sm);
       }
 
-      /* ─── Layout ─── */
+      /* ─── Mobile Layout (default) ─── */
       .app {
         max-width: 480px;
         margin: 0 auto;
@@ -500,6 +490,10 @@
         border-color: var(--color-primary);
         background: var(--color-surface-2);
         transform: translateX(2px);
+      }
+      .entry-card.active-entry {
+        border-color: var(--color-primary);
+        background: var(--color-primary-bg);
       }
       .entry-card-body {
         flex: 1;
@@ -973,26 +967,240 @@
       }
 
       /* Mood colors */
-      .mood-anxious {
-        color: #eab308;
-      }
-      .mood-frustrated {
-        color: #f97316;
-      }
-      .mood-sad {
-        color: #60a5fa;
-      }
-      .mood-confused {
-        color: #a78bfa;
-      }
-      .mood-positive {
-        color: #4ade80;
-      }
-      .mood-tired {
-        color: #94a3b8;
-      }
-      .mood-reflective {
-        color: #818cf8;
+      .mood-anxious { color: #eab308; }
+      .mood-frustrated { color: #f97316; }
+      .mood-sad { color: #60a5fa; }
+      .mood-confused { color: #a78bfa; }
+      .mood-positive { color: #4ade80; }
+      .mood-tired { color: #94a3b8; }
+      .mood-reflective { color: #818cf8; }
+
+      /* ═══════════════════════════════════════════════
+         DESKTOP LAYOUT — activates at 900px+
+         Mobile layout is completely untouched below 900px
+         ═══════════════════════════════════════════════ */
+      @media (min-width: 900px) {
+
+        /* ── Root shell: full-screen two-column flex row ── */
+        body {
+          overflow: hidden;
+          height: 100dvh;
+        }
+
+        .app {
+          max-width: 100%;
+          width: 100%;
+          height: 100dvh;
+          min-height: 0;
+          flex-direction: row;
+          margin: 0;
+          overflow: hidden;
+        }
+
+        /* ── Auth page: centred full-screen overlay (unchanged feel) ── */
+        #page-auth {
+          position: fixed;
+          inset: 0;
+          z-index: 100;
+          background: var(--color-bg);
+          align-items: center;
+          justify-content: center;
+          overflow-y: auto;
+        }
+        #page-auth .auth-body {
+          width: 100%;
+          max-width: 420px;
+          padding: 48px 24px;
+        }
+
+        /* ── Sidebar ── */
+        .desktop-sidebar {
+          display: flex;
+          flex-direction: column;
+          width: 320px;
+          min-width: 320px;
+          max-width: 320px;
+          height: 100dvh;
+          border-right: 1px solid var(--color-border);
+          background: var(--color-surface);
+          overflow: hidden;
+          flex-shrink: 0;
+        }
+
+        .sidebar-header {
+          flex-shrink: 0;
+          padding: 14px 16px;
+          border-bottom: 1px solid var(--color-border);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background: var(--color-surface);
+          position: sticky;
+          top: 0;
+          z-index: 10;
+        }
+
+        .sidebar-entries {
+          flex: 1;
+          overflow-y: auto;
+          padding: 16px 12px;
+        }
+
+        .sidebar-entries .new-entry-btn {
+          margin-bottom: 20px;
+        }
+
+        .sidebar-footer {
+          flex-shrink: 0;
+          padding: 10px 12px;
+          border-top: 1px solid var(--color-border);
+          text-align: center;
+          font-size: 11px;
+          color: var(--color-text-faint);
+        }
+        .sidebar-footer a {
+          color: var(--color-text-faint);
+          text-decoration: none;
+        }
+        .sidebar-footer a:hover {
+          color: var(--color-text-muted);
+        }
+
+        /* ── Main content panel ── */
+        .desktop-main {
+          flex: 1;
+          min-width: 0;
+          height: 100dvh;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+          background: var(--color-bg);
+        }
+
+        /* ── Hide the mobile-only pages on desktop
+              (they live inside sidebar / desktop-main now) ── */
+        #page-home,
+        #page-new,
+        #page-entry {
+          display: none !important;
+        }
+
+        /* ── Desktop new-entry panel ── */
+        #desktop-panel-new {
+          display: none;
+          flex-direction: column;
+          height: 100%;
+        }
+        #desktop-panel-new.active {
+          display: flex;
+        }
+        #desktop-panel-new .header {
+          position: relative; /* not sticky inside flex column */
+          flex-shrink: 0;
+          background: var(--color-bg);
+        }
+        [data-theme="light"] #desktop-panel-new .header {
+          background: var(--color-bg);
+        }
+        #desktop-panel-new .new-entry-body {
+          flex: 1;
+          min-height: 0;
+          overflow-y: auto;
+          padding: 20px 28px 20px;
+        }
+        #desktop-panel-new .journal-textarea {
+          min-height: 300px;
+        }
+
+        /* ── Desktop chat/entry panel ── */
+        #desktop-panel-entry {
+          display: none;
+          flex-direction: column;
+          height: 100%;
+        }
+        #desktop-panel-entry.active {
+          display: flex;
+        }
+        #desktop-panel-entry .header {
+          position: relative;
+          flex-shrink: 0;
+          background: var(--color-bg);
+        }
+        [data-theme="light"] #desktop-panel-entry .header {
+          background: var(--color-bg);
+        }
+        #desktop-panel-entry .entry-content-card {
+          margin: 12px 20px 0;
+          flex-shrink: 0;
+        }
+        #desktop-panel-entry .ai-label {
+          flex-shrink: 0;
+        }
+        #desktop-panel-entry .chat-container {
+          flex: 1;
+          min-height: 0;
+          padding: 0 20px 12px;
+        }
+        #desktop-panel-entry .reply-area {
+          flex-shrink: 0;
+          padding: 12px 20px;
+          padding-bottom: 12px;
+        }
+
+        /* ── Desktop idle/welcome panel ── */
+        #desktop-panel-idle {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100%;
+          gap: 12px;
+          padding: 40px;
+          text-align: center;
+        }
+        #desktop-panel-idle.hidden {
+          display: none;
+        }
+        .idle-icon {
+          width: 56px;
+          height: 56px;
+          border-radius: 50%;
+          background: var(--color-primary-bg);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 4px;
+        }
+        .idle-icon svg {
+          width: 26px;
+          height: 26px;
+          stroke: var(--color-primary);
+          fill: none;
+        }
+        .idle-title {
+          font-family: var(--font-display);
+          font-size: 20px;
+          font-weight: 500;
+          letter-spacing: -0.3px;
+          color: var(--color-text);
+        }
+        .idle-sub {
+          font-size: 13px;
+          color: var(--color-text-muted);
+          max-width: 280px;
+          line-height: 1.6;
+        }
+
+        /* ── Back buttons hidden on desktop (sidebar is always visible) ── */
+        #desktop-panel-new .back-btn,
+        #desktop-panel-entry .back-btn {
+          display: none;
+        }
+
+        /* ── Entry card active state tweak in sidebar ── */
+        .desktop-sidebar .entry-card:hover {
+          transform: none;
+        }
       }
     </style>
   </head>
@@ -1005,52 +1213,109 @@
           <div class="auth-logo">
             <div class="auth-logo-icon">
               <svg viewBox="0 0 24 24" stroke-width="2.5">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                />
               </svg>
             </div>
             <span class="auth-logo-name">Reflekt</span>
-            <p class="auth-logo-sub">A safe space to think out loud.<br>AI helps you go deeper, not give you answers.</p>
+            <p class="auth-logo-sub">
+              A safe space to think out loud.<br />AI helps you go deeper, not
+              give you answers.
+            </p>
           </div>
 
           <div class="auth-card">
-            <!-- Tab switcher -->
             <div class="auth-tabs">
-              <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign in</button>
-              <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Create account</button>
+              <button
+                class="auth-tab active"
+                id="tab-login"
+                onclick="switchAuthTab('login')"
+              >
+                Sign in
+              </button>
+              <button
+                class="auth-tab"
+                id="tab-register"
+                onclick="switchAuthTab('register')"
+              >
+                Create account
+              </button>
             </div>
 
-            <!-- Error banner -->
             <div class="auth-error" id="auth-error">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v4M12 16h.01" />
               </svg>
               <span id="auth-error-text">Something went wrong.</span>
             </div>
 
-            <!-- Login form -->
-            <form class="auth-form" id="form-login" onsubmit="handleLogin(event)">
+            <form
+              class="auth-form"
+              id="form-login"
+              onsubmit="handleLogin(event)"
+            >
               <div class="form-group">
                 <label class="form-label" for="login-email">Email</label>
-                <input class="form-input" id="login-email" type="email" placeholder="you@example.com" autocomplete="email" required />
+                <input
+                  class="form-input"
+                  id="login-email"
+                  type="email"
+                  placeholder="you@example.com"
+                  autocomplete="email"
+                  required
+                />
               </div>
               <div class="form-group">
                 <label class="form-label" for="login-password">Password</label>
-                <input class="form-input" id="login-password" type="password" placeholder="••••••••" autocomplete="current-password" required />
+                <input
+                  class="form-input"
+                  id="login-password"
+                  type="password"
+                  placeholder="••••••••"
+                  autocomplete="current-password"
+                  required
+                />
               </div>
               <button class="auth-submit" id="login-submit" type="submit">
                 Sign in
               </button>
             </form>
 
-            <!-- Register form (hidden by default) -->
-            <form class="auth-form" id="form-register" style="display:none" onsubmit="handleRegister(event)">
+            <form
+              class="auth-form"
+              id="form-register"
+              style="display: none"
+              onsubmit="handleRegister(event)"
+            >
               <div class="form-group">
                 <label class="form-label" for="reg-email">Email</label>
-                <input class="form-input" id="reg-email" type="email" placeholder="you@example.com" autocomplete="email" required />
+                <input
+                  class="form-input"
+                  id="reg-email"
+                  type="email"
+                  placeholder="you@example.com"
+                  autocomplete="email"
+                  required
+                />
               </div>
               <div class="form-group">
                 <label class="form-label" for="reg-password">Password</label>
-                <input class="form-input" id="reg-password" type="password" placeholder="At least 8 characters" autocomplete="new-password" required minlength="8" />
+                <input
+                  class="form-input"
+                  id="reg-password"
+                  type="password"
+                  placeholder="At least 8 characters"
+                  autocomplete="new-password"
+                  required
+                  minlength="8"
+                />
               </div>
               <button class="auth-submit" id="register-submit" type="submit">
                 Create account
@@ -1064,7 +1329,7 @@
         </div>
       </div>
 
-      <!-- ═══════════════════ HOME PAGE ═══════════════════ -->
+      <!-- ═══════════════════ HOME PAGE (mobile) ═══════════════════ -->
       <div id="page-home" class="page">
         <header class="header">
           <div class="logo">
@@ -1110,11 +1375,21 @@
                 />
               </svg>
             </button>
-            <button class="logout-btn" id="logout-btn" onclick="logout()" aria-label="Sign out">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                <polyline points="16 17 21 12 16 7"/>
-                <line x1="21" y1="12" x2="9" y2="12"/>
+            <button
+              class="logout-btn"
+              id="logout-btn"
+              onclick="logout()"
+              aria-label="Sign out"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
               </svg>
               Sign out
             </button>
@@ -1145,7 +1420,7 @@
         </div>
       </div>
 
-      <!-- ═══════════════════ NEW ENTRY PAGE ═══════════════════ -->
+      <!-- ═══════════════════ NEW ENTRY PAGE (mobile) ═══════════════════ -->
       <div id="page-new" class="page">
         <header class="header">
           <button class="back-btn" id="back-from-new">
@@ -1208,7 +1483,7 @@
         </div>
       </div>
 
-      <!-- ═══════════════════ ENTRY / CHAT PAGE ═══════════════════ -->
+      <!-- ═══════════════════ ENTRY / CHAT PAGE (mobile) ═══════════════════ -->
       <div id="page-entry" class="page">
         <header class="header">
           <button class="back-btn" id="back-from-entry">
@@ -1225,7 +1500,6 @@
           <span class="entry-header-info" id="entry-header-time"></span>
         </header>
 
-        <!-- Original entry (collapsible) -->
         <div class="entry-content-card">
           <button class="entry-toggle" id="entry-toggle">
             Your entry
@@ -1245,7 +1519,6 @@
           ></div>
         </div>
 
-        <!-- AI label -->
         <div class="ai-label">
           <div class="ai-dot">
             <svg viewBox="0 0 24 24" stroke-width="2">
@@ -1259,10 +1532,8 @@
           Reflekt is exploring with you
         </div>
 
-        <!-- Chat messages -->
         <div class="chat-container" id="chat-container"></div>
 
-        <!-- Reply area -->
         <div class="reply-area">
           <div class="reply-row">
             <div class="reply-input-wrap">
@@ -1287,7 +1558,221 @@
           <p class="reply-hint">Enter to send · Shift+Enter for new line</p>
         </div>
       </div>
-    </div>
+
+      <!-- ═══════════════════ DESKTOP SIDEBAR ═══════════════════
+           Hidden on mobile via CSS (display:none below 900px).
+           On desktop this is the left column.
+      ════════════════════════════════════════════════════════════ -->
+      <aside class="desktop-sidebar" id="desktop-sidebar" style="display:none">
+        <!-- Sidebar header: logo + theme + logout -->
+        <div class="sidebar-header">
+          <div class="logo">
+            <div class="logo-icon">
+              <svg viewBox="0 0 24 24" stroke-width="2.5">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                />
+              </svg>
+            </div>
+            <span class="logo-name">Reflekt</span>
+          </div>
+          <div class="header-actions">
+            <button
+              class="icon-btn"
+              id="theme-toggle-desktop"
+              aria-label="Toggle theme"
+            >
+              <svg
+                id="theme-icon-dark-d"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                width="18"
+                height="18"
+              >
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+              <svg
+                id="theme-icon-light-d"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                width="18"
+                height="18"
+                style="display: none"
+              >
+                <circle cx="12" cy="12" r="5" />
+                <path
+                  d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+                />
+              </svg>
+            </button>
+            <button
+              class="logout-btn"
+              onclick="logout()"
+              aria-label="Sign out"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              Sign out
+            </button>
+          </div>
+        </div>
+
+        <!-- Entries + new entry button -->
+        <div class="sidebar-entries" id="sidebar-entries-container">
+          <button class="new-entry-btn" id="go-new-desktop">
+            <div class="new-entry-icon">
+              <svg viewBox="0 0 24 24" stroke-width="2.5">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </div>
+            <div class="new-entry-text">
+              <strong>Start a new entry</strong>
+              <span>Type or speak what's on your mind</span>
+            </div>
+          </button>
+          <div class="section-label">Past Entries</div>
+          <div id="entries-list-desktop" class="entries-list">
+            <div class="skeleton" style="height: 72px"></div>
+            <div class="skeleton" style="height: 72px; opacity: 0.6"></div>
+            <div class="skeleton" style="height: 72px; opacity: 0.3"></div>
+          </div>
+        </div>
+
+        <div class="sidebar-footer">
+          <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">
+            Created with Perplexity Computer
+          </a>
+        </div>
+      </aside>
+
+      <!-- ═══════════════════ DESKTOP MAIN PANEL ═══════════════════
+           Hidden on mobile. On desktop this is the right column.
+      ════════════════════════════════════════════════════════════════ -->
+      <main class="desktop-main" id="desktop-main" style="display:none">
+
+        <!-- Idle / welcome state -->
+        <div id="desktop-panel-idle">
+          <div class="idle-icon">
+            <svg viewBox="0 0 24 24" stroke-width="1.8">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+          </div>
+          <p class="idle-title">Start or continue a reflection</p>
+          <p class="idle-sub">Write a new entry, or choose one from the left to pick up where you left off.</p>
+        </div>
+
+        <!-- New entry panel (desktop) -->
+        <div id="desktop-panel-new">
+          <header class="header">
+            <button class="back-btn" id="back-from-new-desktop">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 5l-7 7 7 7" />
+              </svg>
+              Back
+            </button>
+            <span style="font-size: 12px; color: var(--color-text-muted)">New entry</span>
+          </header>
+          <div class="new-entry-body">
+            <p class="entry-date" id="entry-date-desktop"></p>
+            <textarea
+              class="journal-textarea"
+              id="journal-textarea-desktop"
+              placeholder="What's been weighing on you?"
+              rows="1"
+            ></textarea>
+            <div class="char-count" id="char-count-desktop"></div>
+            <div class="recording-badge" id="recording-badge-desktop">
+              <span class="rec-dot"></span>
+              Listening… speak naturally
+            </div>
+            <div class="action-bar">
+              <button class="mic-btn" id="mic-btn-desktop">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="3" width="6" height="11" rx="3" />
+                  <path d="M5 11a7 7 0 0 0 14 0" />
+                  <path d="M12 18v3M8 21h8" />
+                </svg>
+                Speak
+              </button>
+              <button class="submit-btn" id="submit-btn-desktop" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                </svg>
+                Submit entry
+              </button>
+            </div>
+            <p class="submit-footer">Your thoughts are never judged — only explored.</p>
+          </div>
+        </div>
+
+        <!-- Entry/chat panel (desktop) -->
+        <div id="desktop-panel-entry">
+          <header class="header">
+            <button class="back-btn" id="back-from-entry-desktop">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 5l-7 7 7 7" />
+              </svg>
+              Back
+            </button>
+            <span class="entry-header-info" id="entry-header-time-desktop"></span>
+          </header>
+
+          <div class="entry-content-card">
+            <button class="entry-toggle" id="entry-toggle-desktop">
+              Your entry
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </button>
+            <div id="entry-original-text-desktop" style="display: none" class="entry-text"></div>
+          </div>
+
+          <div class="ai-label">
+            <div class="ai-dot">
+              <svg viewBox="0 0 24 24" stroke-width="2">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="none" stroke="currentColor"/>
+              </svg>
+            </div>
+            Reflekt is exploring with you
+          </div>
+
+          <div class="chat-container" id="chat-container-desktop"></div>
+
+          <div class="reply-area">
+            <div class="reply-row">
+              <div class="reply-input-wrap">
+                <textarea
+                  class="reply-input"
+                  id="reply-input-desktop"
+                  placeholder="Share your thoughts…"
+                  rows="1"
+                ></textarea>
+              </div>
+              <button class="send-btn" id="send-btn-desktop" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                </svg>
+              </button>
+            </div>
+            <p class="reply-hint">Enter to send · Shift+Enter for new line</p>
+          </div>
+        </div>
+
+      </main>
+
+    </div><!-- /.app -->
 
     <script>
       // ─── Config ───
@@ -1298,6 +1783,20 @@
       let recognition = null;
       let isRecording = false;
       let entries = [];
+
+      // ─── Desktop detection ───
+      const MQ = window.matchMedia("(min-width: 900px)");
+      function isDesktop() { return MQ.matches; }
+
+      // Show/hide desktop vs mobile shell on load and on resize
+      function applyLayout() {
+        const desktop = isDesktop();
+        document.getElementById("desktop-sidebar").style.display = desktop ? "flex" : "none";
+        document.getElementById("desktop-main").style.display = desktop ? "flex" : "none";
+        // On mobile the normal pages are visible; on desktop they are hidden via CSS
+      }
+      applyLayout();
+      MQ.addEventListener("change", applyLayout);
 
       // ─── Auth helpers ───
       function getToken() {
@@ -1401,7 +1900,6 @@
       function logout() {
         clearToken();
         entries = [];
-        // Reset auth form
         document.getElementById("login-email").value = "";
         document.getElementById("login-password").value = "";
         document.getElementById("reg-email").value = "";
@@ -1418,34 +1916,60 @@
       }
       function setTheme(t) {
         html.setAttribute("data-theme", t);
-        document.getElementById("theme-icon-dark").style.display =
-          t === "dark" ? "inline" : "none";
-        document.getElementById("theme-icon-light").style.display =
-          t === "light" ? "inline" : "none";
+        // Mobile icons
+        document.getElementById("theme-icon-dark").style.display = t === "dark" ? "inline" : "none";
+        document.getElementById("theme-icon-light").style.display = t === "light" ? "inline" : "none";
+        // Desktop sidebar icons
+        document.getElementById("theme-icon-dark-d").style.display = t === "dark" ? "inline" : "none";
+        document.getElementById("theme-icon-light-d").style.display = t === "light" ? "inline" : "none";
       }
-      if (window.matchMedia("(prefers-color-scheme: light)").matches)
-        setTheme("light");
+      if (window.matchMedia("(prefers-color-scheme: light)").matches) setTheme("light");
       document.getElementById("theme-toggle").addEventListener("click", () => {
+        setTheme(getTheme() === "dark" ? "light" : "dark");
+      });
+      document.getElementById("theme-toggle-desktop").addEventListener("click", () => {
         setTheme(getTheme() === "dark" ? "light" : "dark");
       });
 
       // ─── Navigation ───
+      // On mobile: use the original page system.
+      // On desktop: hide auth overlay and show desktop panels.
       function showPage(id) {
-        document
-          .querySelectorAll(".page")
-          .forEach((p) => p.classList.remove("active"));
-        document.getElementById("page-" + id).classList.add("active");
-        window.scrollTo(0, 0);
+        if (isDesktop()) {
+          // Auth page is a fixed overlay — toggle its display
+          const authPage = document.getElementById("page-auth");
+          if (id === "auth") {
+            authPage.style.display = "flex";
+          } else {
+            authPage.style.display = "none";
+          }
+          // Home on desktop = show idle panel (sidebar is always visible)
+          if (id === "home") {
+            showDesktopPanel("idle");
+          }
+          // new / entry panels are shown by their own functions
+        } else {
+          // Mobile: standard page switching
+          document.querySelectorAll(".page").forEach((p) => p.classList.remove("active"));
+          document.getElementById("page-" + id).classList.add("active");
+          window.scrollTo(0, 0);
+        }
+      }
+
+      // Desktop panel switcher
+      function showDesktopPanel(name) {
+        document.getElementById("desktop-panel-idle").classList.toggle("hidden", name !== "idle");
+        document.getElementById("desktop-panel-new").classList.toggle("active", name === "new");
+        document.getElementById("desktop-panel-entry").classList.toggle("active", name === "entry");
       }
 
       // ─── API helpers ───
-      // Every request automatically includes the JWT Bearer token
       async function apiFetch(path, opts = {}) {
         const token = getToken();
         const res = await fetch(API + path, {
           headers: {
             "Content-Type": "application/json",
-            ...(token ? { "Authorization": "Bearer " + token } : {}),
+            ...(token ? { Authorization: "Bearer " + token } : {}),
           },
           ...opts,
           body:
@@ -1455,7 +1979,6 @@
               : JSON.stringify(opts.body)
             : undefined,
         });
-        // If the server returns 401, the token is expired/invalid — force logout
         if (res.status === 401) {
           clearToken();
           showPage("auth");
@@ -1468,27 +1991,18 @@
       // ─── Mood config ───
       const MOOD = {
         anxious: { emoji: "😰", label: "Anxious", cls: "mood-anxious" },
-        frustrated: {
-          emoji: "😤",
-          label: "Frustrated",
-          cls: "mood-frustrated",
-        },
+        frustrated: { emoji: "😤", label: "Frustrated", cls: "mood-frustrated" },
         sad: { emoji: "😔", label: "Sad", cls: "mood-sad" },
         confused: { emoji: "😕", label: "Confused", cls: "mood-confused" },
         positive: { emoji: "🌱", label: "Positive", cls: "mood-positive" },
         tired: { emoji: "😴", label: "Tired", cls: "mood-tired" },
-        reflective: {
-          emoji: "💭",
-          label: "Reflective",
-          cls: "mood-reflective",
-        },
+        reflective: { emoji: "💭", label: "Reflective", cls: "mood-reflective" },
       };
       function getMood(m) {
         return MOOD[m] || MOOD.reflective;
       }
 
       // ─── Time formatting ───
-      // Handles both ISO strings (from Supabase) and Unix timestamps
       function timeAgo(ts) {
         const date = typeof ts === "string" ? new Date(ts) : new Date(ts * 1000);
         const d = Date.now() - date.getTime();
@@ -1498,57 +2012,76 @@
         return `${Math.floor(d / 86400000)}d ago`;
       }
 
-      // ─── HOME ───
-      document
-        .getElementById("go-new")
-        .addEventListener("click", () => showPage("new"));
-      document
-        .getElementById("back-from-new")
-        .addEventListener("click", () => showPage("home"));
-      document
-        .getElementById("back-from-entry")
-        .addEventListener("click", () => {
-          loadEntries();
-          showPage("home");
-        });
+      // ─── HOME / ENTRIES ───
+      document.getElementById("go-new").addEventListener("click", () => showPage("new"));
+      document.getElementById("back-from-new").addEventListener("click", () => showPage("home"));
+      document.getElementById("back-from-entry").addEventListener("click", () => {
+        loadEntries();
+        showPage("home");
+      });
+
+      // Desktop new entry button
+      document.getElementById("go-new-desktop").addEventListener("click", () => {
+        // Clear active entry highlight
+        document.querySelectorAll(".entry-card.active-entry").forEach(c => c.classList.remove("active-entry"));
+        showDesktopPanel("new");
+        // Reset the desktop textarea
+        const dt = document.getElementById("journal-textarea-desktop");
+        dt.value = "";
+        dt.style.height = "auto";
+        document.getElementById("char-count-desktop").textContent = "";
+        document.getElementById("submit-btn-desktop").disabled = true;
+      });
+
+      document.getElementById("back-from-new-desktop").addEventListener("click", () => {
+        showDesktopPanel("idle");
+      });
+      document.getElementById("back-from-entry-desktop").addEventListener("click", () => {
+        document.querySelectorAll(".entry-card.active-entry").forEach(c => c.classList.remove("active-entry"));
+        showDesktopPanel("idle");
+      });
 
       async function loadEntries() {
         try {
           entries = await apiFetch("/api/entries");
           renderEntries();
         } catch (e) {
-          // If 401, apiFetch already redirected to auth page
           if (!isLoggedIn()) return;
           renderEntries();
         }
       }
 
       function renderEntries() {
-        const el = document.getElementById("entries-list");
-        if (!entries.length) {
-          el.innerHTML = `<div class="empty-state">
+        const cards = entries.map((e) => {
+          const mood = getMood(e.mood);
+          const preview = e.content.replace(/\n/g, " ").slice(0, 120);
+          return `<div class="entry-card" data-entry-id="${e.id}" onclick="openEntry('${e.id}')">
+            <div class="entry-card-body">
+              <div class="entry-card-meta">
+                <span class="mood-badge ${mood.cls}">${mood.emoji} ${mood.label}</span>
+                <span class="entry-time">${timeAgo(e.created_at || e.createdAt)}</span>
+              </div>
+              <p class="entry-preview">${escHtml(preview)}${e.content.length > 120 ? "…" : ""}</p>
+            </div>
+            <div class="entry-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+          </div>`;
+        });
+
+        const emptyHtml = `<div class="empty-state">
           <div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
           <p class="empty-title">No entries yet</p>
           <p class="empty-sub">Write your first one when you're ready.</p>
         </div>`;
-          return;
-        }
-        el.innerHTML = entries
-          .map((e) => {
-            const mood = getMood(e.mood);
-            const preview = e.content.replace(/\n/g, " ").slice(0, 120);
-            return `<div class="entry-card" onclick="openEntry('${e.id}')">
-          <div class="entry-card-body">
-            <div class="entry-card-meta">
-              <span class="mood-badge ${mood.cls}">${mood.emoji} ${mood.label}</span>
-              <span class="entry-time">${timeAgo(e.created_at || e.createdAt)}</span>
-            </div>
-            <p class="entry-preview">${escHtml(preview)}${e.content.length > 120 ? "…" : ""}</p>
-          </div>
-          <div class="entry-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
-        </div>`;
-          })
-          .join("");
+
+        const html = entries.length ? cards.join("") : emptyHtml;
+
+        // Mobile list
+        const mobileEl = document.getElementById("entries-list");
+        if (mobileEl) mobileEl.innerHTML = html;
+
+        // Desktop sidebar list
+        const desktopEl = document.getElementById("entries-list-desktop");
+        if (desktopEl) desktopEl.innerHTML = html;
       }
 
       function escHtml(s) {
@@ -1559,14 +2092,13 @@
           .replace(/"/g, "&quot;");
       }
 
-      // ─── NEW ENTRY ───
+      // ─── NEW ENTRY (mobile) ───
       const textarea = document.getElementById("journal-textarea");
       const charCount = document.getElementById("char-count");
       const submitBtn = document.getElementById("submit-btn");
       const micBtn = document.getElementById("mic-btn");
       const recBadge = document.getElementById("recording-badge");
 
-      // Set date
       document.getElementById("entry-date").textContent =
         new Date().toLocaleDateString("en-US", {
           weekday: "long",
@@ -1582,63 +2114,93 @@
         submitBtn.disabled = n === 0;
       });
 
+      // ─── NEW ENTRY (desktop) ───
+      const textareaD = document.getElementById("journal-textarea-desktop");
+      const charCountD = document.getElementById("char-count-desktop");
+      const submitBtnD = document.getElementById("submit-btn-desktop");
+      const micBtnD = document.getElementById("mic-btn-desktop");
+      const recBadgeD = document.getElementById("recording-badge-desktop");
+
+      document.getElementById("entry-date-desktop").textContent =
+        new Date().toLocaleDateString("en-US", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+        });
+
+      textareaD.addEventListener("input", () => {
+        textareaD.style.height = "auto";
+        textareaD.style.height = textareaD.scrollHeight + "px";
+        const n = textareaD.value.length;
+        charCountD.textContent = n > 0 ? `${n} characters` : "";
+        submitBtnD.disabled = n === 0;
+      });
+
+      // ─── Rotating prompts ───
       const PROMPTS = [
         "What's been weighing on you?",
         "What's on your mind right now?",
         "How are you really feeling today?",
         "What would you like to work through?",
       ];
-      textarea.placeholder =
-        PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
+      const randomPrompt = PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
+      textarea.placeholder = randomPrompt;
+      textareaD.placeholder = randomPrompt;
 
-      // Speech recognition
-      const hasSpeech =
-        "SpeechRecognition" in window || "webkitSpeechRecognition" in window;
-      if (!hasSpeech) micBtn.style.display = "none";
+      // ─── Speech recognition (shared logic, works for active textarea) ───
+      const hasSpeech = "SpeechRecognition" in window || "webkitSpeechRecognition" in window;
+      if (!hasSpeech) {
+        micBtn.style.display = "none";
+        micBtnD.style.display = "none";
+      }
 
-      micBtn.addEventListener("click", () => {
-        if (isRecording) {
-          recognition && recognition.stop();
-          isRecording = false;
-          micBtn.classList.remove("recording");
-          micBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3M8 21h8"/></svg>Speak`;
-          recBadge.classList.remove("visible");
-        } else {
-          const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-          recognition = new SR();
-          recognition.continuous = true;
-          recognition.interimResults = true;
-          recognition.lang = "en-US";
-          let finalText = textarea.value;
-          recognition.onresult = (e) => {
-            let interim = "";
-            for (let i = e.resultIndex; i < e.results.length; i++) {
-              if (e.results[i].isFinal)
-                finalText += e.results[i][0].transcript + " ";
-              else interim = e.results[i][0].transcript;
-            }
-            textarea.value = finalText + interim;
-            textarea.dispatchEvent(new Event("input"));
-          };
-          recognition.onend = () => {
+      function setupMic(btn, badge, ta) {
+        btn.addEventListener("click", () => {
+          if (isRecording) {
+            recognition && recognition.stop();
             isRecording = false;
-            micBtn.classList.remove("recording");
-            micBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3M8 21h8"/></svg>Speak`;
-            recBadge.classList.remove("visible");
-          };
-          recognition.onerror = () => {
-            isRecording = false;
-            micBtn.classList.remove("recording");
-            recBadge.classList.remove("visible");
-          };
-          recognition.start();
-          isRecording = true;
-          micBtn.classList.add("recording");
-          micBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3M8 21h8"/></svg>Stop`;
-          recBadge.classList.add("visible");
-        }
-      });
+            btn.classList.remove("recording");
+            btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3M8 21h8"/></svg>Speak`;
+            badge.classList.remove("visible");
+          } else {
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SR();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = "en-US";
+            let finalText = ta.value;
+            recognition.onresult = (e) => {
+              let interim = "";
+              for (let i = e.resultIndex; i < e.results.length; i++) {
+                if (e.results[i].isFinal) finalText += e.results[i][0].transcript + " ";
+                else interim = e.results[i][0].transcript;
+              }
+              ta.value = finalText + interim;
+              ta.dispatchEvent(new Event("input"));
+            };
+            recognition.onend = () => {
+              isRecording = false;
+              btn.classList.remove("recording");
+              btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3M8 21h8"/></svg>Speak`;
+              badge.classList.remove("visible");
+            };
+            recognition.onerror = () => {
+              isRecording = false;
+              btn.classList.remove("recording");
+              badge.classList.remove("visible");
+            };
+            recognition.start();
+            isRecording = true;
+            btn.classList.add("recording");
+            btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3M8 21h8"/></svg>Stop`;
+            badge.classList.add("visible");
+          }
+        });
+      }
+      setupMic(micBtn, recBadge, textarea);
+      setupMic(micBtnD, recBadgeD, textareaD);
 
+      // ─── Submit entry (mobile) ───
       submitBtn.addEventListener("click", async () => {
         const content = textarea.value.trim();
         if (!content) return;
@@ -1654,16 +2216,35 @@
           charCount.textContent = "";
           await openEntry(entry.id);
         } catch (e) {
-          if (isLoggedIn()) {
-            alert("Something went wrong. Please try again.");
-          }
+          if (isLoggedIn()) alert("Something went wrong. Please try again.");
           submitBtn.disabled = false;
-          submitBtn.innerHTML =
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit entry';
+          submitBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit entry';
         }
       });
 
-      // ─── ENTRY / CHAT ───
+      // ─── Submit entry (desktop) ───
+      submitBtnD.addEventListener("click", async () => {
+        const content = textareaD.value.trim();
+        if (!content) return;
+        submitBtnD.disabled = true;
+        submitBtnD.innerHTML = '<div class="spinner"></div> Analyzing…';
+        try {
+          const entry = await apiFetch("/api/entries", {
+            method: "POST",
+            body: { content, title: "" },
+          });
+          textareaD.value = "";
+          textareaD.style.height = "auto";
+          charCountD.textContent = "";
+          await openEntry(entry.id);
+        } catch (e) {
+          if (isLoggedIn()) alert("Something went wrong. Please try again.");
+          submitBtnD.disabled = false;
+          submitBtnD.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit entry';
+        }
+      });
+
+      // ─── Entry toggle (mobile) ───
       const entryToggle = document.getElementById("entry-toggle");
       const entryOrigText = document.getElementById("entry-original-text");
       let entryExpanded = false;
@@ -1673,6 +2254,17 @@
         entryToggle.classList.toggle("open", entryExpanded);
       });
 
+      // ─── Entry toggle (desktop) ───
+      const entryToggleD = document.getElementById("entry-toggle-desktop");
+      const entryOrigTextD = document.getElementById("entry-original-text-desktop");
+      let entryExpandedD = false;
+      entryToggleD.addEventListener("click", () => {
+        entryExpandedD = !entryExpandedD;
+        entryOrigTextD.style.display = entryExpandedD ? "block" : "none";
+        entryToggleD.classList.toggle("open", entryExpandedD);
+      });
+
+      // ─── Chat (mobile) ───
       const chatContainer = document.getElementById("chat-container");
       const replyInput = document.getElementById("reply-input");
       const sendBtn = document.getElementById("send-btn");
@@ -1685,13 +2277,37 @@
       replyInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter" && !e.shiftKey && replyInput.value.trim()) {
           e.preventDefault();
-          sendReply();
+          sendReply(chatContainer, replyInput, sendBtn);
         }
       });
-      sendBtn.addEventListener("click", sendReply);
+      sendBtn.addEventListener("click", () => sendReply(chatContainer, replyInput, sendBtn));
 
+      // ─── Chat (desktop) ───
+      const chatContainerD = document.getElementById("chat-container-desktop");
+      const replyInputD = document.getElementById("reply-input-desktop");
+      const sendBtnD = document.getElementById("send-btn-desktop");
+
+      replyInputD.addEventListener("input", () => {
+        replyInputD.style.height = "auto";
+        replyInputD.style.height = Math.min(replyInputD.scrollHeight, 100) + "px";
+        sendBtnD.disabled = !replyInputD.value.trim();
+      });
+      replyInputD.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey && replyInputD.value.trim()) {
+          e.preventDefault();
+          sendReply(chatContainerD, replyInputD, sendBtnD);
+        }
+      });
+      sendBtnD.addEventListener("click", () => sendReply(chatContainerD, replyInputD, sendBtnD));
+
+      // ─── Open entry ───
       async function openEntry(id) {
         currentEntryId = id;
+
+        // Determine which set of elements to use based on current layout
+        const desktop = isDesktop();
+
+        // Reset mobile chat state
         entryExpanded = false;
         entryOrigText.style.display = "none";
         entryToggle.classList.remove("open");
@@ -1699,96 +2315,110 @@
         replyInput.value = "";
         sendBtn.disabled = true;
 
+        // Reset desktop chat state
+        entryExpandedD = false;
+        entryOrigTextD.style.display = "none";
+        entryToggleD.classList.remove("open");
+        chatContainerD.innerHTML = "";
+        replyInputD.value = "";
+        sendBtnD.disabled = true;
+
+        // Highlight active card in sidebar
+        document.querySelectorAll(".entry-card").forEach(c => {
+          c.classList.toggle("active-entry", c.dataset.entryId === String(id));
+        });
+
         try {
           const [entry, msgs] = await Promise.all([
             apiFetch(`/api/entries/${id}`),
             apiFetch(`/api/entries/${id}/messages`),
           ]);
+
+          const timeStr = timeAgo(entry.created_at || entry.createdAt);
+
+          // Populate both sets (so switching breakpoints mid-session doesn't break)
           entryOrigText.textContent = entry.content;
-          document.getElementById("entry-header-time").textContent = timeAgo(
-            entry.created_at || entry.createdAt,
-          );
-          renderMessages(msgs);
+          document.getElementById("entry-header-time").textContent = timeStr;
+          entryOrigTextD.textContent = entry.content;
+          document.getElementById("entry-header-time-desktop").textContent = timeStr;
+
+          renderMessages(msgs, chatContainer);
+          renderMessages(msgs, chatContainerD);
         } catch (e) {
+          const errHtml = '<p style="text-align:center;color:var(--color-text-muted);padding:20px;font-size:13px">Could not load this entry.</p>';
           if (isLoggedIn()) {
-            chatContainer.innerHTML =
-              '<p style="text-align:center;color:var(--color-text-muted);padding:20px;font-size:13px">Could not load this entry.</p>';
+            chatContainer.innerHTML = errHtml;
+            chatContainerD.innerHTML = errHtml;
           }
         }
-        showPage("entry");
+
+        if (desktop) {
+          showDesktopPanel("entry");
+        } else {
+          showPage("entry");
+        }
       }
 
-      function renderMessages(msgs) {
-        chatContainer.innerHTML = "";
-        msgs.forEach((m) => appendMessage(m.role, m.content));
-        scrollChat();
+      function renderMessages(msgs, container) {
+        container.innerHTML = "";
+        msgs.forEach((m) => appendMessage(m.role, m.content, container));
+        scrollChat(container);
       }
 
-      function appendMessage(role, content) {
+      function appendMessage(role, content, container) {
         const div = document.createElement("div");
         div.className = `msg ${role}`;
         if (role === "assistant") {
           div.innerHTML = `<div class="msg-avatar"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="none" stroke="currentColor"/></svg></div>
-        <div class="msg-bubble">${escHtml(content)}</div>`;
+          <div class="msg-bubble">${escHtml(content)}</div>`;
         } else {
           div.innerHTML = `<div class="msg-bubble">${escHtml(content)}</div>`;
         }
-        chatContainer.appendChild(div);
+        container.appendChild(div);
       }
 
-      function showTyping() {
+      function showTyping(container) {
         const div = document.createElement("div");
         div.className = "msg assistant";
-        div.id = "typing-indicator";
+        div.dataset.typing = "1";
         div.innerHTML = `<div class="msg-avatar"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="none" stroke="currentColor"/></svg></div>
-      <div class="typing-bubble"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
-        chatContainer.appendChild(div);
-        scrollChat();
+        <div class="typing-bubble"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+        container.appendChild(div);
+        scrollChat(container);
+        return div;
       }
 
-      function hideTyping() {
-        const t = document.getElementById("typing-indicator");
-        if (t) t.remove();
+      function scrollChat(container) {
+        setTimeout(() => (container.scrollTop = container.scrollHeight), 50);
       }
 
-      function scrollChat() {
-        setTimeout(
-          () => (chatContainer.scrollTop = chatContainer.scrollHeight),
-          50,
-        );
-      }
-
-      async function sendReply() {
-        const content = replyInput.value.trim();
+      async function sendReply(container, input, btn) {
+        const content = input.value.trim();
         if (!content || !currentEntryId) return;
-        replyInput.value = "";
-        replyInput.style.height = "auto";
-        sendBtn.disabled = true;
-        appendMessage("user", content);
-        showTyping();
-        scrollChat();
+        input.value = "";
+        input.style.height = "auto";
+        btn.disabled = true;
+        appendMessage("user", content, container);
+        const typingEl = showTyping(container);
+        scrollChat(container);
         try {
           const aiMsg = await apiFetch(`/api/entries/${currentEntryId}/reply`, {
             method: "POST",
             body: { content },
           });
-          hideTyping();
-          appendMessage("assistant", aiMsg.content);
-          scrollChat();
+          typingEl.remove();
+          appendMessage("assistant", aiMsg.content, container);
+          scrollChat(container);
         } catch (e) {
-          hideTyping();
+          typingEl.remove();
           if (isLoggedIn()) {
-            appendMessage(
-              "assistant",
-              "I'm having trouble connecting right now. Please try again in a moment.",
-            );
-            scrollChat();
+            appendMessage("assistant", "I'm having trouble connecting right now. Please try again in a moment.", container);
+            scrollChat(container);
           }
         }
       }
 
       // ─── Init ───
-      // Check for existing token on page load
       if (isLoggedIn()) {
         showPage("home");
         loadEntries();
