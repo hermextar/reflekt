@@ -1,11 +1,11 @@
 import os
-import json
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 import anthropic
 from supabase import create_client
+from cryptography.fernet import Fernet
 
 app = Flask(__name__, static_folder='.')
 CORS(app)
@@ -16,13 +16,21 @@ jwt = JWTManager(app)
 
 anthropic_client = anthropic.Anthropic(api_key=os.environ.get('ANTHROPIC_API_KEY'))
 supabase = create_client(os.environ.get('SUPABASE_URL'), os.environ.get('SUPABASE_KEY'))
+fernet = Fernet(os.environ.get('ENCRYPTION_KEY').encode())
 
-# Serve frontend
+def encrypt(text):
+    return fernet.encrypt(text.encode()).decode()
+
+def decrypt(text):
+    try:
+        return fernet.decrypt(text.encode()).decode()
+    except Exception:
+        return text  # fallback for any unencrypted legacy entries
+
 @app.route('/')
 def index():
     return send_from_directory('.', 'index.html')
 
-# Auth routes
 @app.route('/api/register', methods=['POST'])
 def register():
     data = request.json
@@ -49,12 +57,13 @@ def login():
     token = create_access_token(identity=user.data[0]['id'])
     return jsonify({'token': token, 'email': email})
 
-# Entries routes
 @app.route('/api/entries', methods=['GET'])
 @jwt_required()
 def get_entries():
     user_id = get_jwt_identity()
     entries = supabase.table('entries').select('*').eq('user_id', user_id).order('created_at', desc=True).execute()
+    for entry in entries.data:
+        entry['content'] = decrypt(entry['content'])
     return jsonify(entries.data)
 
 @app.route('/api/entries', methods=['POST'])
@@ -63,8 +72,7 @@ def create_entry():
     user_id = get_jwt_identity()
     data = request.json
     content = data.get('content', '')
-    
-    # Get AI opening message
+
     ai_response = anthropic_client.messages.create(
         model='claude-haiku-4-5',
         max_tokens=300,
@@ -72,7 +80,6 @@ def create_entry():
     )
     ai_message = ai_response.content[0].text
 
-    # Detect mood
     mood_response = anthropic_client.messages.create(
         model='claude-haiku-4-5',
         max_tokens=10,
@@ -80,14 +87,20 @@ def create_entry():
     )
     mood = mood_response.content[0].text.strip().lower()
 
-    entry = supabase.table('entries').insert({'user_id': user_id, 'content': content, 'mood': mood}).execute()
+    entry = supabase.table('entries').insert({
+        'user_id': user_id,
+        'content': encrypt(content),
+        'mood': mood
+    }).execute()
     entry_id = entry.data[0]['id']
 
     supabase.table('messages').insert([
-        {'entry_id': entry_id, 'role': 'assistant', 'content': ai_message}
+        {'entry_id': entry_id, 'role': 'assistant', 'content': encrypt(ai_message)}
     ]).execute()
 
-    return jsonify(entry.data[0]), 201
+    result = entry.data[0]
+    result['content'] = content  # return decrypted to frontend
+    return jsonify(result), 201
 
 @app.route('/api/entries/<entry_id>', methods=['GET'])
 @jwt_required()
@@ -96,12 +109,16 @@ def get_entry(entry_id):
     entry = supabase.table('entries').select('*').eq('id', entry_id).eq('user_id', user_id).execute()
     if not entry.data:
         return jsonify({'error': 'Not found'}), 404
-    return jsonify(entry.data[0])
+    result = entry.data[0]
+    result['content'] = decrypt(result['content'])
+    return jsonify(result)
 
 @app.route('/api/entries/<entry_id>/messages', methods=['GET'])
 @jwt_required()
 def get_messages(entry_id):
     msgs = supabase.table('messages').select('*').eq('entry_id', entry_id).order('created_at').execute()
+    for m in msgs.data:
+        m['content'] = decrypt(m['content'])
     return jsonify(msgs.data)
 
 @app.route('/api/entries/<entry_id>/reply', methods=['POST'])
@@ -115,7 +132,7 @@ def reply(entry_id):
         return jsonify({'error': 'Not found'}), 404
 
     history = supabase.table('messages').select('*').eq('entry_id', entry_id).order('created_at').execute()
-    messages = [{'role': m['role'], 'content': m['content']} for m in history.data]
+    messages = [{'role': m['role'], 'content': decrypt(m['content'])} for m in history.data]
     messages.append({'role': 'user', 'content': content})
 
     ai_response = anthropic_client.messages.create(
@@ -127,8 +144,8 @@ def reply(entry_id):
     ai_message = ai_response.content[0].text
 
     supabase.table('messages').insert([
-        {'entry_id': entry_id, 'role': 'user', 'content': content},
-        {'entry_id': entry_id, 'role': 'assistant', 'content': ai_message}
+        {'entry_id': entry_id, 'role': 'user', 'content': encrypt(content)},
+        {'entry_id': entry_id, 'role': 'assistant', 'content': encrypt(ai_message)}
     ]).execute()
 
     return jsonify({'role': 'assistant', 'content': ai_message})
