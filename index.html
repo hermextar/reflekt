@@ -967,20 +967,33 @@
       }
 
       /* Mood colors */
-      .mood-anxious { color: #eab308; }
-      .mood-frustrated { color: #f97316; }
-      .mood-sad { color: #60a5fa; }
-      .mood-confused { color: #a78bfa; }
-      .mood-positive { color: #4ade80; }
-      .mood-tired { color: #94a3b8; }
-      .mood-reflective { color: #818cf8; }
+      .mood-anxious {
+        color: #eab308;
+      }
+      .mood-frustrated {
+        color: #f97316;
+      }
+      .mood-sad {
+        color: #60a5fa;
+      }
+      .mood-confused {
+        color: #a78bfa;
+      }
+      .mood-positive {
+        color: #4ade80;
+      }
+      .mood-tired {
+        color: #94a3b8;
+      }
+      .mood-reflective {
+        color: #818cf8;
+      }
 
       /* ═══════════════════════════════════════════════
          DESKTOP LAYOUT — activates at 900px+
          Mobile layout is completely untouched below 900px
          ═══════════════════════════════════════════════ */
       @media (min-width: 900px) {
-
         /* ── Root shell: full-screen two-column flex row ── */
         body {
           overflow: hidden;
@@ -1206,7 +1219,6 @@
   </head>
   <body>
     <div class="app">
-
       <!-- ═══════════════════ AUTH PAGE ═══════════════════ -->
       <div id="page-auth" class="page active">
         <div class="auth-body">
@@ -1563,7 +1575,7 @@
            Hidden on mobile via CSS (display:none below 900px).
            On desktop this is the left column.
       ════════════════════════════════════════════════════════════ -->
-      <aside class="desktop-sidebar" id="desktop-sidebar" style="display:none">
+      <aside class="desktop-sidebar" id="desktop-sidebar" style="display: none">
         <!-- Sidebar header: logo + theme + logout -->
         <div class="sidebar-header">
           <div class="logo">
@@ -1609,11 +1621,7 @@
                 />
               </svg>
             </button>
-            <button
-              class="logout-btn"
-              onclick="logout()"
-              aria-label="Sign out"
-            >
+            <button class="logout-btn" onclick="logout()" aria-label="Sign out">
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -1651,8 +1659,11 @@
         </div>
 
         <div class="sidebar-footer">
-          <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">
-            Created with Perplexity Computer
+          <a
+            href="https://www.perplexity.ai/computer"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
           </a>
         </div>
       </aside>
@@ -1660,29 +1671,40 @@
       <!-- ═══════════════════ DESKTOP MAIN PANEL ═══════════════════
            Hidden on mobile. On desktop this is the right column.
       ════════════════════════════════════════════════════════════════ -->
-      <main class="desktop-main" id="desktop-main" style="display:none">
-
+      <main class="desktop-main" id="desktop-main" style="display: none">
         <!-- Idle / welcome state -->
         <div id="desktop-panel-idle">
           <div class="idle-icon">
             <svg viewBox="0 0 24 24" stroke-width="1.8">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              <path
+                d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+              />
             </svg>
           </div>
           <p class="idle-title">Start or continue a reflection</p>
-          <p class="idle-sub">Write a new entry, or choose one from the left to pick up where you left off.</p>
+          <p class="idle-sub">
+            Write a new entry, or choose one from the left to pick up where you
+            left off.
+          </p>
         </div>
 
         <!-- New entry panel (desktop) -->
         <div id="desktop-panel-new">
           <header class="header">
             <button class="back-btn" id="back-from-new-desktop">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <path d="M19 12H5M12 5l-7 7 7 7" />
               </svg>
               Back
             </button>
-            <span style="font-size: 12px; color: var(--color-text-muted)">New entry</span>
+            <span style="font-size: 12px; color: var(--color-text-muted)"
+              >New entry</span
+            >
           </header>
           <div class="new-entry-body">
             <p class="entry-date" id="entry-date-desktop"></p>
@@ -1699,7 +1721,12 @@
             </div>
             <div class="action-bar">
               <button class="mic-btn" id="mic-btn-desktop">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
                   <rect x="9" y="3" width="6" height="11" rx="3" />
                   <path d="M5 11a7 7 0 0 0 14 0" />
                   <path d="M12 18v3M8 21h8" />
@@ -1707,13 +1734,20 @@
                 Speak
               </button>
               <button class="submit-btn" id="submit-btn-desktop" disabled>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
                   <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
                 </svg>
                 Submit entry
               </button>
             </div>
-            <p class="submit-footer">Your thoughts are never judged — only explored.</p>
+            <p class="submit-footer">
+              Your thoughts are never judged — only explored.
+            </p>
           </div>
         </div>
 
@@ -1721,28 +1755,49 @@
         <div id="desktop-panel-entry">
           <header class="header">
             <button class="back-btn" id="back-from-entry-desktop">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <path d="M19 12H5M12 5l-7 7 7 7" />
               </svg>
               Back
             </button>
-            <span class="entry-header-info" id="entry-header-time-desktop"></span>
+            <span
+              class="entry-header-info"
+              id="entry-header-time-desktop"
+            ></span>
           </header>
 
           <div class="entry-content-card">
             <button class="entry-toggle" id="entry-toggle-desktop">
               Your entry
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <path d="M6 9l6 6 6-6" />
               </svg>
             </button>
-            <div id="entry-original-text-desktop" style="display: none" class="entry-text"></div>
+            <div
+              id="entry-original-text-desktop"
+              style="display: none"
+              class="entry-text"
+            ></div>
           </div>
 
           <div class="ai-label">
             <div class="ai-dot">
               <svg viewBox="0 0 24 24" stroke-width="2">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="none" stroke="currentColor"/>
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                  fill="none"
+                  stroke="currentColor"
+                />
               </svg>
             </div>
             Reflekt is exploring with you
@@ -1761,7 +1816,12 @@
                 ></textarea>
               </div>
               <button class="send-btn" id="send-btn-desktop" disabled>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
                   <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
                 </svg>
               </button>
@@ -1769,10 +1829,9 @@
             <p class="reply-hint">Enter to send · Shift+Enter for new line</p>
           </div>
         </div>
-
       </main>
-
-    </div><!-- /.app -->
+    </div>
+    <!-- /.app -->
 
     <script>
       // ─── Config ───
@@ -1786,13 +1845,17 @@
 
       // ─── Desktop detection ───
       const MQ = window.matchMedia("(min-width: 900px)");
-      function isDesktop() { return MQ.matches; }
+      function isDesktop() {
+        return MQ.matches;
+      }
 
       // Show/hide desktop vs mobile shell on load and on resize
       function applyLayout() {
         const desktop = isDesktop();
-        document.getElementById("desktop-sidebar").style.display = desktop ? "flex" : "none";
-        document.getElementById("desktop-main").style.display = desktop ? "flex" : "none";
+        document.getElementById("desktop-sidebar").style.display =
+          desktop ? "flex" : "none";
+        document.getElementById("desktop-main").style.display =
+          desktop ? "flex" : "none";
         // On mobile the normal pages are visible; on desktop they are hidden via CSS
       }
       applyLayout();
@@ -1816,10 +1879,16 @@
       // ─── Auth tab switcher ───
       function switchAuthTab(tab) {
         const isLogin = tab === "login";
-        document.getElementById("tab-login").classList.toggle("active", isLogin);
-        document.getElementById("tab-register").classList.toggle("active", !isLogin);
-        document.getElementById("form-login").style.display = isLogin ? "flex" : "none";
-        document.getElementById("form-register").style.display = isLogin ? "none" : "flex";
+        document
+          .getElementById("tab-login")
+          .classList.toggle("active", isLogin);
+        document
+          .getElementById("tab-register")
+          .classList.toggle("active", !isLogin);
+        document.getElementById("form-login").style.display =
+          isLogin ? "flex" : "none";
+        document.getElementById("form-register").style.display =
+          isLogin ? "none" : "flex";
         hideAuthError();
       }
 
@@ -1878,7 +1947,9 @@
           });
           const data = await res.json();
           if (!res.ok) {
-            showAuthError(data.error || "Registration failed. Please try again.");
+            showAuthError(
+              data.error || "Registration failed. Please try again.",
+            );
             return;
           }
           setToken(data.token);
@@ -1917,19 +1988,26 @@
       function setTheme(t) {
         html.setAttribute("data-theme", t);
         // Mobile icons
-        document.getElementById("theme-icon-dark").style.display = t === "dark" ? "inline" : "none";
-        document.getElementById("theme-icon-light").style.display = t === "light" ? "inline" : "none";
+        document.getElementById("theme-icon-dark").style.display =
+          t === "dark" ? "inline" : "none";
+        document.getElementById("theme-icon-light").style.display =
+          t === "light" ? "inline" : "none";
         // Desktop sidebar icons
-        document.getElementById("theme-icon-dark-d").style.display = t === "dark" ? "inline" : "none";
-        document.getElementById("theme-icon-light-d").style.display = t === "light" ? "inline" : "none";
+        document.getElementById("theme-icon-dark-d").style.display =
+          t === "dark" ? "inline" : "none";
+        document.getElementById("theme-icon-light-d").style.display =
+          t === "light" ? "inline" : "none";
       }
-      if (window.matchMedia("(prefers-color-scheme: light)").matches) setTheme("light");
+      if (window.matchMedia("(prefers-color-scheme: light)").matches)
+        setTheme("light");
       document.getElementById("theme-toggle").addEventListener("click", () => {
         setTheme(getTheme() === "dark" ? "light" : "dark");
       });
-      document.getElementById("theme-toggle-desktop").addEventListener("click", () => {
-        setTheme(getTheme() === "dark" ? "light" : "dark");
-      });
+      document
+        .getElementById("theme-toggle-desktop")
+        .addEventListener("click", () => {
+          setTheme(getTheme() === "dark" ? "light" : "dark");
+        });
 
       // ─── Navigation ───
       // On mobile: use the original page system.
@@ -1950,7 +2028,9 @@
           // new / entry panels are shown by their own functions
         } else {
           // Mobile: standard page switching
-          document.querySelectorAll(".page").forEach((p) => p.classList.remove("active"));
+          document
+            .querySelectorAll(".page")
+            .forEach((p) => p.classList.remove("active"));
           document.getElementById("page-" + id).classList.add("active");
           window.scrollTo(0, 0);
         }
@@ -1958,9 +2038,15 @@
 
       // Desktop panel switcher
       function showDesktopPanel(name) {
-        document.getElementById("desktop-panel-idle").classList.toggle("hidden", name !== "idle");
-        document.getElementById("desktop-panel-new").classList.toggle("active", name === "new");
-        document.getElementById("desktop-panel-entry").classList.toggle("active", name === "entry");
+        document
+          .getElementById("desktop-panel-idle")
+          .classList.toggle("hidden", name !== "idle");
+        document
+          .getElementById("desktop-panel-new")
+          .classList.toggle("active", name === "new");
+        document
+          .getElementById("desktop-panel-entry")
+          .classList.toggle("active", name === "entry");
       }
 
       // ─── API helpers ───
@@ -1991,12 +2077,20 @@
       // ─── Mood config ───
       const MOOD = {
         anxious: { emoji: "😰", label: "Anxious", cls: "mood-anxious" },
-        frustrated: { emoji: "😤", label: "Frustrated", cls: "mood-frustrated" },
+        frustrated: {
+          emoji: "😤",
+          label: "Frustrated",
+          cls: "mood-frustrated",
+        },
         sad: { emoji: "😔", label: "Sad", cls: "mood-sad" },
         confused: { emoji: "😕", label: "Confused", cls: "mood-confused" },
         positive: { emoji: "🌱", label: "Positive", cls: "mood-positive" },
         tired: { emoji: "😴", label: "Tired", cls: "mood-tired" },
-        reflective: { emoji: "💭", label: "Reflective", cls: "mood-reflective" },
+        reflective: {
+          emoji: "💭",
+          label: "Reflective",
+          cls: "mood-reflective",
+        },
       };
       function getMood(m) {
         return MOOD[m] || MOOD.reflective;
@@ -2004,7 +2098,8 @@
 
       // ─── Time formatting ───
       function timeAgo(ts) {
-        const date = typeof ts === "string" ? new Date(ts) : new Date(ts * 1000);
+        const date =
+          typeof ts === "string" ? new Date(ts) : new Date(ts * 1000);
         const d = Date.now() - date.getTime();
         if (d < 60000) return "just now";
         if (d < 3600000) return `${Math.floor(d / 60000)}m ago`;
@@ -2013,33 +2108,49 @@
       }
 
       // ─── HOME / ENTRIES ───
-      document.getElementById("go-new").addEventListener("click", () => showPage("new"));
-      document.getElementById("back-from-new").addEventListener("click", () => showPage("home"));
-      document.getElementById("back-from-entry").addEventListener("click", () => {
-        loadEntries();
-        showPage("home");
-      });
+      document
+        .getElementById("go-new")
+        .addEventListener("click", () => showPage("new"));
+      document
+        .getElementById("back-from-new")
+        .addEventListener("click", () => showPage("home"));
+      document
+        .getElementById("back-from-entry")
+        .addEventListener("click", () => {
+          loadEntries();
+          showPage("home");
+        });
 
       // Desktop new entry button
-      document.getElementById("go-new-desktop").addEventListener("click", () => {
-        // Clear active entry highlight
-        document.querySelectorAll(".entry-card.active-entry").forEach(c => c.classList.remove("active-entry"));
-        showDesktopPanel("new");
-        // Reset the desktop textarea
-        const dt = document.getElementById("journal-textarea-desktop");
-        dt.value = "";
-        dt.style.height = "auto";
-        document.getElementById("char-count-desktop").textContent = "";
-        document.getElementById("submit-btn-desktop").disabled = true;
-      });
+      document
+        .getElementById("go-new-desktop")
+        .addEventListener("click", () => {
+          // Clear active entry highlight
+          document
+            .querySelectorAll(".entry-card.active-entry")
+            .forEach((c) => c.classList.remove("active-entry"));
+          showDesktopPanel("new");
+          // Reset the desktop textarea
+          const dt = document.getElementById("journal-textarea-desktop");
+          dt.value = "";
+          dt.style.height = "auto";
+          document.getElementById("char-count-desktop").textContent = "";
+          document.getElementById("submit-btn-desktop").disabled = true;
+        });
 
-      document.getElementById("back-from-new-desktop").addEventListener("click", () => {
-        showDesktopPanel("idle");
-      });
-      document.getElementById("back-from-entry-desktop").addEventListener("click", () => {
-        document.querySelectorAll(".entry-card.active-entry").forEach(c => c.classList.remove("active-entry"));
-        showDesktopPanel("idle");
-      });
+      document
+        .getElementById("back-from-new-desktop")
+        .addEventListener("click", () => {
+          showDesktopPanel("idle");
+        });
+      document
+        .getElementById("back-from-entry-desktop")
+        .addEventListener("click", () => {
+          document
+            .querySelectorAll(".entry-card.active-entry")
+            .forEach((c) => c.classList.remove("active-entry"));
+          showDesktopPanel("idle");
+        });
 
       async function loadEntries() {
         try {
@@ -2148,7 +2259,8 @@
       textareaD.placeholder = randomPrompt;
 
       // ─── Speech recognition (shared logic, works for active textarea) ───
-      const hasSpeech = "SpeechRecognition" in window || "webkitSpeechRecognition" in window;
+      const hasSpeech =
+        "SpeechRecognition" in window || "webkitSpeechRecognition" in window;
       if (!hasSpeech) {
         micBtn.style.display = "none";
         micBtnD.style.display = "none";
@@ -2163,7 +2275,8 @@
             btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3M8 21h8"/></svg>Speak`;
             badge.classList.remove("visible");
           } else {
-            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const SR =
+              window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SR();
             recognition.continuous = true;
             recognition.interimResults = true;
@@ -2172,7 +2285,8 @@
             recognition.onresult = (e) => {
               let interim = "";
               for (let i = e.resultIndex; i < e.results.length; i++) {
-                if (e.results[i].isFinal) finalText += e.results[i][0].transcript + " ";
+                if (e.results[i].isFinal)
+                  finalText += e.results[i][0].transcript + " ";
                 else interim = e.results[i][0].transcript;
               }
               ta.value = finalText + interim;
@@ -2218,7 +2332,8 @@
         } catch (e) {
           if (isLoggedIn()) alert("Something went wrong. Please try again.");
           submitBtn.disabled = false;
-          submitBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit entry';
+          submitBtn.innerHTML =
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit entry';
         }
       });
 
@@ -2240,7 +2355,8 @@
         } catch (e) {
           if (isLoggedIn()) alert("Something went wrong. Please try again.");
           submitBtnD.disabled = false;
-          submitBtnD.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit entry';
+          submitBtnD.innerHTML =
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit entry';
         }
       });
 
@@ -2256,7 +2372,9 @@
 
       // ─── Entry toggle (desktop) ───
       const entryToggleD = document.getElementById("entry-toggle-desktop");
-      const entryOrigTextD = document.getElementById("entry-original-text-desktop");
+      const entryOrigTextD = document.getElementById(
+        "entry-original-text-desktop",
+      );
       let entryExpandedD = false;
       entryToggleD.addEventListener("click", () => {
         entryExpandedD = !entryExpandedD;
@@ -2280,7 +2398,9 @@
           sendReply(chatContainer, replyInput, sendBtn);
         }
       });
-      sendBtn.addEventListener("click", () => sendReply(chatContainer, replyInput, sendBtn));
+      sendBtn.addEventListener("click", () =>
+        sendReply(chatContainer, replyInput, sendBtn),
+      );
 
       // ─── Chat (desktop) ───
       const chatContainerD = document.getElementById("chat-container-desktop");
@@ -2289,7 +2409,8 @@
 
       replyInputD.addEventListener("input", () => {
         replyInputD.style.height = "auto";
-        replyInputD.style.height = Math.min(replyInputD.scrollHeight, 100) + "px";
+        replyInputD.style.height =
+          Math.min(replyInputD.scrollHeight, 100) + "px";
         sendBtnD.disabled = !replyInputD.value.trim();
       });
       replyInputD.addEventListener("keydown", (e) => {
@@ -2298,7 +2419,9 @@
           sendReply(chatContainerD, replyInputD, sendBtnD);
         }
       });
-      sendBtnD.addEventListener("click", () => sendReply(chatContainerD, replyInputD, sendBtnD));
+      sendBtnD.addEventListener("click", () =>
+        sendReply(chatContainerD, replyInputD, sendBtnD),
+      );
 
       // ─── Open entry ───
       async function openEntry(id) {
@@ -2324,7 +2447,7 @@
         sendBtnD.disabled = true;
 
         // Highlight active card in sidebar
-        document.querySelectorAll(".entry-card").forEach(c => {
+        document.querySelectorAll(".entry-card").forEach((c) => {
           c.classList.toggle("active-entry", c.dataset.entryId === String(id));
         });
 
@@ -2340,12 +2463,14 @@
           entryOrigText.textContent = entry.content;
           document.getElementById("entry-header-time").textContent = timeStr;
           entryOrigTextD.textContent = entry.content;
-          document.getElementById("entry-header-time-desktop").textContent = timeStr;
+          document.getElementById("entry-header-time-desktop").textContent =
+            timeStr;
 
           renderMessages(msgs, chatContainer);
           renderMessages(msgs, chatContainerD);
         } catch (e) {
-          const errHtml = '<p style="text-align:center;color:var(--color-text-muted);padding:20px;font-size:13px">Could not load this entry.</p>';
+          const errHtml =
+            '<p style="text-align:center;color:var(--color-text-muted);padding:20px;font-size:13px">Could not load this entry.</p>';
           if (isLoggedIn()) {
             chatContainer.innerHTML = errHtml;
             chatContainerD.innerHTML = errHtml;
@@ -2412,7 +2537,11 @@
         } catch (e) {
           typingEl.remove();
           if (isLoggedIn()) {
-            appendMessage("assistant", "I'm having trouble connecting right now. Please try again in a moment.", container);
+            appendMessage(
+              "assistant",
+              "I'm having trouble connecting right now. Please try again in a moment.",
+              container,
+            );
             scrollChat(container);
           }
         }
