@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
@@ -88,10 +89,12 @@ def create_entry():
     )
     mood = mood_response.content[0].text.strip().lower()
 
+    default_title = datetime.utcnow().strftime('%B %-d, %Y')
     entry = supabase.table('entries').insert({
         'user_id': user_id,
         'content': encrypt(content),
-        'mood': mood
+        'mood': mood,
+        'title': default_title
     }).execute()
     entry_id = entry.data[0]['id']
 
@@ -152,6 +155,22 @@ def reply(entry_id):
     ]).execute()
 
     return jsonify({'role': 'assistant', 'content': ai_message})
+
+
+@app.route('/api/entries/<entry_id>', methods=['PATCH'])
+@jwt_required()
+def update_entry(entry_id):
+    user_id = get_jwt_identity()
+    data = request.json
+    new_title = data.get('title', '').strip()
+    if not new_title:
+        return jsonify({'error': 'Title cannot be empty'}), 400
+    # Verify ownership
+    existing = supabase.table('entries').select('id').eq('id', entry_id).eq('user_id', user_id).execute()
+    if not existing.data:
+        return jsonify({'error': 'Not found'}), 404
+    supabase.table('entries').update({'title': new_title}).eq('id', entry_id).execute()
+    return jsonify({'id': entry_id, 'title': new_title})
 
 
 @app.errorhandler(404)

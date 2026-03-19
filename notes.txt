@@ -42,8 +42,8 @@ Pages
         -error screens / messaging
 
 Other/misc
-    ❗how to check API / other costs
-    ❗how to get on appstore 
+    ✅how to check API / other costs
+    ✅how to get on appstore 
     ❗how to handle things like subscriptions and API 
     ❗personal context?
     ❗new name?
