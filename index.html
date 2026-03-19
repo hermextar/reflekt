@@ -2088,7 +2088,10 @@
         });
         if (res.status === 401) {
           clearToken();
+          switchAuthTab("login");
           showPage("auth");
+          // Show a friendly message on the login screen
+          showAuthError("Your session has expired. Please sign in again.");
           throw new Error("Session expired. Please sign in again.");
         }
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -2119,8 +2122,9 @@
 
       // ─── Time formatting ───
       function timeAgo(ts) {
-        const date =
-          typeof ts === "string" ? new Date(ts) : new Date(ts * 1000);
+        if (!ts) return "";
+        const date = typeof ts === "string" ? new Date(ts) : new Date(ts * 1000);
+        if (isNaN(date.getTime())) return "";
         const d = Date.now() - date.getTime();
         if (d < 60000) return "just now";
         if (d < 3600000) return `${Math.floor(d / 60000)}m ago`;
@@ -2170,6 +2174,7 @@
           document
             .querySelectorAll(".entry-card.active-entry")
             .forEach((c) => c.classList.remove("active-entry"));
+          loadEntries();
           showDesktopPanel("idle");
         });
 
@@ -2349,6 +2354,9 @@
           textarea.value = "";
           textarea.style.height = "auto";
           charCount.textContent = "";
+          // Prepend the new entry to the local list immediately so both views update
+          entries.unshift(entry);
+          renderEntries();
           await openEntry(entry.id);
         } catch (e) {
           if (isLoggedIn()) alert("Something went wrong. Please try again.");
@@ -2372,6 +2380,9 @@
           textareaD.value = "";
           textareaD.style.height = "auto";
           charCountD.textContent = "";
+          // Prepend the new entry to the local list immediately so both views update
+          entries.unshift(entry);
+          renderEntries();
           await openEntry(entry.id);
         } catch (e) {
           if (isLoggedIn()) alert("Something went wrong. Please try again.");

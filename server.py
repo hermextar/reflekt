@@ -98,7 +98,9 @@ def create_entry():
         {'entry_id': entry_id, 'role': 'assistant', 'content': encrypt(ai_message)}
     ]).execute()
 
-    result = entry.data[0]
+    # Re-fetch so created_at and all server-set fields are guaranteed present
+    full_entry = supabase.table('entries').select('*').eq('id', entry_id).execute()
+    result = full_entry.data[0]
     result['content'] = content  # return decrypted to frontend
     return jsonify(result), 201
 
