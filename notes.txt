@@ -8,15 +8,19 @@ UI/UX
 
     ❗ask for microphone permissions once
 
+    ❗ability to delete entries   
+
     ❗ability to rename entries?
 
     ❗other feature ideas?
         -option to have ai talk back to you instead  of type?
 
+
     ❗desktop UX
         ✅ -header issue
         ✅-make mobile view fill screen?
         ❗-in desktop, no way to go back to "home" screen while already in an entry
+        ❗-drop shadow when hovering over entries for floating feel
 
 
     
@@ -25,10 +29,17 @@ Pages
         -
     -edit mode
         -
+    -notebooks/spaces
+        -context for notebooks?
     -about us
         -
+    -breathing workouts/visualization?
+        -
+        
     -settings
         -
+    other   
+        -error screens / messaging
 
 Other/misc
     ❗how to check API / other costs
