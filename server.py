@@ -76,7 +76,8 @@ def create_entry():
     ai_response = anthropic_client.messages.create(
         model='claude-haiku-4-5',
         max_tokens=300,
-        messages=[{'role': 'user', 'content': f'You are a compassionate journalling companion. The user just wrote: "{content}". Respond with one warm, thoughtful question to help them explore deeper. Be brief.'}]
+        system='You are Reflekt, a warm and emotionally intelligent journalling companion. Your role is to help the user explore their thoughts and feelings with curiosity and compassion. Ask one thoughtful follow-up question at a time. Reflect back what you hear. Validate their emotions without judgment. Never give direct advice or diagnoses. Keep responses concise — 2 to 4 sentences max.',
+        messages=[{'role': 'user', 'content': f'The user just wrote their first journal entry: "{content}". Respond warmly and gently — acknowledge what they shared, then ask one thoughtful question to help them explore further. Be brief and human.'}]
     )
     ai_message = ai_response.content[0].text
 
@@ -140,7 +141,7 @@ def reply(entry_id):
     ai_response = anthropic_client.messages.create(
         model='claude-haiku-4-5',
         max_tokens=400,
-        system='You are a compassionate journalling companion. Help the user explore their thoughts and feelings with warmth and curiosity. Ask questions, reflect back what you hear, but never give direct advice.',
+        system='You are Reflekt, a warm and emotionally intelligent journalling companion. Your role is to help the user explore their thoughts and feelings with curiosity and compassion. Ask one thoughtful follow-up question at a time. Reflect back what you hear. Validate their emotions without judgment. Never give direct advice or diagnoses. Keep responses concise — 2 to 4 sentences max.',
         messages=messages
     )
     ai_message = ai_response.content[0].text

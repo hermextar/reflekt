@@ -540,26 +540,103 @@
       }
       .empty-state {
         text-align: center;
-        padding: 48px 16px;
+        padding: 40px 16px 32px;
       }
       .empty-icon {
-        width: 48px;
-        height: 48px;
-        margin: 0 auto 12px;
-        color: var(--color-text-faint);
+        width: 52px;
+        height: 52px;
+        margin: 0 auto 16px;
+        border-radius: 50%;
+        background: var(--color-primary-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       .empty-icon svg {
-        width: 100%;
-        height: 100%;
+        width: 26px;
+        height: 26px;
+        stroke: var(--color-primary);
+        fill: none;
       }
       .empty-title {
-        font-size: 15px;
+        font-family: var(--font-display);
+        font-size: 16px;
+        font-weight: 500;
         color: var(--color-text);
-        margin-bottom: 4px;
+        margin-bottom: 10px;
+        letter-spacing: -0.2px;
       }
       .empty-sub {
         font-size: 13px;
         color: var(--color-text-muted);
+        line-height: 1.65;
+        max-width: 260px;
+        margin: 0 auto 24px;
+      }
+      .empty-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border-radius: var(--radius-full);
+        background: var(--color-primary);
+        color: white;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all var(--transition);
+        cursor: pointer;
+        border: none;
+      }
+      .empty-cta:hover {
+        background: var(--color-primary-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(139, 114, 232, 0.3);
+      }
+      .empty-cta svg {
+        width: 14px;
+        height: 14px;
+        stroke: white;
+        fill: none;
+      }
+
+      /* ─── Mood insight strip ─── */
+      .mood-insight {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        margin-bottom: 10px;
+        border-left: 3px solid currentColor;
+        font-size: 12px;
+        color: var(--color-text-muted);
+        background: var(--color-surface-2);
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      }
+      .mood-insight.hidden { display: none; }
+
+      /* ─── Quick-start chips ─── */
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 4px 0 12px;
+      }
+      .prompt-chip {
+        padding: 6px 14px;
+        border-radius: var(--radius-full);
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        color: var(--color-text-muted);
+        font-size: 12px;
+        font-family: var(--font-body);
+        cursor: pointer;
+        transition: all var(--transition);
+        white-space: nowrap;
+      }
+      .prompt-chip:hover {
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        background: var(--color-primary-bg);
       }
 
       /* ─── New Entry ─── */
@@ -1437,6 +1514,7 @@
               <span>Type or speak what's on your mind</span>
             </div>
           </button>
+          <div class="mood-insight hidden" id="mood-insight-mobile"></div>
           <div class="section-label">Past Entries</div>
           <div id="entries-list" class="entries-list">
             <div class="skeleton" style="height: 72px"></div>
@@ -1473,6 +1551,12 @@
             rows="1"
           ></textarea>
           <div class="char-count" id="char-count"></div>
+          <div class="chip-row" id="chip-row-mobile">
+            <button class="prompt-chip" onclick="fillChip('journal-textarea','submit-btn',this.dataset.text)" data-text="Something&#39;s been on my mind lately...">Something's on my mind…</button>
+            <button class="prompt-chip" onclick="fillChip('journal-textarea','submit-btn',this.dataset.text)" data-text="I've been feeling overwhelmed...">Feeling overwhelmed…</button>
+            <button class="prompt-chip" onclick="fillChip('journal-textarea','submit-btn',this.dataset.text)" data-text="Something good happened today...">Something good happened…</button>
+            <button class="prompt-chip" onclick="fillChip('journal-textarea','submit-btn',this.dataset.text)" data-text="I'm struggling with...">I'm struggling with…</button>
+          </div>
           <div class="recording-badge" id="recording-badge">
             <span class="rec-dot"></span>
             Listening… speak naturally
@@ -1670,6 +1754,7 @@
               <span>Type or speak what's on your mind</span>
             </div>
           </button>
+          <div class="mood-insight hidden" id="mood-insight-desktop"></div>
           <div class="section-label">Past Entries</div>
           <div id="entries-list-desktop" class="entries-list">
             <div class="skeleton" style="height: 72px"></div>
@@ -1735,6 +1820,12 @@
               rows="1"
             ></textarea>
             <div class="char-count" id="char-count-desktop"></div>
+            <div class="chip-row" id="chip-row-desktop">
+              <button class="prompt-chip" onclick="fillChip('journal-textarea-desktop','submit-btn-desktop',this.dataset.text)" data-text="Something&#39;s been on my mind lately...">Something's on my mind…</button>
+              <button class="prompt-chip" onclick="fillChip('journal-textarea-desktop','submit-btn-desktop',this.dataset.text)" data-text="I've been feeling overwhelmed...">Feeling overwhelmed…</button>
+              <button class="prompt-chip" onclick="fillChip('journal-textarea-desktop','submit-btn-desktop',this.dataset.text)" data-text="Something good happened today...">Something good happened…</button>
+              <button class="prompt-chip" onclick="fillChip('journal-textarea-desktop','submit-btn-desktop',this.dataset.text)" data-text="I'm struggling with...">I'm struggling with…</button>
+            </div>
             <div class="recording-badge" id="recording-badge-desktop">
               <span class="rec-dot"></span>
               Listening… speak naturally
@@ -2205,9 +2296,17 @@
         });
 
         const emptyHtml = `<div class="empty-state">
-          <div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
-          <p class="empty-title">No entries yet</p>
-          <p class="empty-sub">Write your first one when you're ready.</p>
+          <div class="empty-icon">
+            <svg viewBox="0 0 24 24" stroke-width="2">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="none" stroke="currentColor"/>
+            </svg>
+          </div>
+          <p class="empty-title">Your journey starts here</p>
+          <p class="empty-sub">This is your safe space to think out loud. Write your first entry whenever you're ready — no pressure, no judgement.</p>
+          <button class="empty-cta" onclick="startNewEntry()">
+            <svg viewBox="0 0 24 24" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            Start a new entry
+          </button>
         </div>`;
 
         const html = entries.length ? cards.join("") : emptyHtml;
@@ -2219,6 +2318,78 @@
         // Desktop sidebar list
         const desktopEl = document.getElementById("entries-list-desktop");
         if (desktopEl) desktopEl.innerHTML = html;
+
+        // Mood insight strip
+        renderMoodInsight();
+      }
+
+      function renderMoodInsight() {
+        const insightMobile = document.getElementById("mood-insight-mobile");
+        const insightDesktop = document.getElementById("mood-insight-desktop");
+        if (!insightMobile && !insightDesktop) return;
+
+        if (entries.length < 3) {
+          if (insightMobile) insightMobile.classList.add("hidden");
+          if (insightDesktop) insightDesktop.classList.add("hidden");
+          return;
+        }
+
+        // Tally moods from the most recent 5 entries
+        const recent = entries.slice(0, 5);
+        const tally = {};
+        recent.forEach((e) => {
+          const m = (e.mood || "reflective").toLowerCase();
+          tally[m] = (tally[m] || 0) + 1;
+        });
+        const topMood = Object.entries(tally).sort((a, b) => b[1] - a[1])[0][0];
+        const moodData = getMood(topMood);
+
+        // Map mood class to a hex accent colour that matches the CSS mood colours
+        const MOOD_COLORS = {
+          anxious: "#eab308", frustrated: "#f97316", sad: "#60a5fa",
+          confused: "#a78bfa", positive: "#4ade80", tired: "#94a3b8",
+          reflective: "#818cf8"
+        };
+        const accentColor = MOOD_COLORS[topMood] || MOOD_COLORS.reflective;
+        const insightHtml = `Lately you've been feeling mostly <strong>${topMood}</strong> ${moodData.emoji}`;
+
+        [insightMobile, insightDesktop].forEach((el) => {
+          if (!el) return;
+          el.innerHTML = insightHtml;
+          el.style.color = accentColor;
+          el.style.borderLeftColor = accentColor;
+          el.classList.remove("hidden");
+        });
+      }
+
+      // Helper: navigate to new entry screen (works on both mobile and desktop)
+      function startNewEntry() {
+        if (isDesktop()) {
+          document.querySelectorAll(".entry-card.active-entry")
+            .forEach((c) => c.classList.remove("active-entry"));
+          const dt = document.getElementById("journal-textarea-desktop");
+          dt.value = "";
+          dt.style.height = "auto";
+          document.getElementById("char-count-desktop").textContent = "";
+          document.getElementById("submit-btn-desktop").disabled = true;
+          showDesktopPanel("new");
+        } else {
+          showPage("new");
+        }
+      }
+
+      // Helper: fill textarea from a prompt chip
+      function fillChip(taId, btnId, text) {
+        const ta = document.getElementById(taId);
+        const btn = document.getElementById(btnId);
+        if (!ta) return;
+        ta.value = text;
+        ta.style.height = "auto";
+        ta.style.height = ta.scrollHeight + "px";
+        ta.focus();
+        ta.dispatchEvent(new Event("input"));
+        // Move cursor to end
+        ta.setSelectionRange(ta.value.length, ta.value.length);
       }
 
       function escHtml(s) {
