@@ -8,9 +8,13 @@ UI/UX
 
     ❗ask for microphone permissions once
 
-    ❗ability to delete entries   
+    ❗make the "chat" interface cleaner
 
-    ❗ability to rename entries?
+    ❗ability for the reflekt to speak to you instead of making you read
+
+    ✅ability to delete entries   
+
+    ✅ability to rename entries?
 
     ❗other feature ideas?
         -option to have ai talk back to you instead  of type?
@@ -20,26 +24,27 @@ UI/UX
         ✅ -header issue
         ✅-make mobile view fill screen?
         ❗-in desktop, no way to go back to "home" screen while already in an entry
+        ❗-clicking logo should do something
         ❗-drop shadow when hovering over entries for floating feel
 
 
     
 Pages
-    -home 
+    ❗-home 
         -
-    -edit mode
+    ❗-edit mode
         -
-    -notebooks/spaces
+    ❗-notebooks/spaces
         -context for notebooks?
-    -about us
+    ❗-about us
         -
-    -breathing workouts/visualization?
+    ❗-breathing workouts/visualization?
         -
         
-    -settings
+    ❗-settings
         -
     other   
-        -error screens / messaging
+    ✅-error screens / messaging
 
 Other/misc
     ✅how to check API / other costs
