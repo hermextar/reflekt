@@ -1,4 +1,5 @@
 import os
+import re
 from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
@@ -87,7 +88,10 @@ def create_entry():
         max_tokens=10,
         messages=[{'role': 'user', 'content': f'Classify the mood of this journal entry with ONE word from: anxious, frustrated, sad, confused, positive, tired, reflective. Entry: "{content}"'}]
     )
-    mood = mood_response.content[0].text.strip().lower()
+    mood_raw = mood_response.content[0].text.strip().lower()
+mood_match = re.search(r'(anxious|frustrated|sad|confused|positive|tired|reflective)', mood_raw)
+mood = mood_match.group(1) if mood_match else 'reflective'
+
 
     default_title = datetime.utcnow().strftime('%B %-d, %Y')
     entry = supabase.table('entries').insert({
