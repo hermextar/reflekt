@@ -173,6 +173,18 @@ def update_entry(entry_id):
     return jsonify({'id': entry_id, 'title': new_title})
 
 
+@app.route('/api/entries/<entry_id>', methods=['DELETE'])
+@jwt_required()
+def delete_entry(entry_id):
+    user_id = get_jwt_identity()
+    existing = supabase.table('entries').select('id').eq('id', entry_id).eq('user_id', user_id).execute()
+    if not existing.data:
+        return jsonify({'error': 'Not found'}), 404
+    supabase.table('messages').delete().eq('entry_id', entry_id).execute()
+    supabase.table('entries').delete().eq('id', entry_id).execute()
+    return jsonify({'success': True})
+
+
 @app.errorhandler(404)
 def not_found(e):
     return jsonify({'error': 'Not found'}), 404

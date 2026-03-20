@@ -210,6 +210,69 @@
         display: none;
       }
 
+
+      /* ─── Entry card delete button ─── */
+      .entry-card {
+        position: relative;
+      }
+      .entry-delete-btn {
+        position: absolute;
+        top: 8px;
+        right: 36px;
+        width: 28px;
+        height: 28px;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text-faint);
+        opacity: 0;
+        transition: opacity var(--transition), color var(--transition), background var(--transition);
+        z-index: 2;
+      }
+      .entry-card:hover .entry-delete-btn {
+        opacity: 1;
+      }
+      .entry-delete-btn:hover {
+        color: var(--color-error);
+        background: var(--color-error-bg);
+      }
+      .entry-delete-btn svg {
+        width: 14px;
+        height: 14px;
+        pointer-events: none;
+      }
+
+      /* ─── Mood filter pill row ─── */
+      .mood-filter-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 12px;
+        padding: 0 2px;
+      }
+      .mood-filter-pill {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 4px 10px;
+        border-radius: var(--radius-full);
+        border: 1px solid var(--color-border);
+        color: var(--color-text-muted);
+        background: transparent;
+        cursor: pointer;
+        transition: all var(--transition);
+        white-space: nowrap;
+      }
+      .mood-filter-pill:hover {
+        border-color: var(--color-primary);
+        color: var(--color-text);
+      }
+      .mood-filter-pill.active {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: #fff;
+      }
+
       /* ─── Mobile Layout (default) ─── */
       .app {
         max-width: 480px;
@@ -1549,6 +1612,19 @@
           <div class="header-actions">
             <button
               class="icon-btn"
+              id="export-btn"
+              onclick="exportJournal()"
+              aria-label="Export journal"
+              title="Export journal"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+            </button>
+            <button
+              class="icon-btn"
               id="theme-toggle"
               aria-label="Toggle theme"
             >
@@ -1616,6 +1692,16 @@
             </div>
           </button>
           <div class="mood-insight hidden" id="mood-insight-mobile"></div>
+          <div class="mood-filter-row" id="mood-filter-mobile">
+            <button class="mood-filter-pill active" data-mood="all" onclick="setMoodFilter('all', this)">All</button>
+            <button class="mood-filter-pill" data-mood="anxious" onclick="setMoodFilter('anxious', this)">😰 Anxious</button>
+            <button class="mood-filter-pill" data-mood="frustrated" onclick="setMoodFilter('frustrated', this)">😤 Frustrated</button>
+            <button class="mood-filter-pill" data-mood="sad" onclick="setMoodFilter('sad', this)">😔 Sad</button>
+            <button class="mood-filter-pill" data-mood="confused" onclick="setMoodFilter('confused', this)">😕 Confused</button>
+            <button class="mood-filter-pill" data-mood="positive" onclick="setMoodFilter('positive', this)">🌱 Positive</button>
+            <button class="mood-filter-pill" data-mood="tired" onclick="setMoodFilter('tired', this)">😴 Tired</button>
+            <button class="mood-filter-pill" data-mood="reflective" onclick="setMoodFilter('reflective', this)">💭 Reflective</button>
+          </div>
           <div class="section-label">Past Entries</div>
           <div id="entries-list" class="entries-list">
             <div class="skeleton" style="height: 72px"></div>
@@ -1792,6 +1878,19 @@
         <div class="header-actions">
           <button
             class="icon-btn"
+            id="export-btn-desktop"
+            onclick="exportJournal()"
+            aria-label="Export journal"
+            title="Export journal"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+          </button>
+          <button
+            class="icon-btn"
             id="theme-toggle-desktop"
             aria-label="Toggle theme"
           >
@@ -1861,6 +1960,16 @@
             </div>
           </button>
           <div class="mood-insight hidden" id="mood-insight-desktop"></div>
+          <div class="mood-filter-row" id="mood-filter-desktop">
+            <button class="mood-filter-pill active" data-mood="all" onclick="setMoodFilter('all', this)">All</button>
+            <button class="mood-filter-pill" data-mood="anxious" onclick="setMoodFilter('anxious', this)">😰 Anxious</button>
+            <button class="mood-filter-pill" data-mood="frustrated" onclick="setMoodFilter('frustrated', this)">😤 Frustrated</button>
+            <button class="mood-filter-pill" data-mood="sad" onclick="setMoodFilter('sad', this)">😔 Sad</button>
+            <button class="mood-filter-pill" data-mood="confused" onclick="setMoodFilter('confused', this)">😕 Confused</button>
+            <button class="mood-filter-pill" data-mood="positive" onclick="setMoodFilter('positive', this)">🌱 Positive</button>
+            <button class="mood-filter-pill" data-mood="tired" onclick="setMoodFilter('tired', this)">😴 Tired</button>
+            <button class="mood-filter-pill" data-mood="reflective" onclick="setMoodFilter('reflective', this)">💭 Reflective</button>
+          </div>
           <div class="section-label">Past Entries</div>
           <div id="entries-list-desktop" class="entries-list">
             <div class="skeleton" style="height: 72px"></div>
@@ -2401,8 +2510,22 @@
         }
       }
 
+      let activeMoodFilter = "all";
+
+      function setMoodFilter(mood, btn) {
+        activeMoodFilter = mood;
+        // Sync both pill rows
+        document.querySelectorAll(".mood-filter-pill").forEach((p) => {
+          p.classList.toggle("active", p.dataset.mood === mood);
+        });
+        renderEntries();
+      }
+
       function renderEntries() {
-        const cards = entries.map((e) => {
+        const filtered = activeMoodFilter === "all"
+          ? entries
+          : entries.filter((e) => (e.mood || "reflective").toLowerCase() === activeMoodFilter);
+        const cards = filtered.map((e) => {
           const mood = getMood(e.mood);
           const preview = e.content.replace(/\n/g, " ").slice(0, 120);
           return `<div class="entry-card" data-entry-id="${e.id}" onclick="openEntry('${e.id}')">
@@ -2415,6 +2538,9 @@
               <p class="entry-preview">${escHtml(preview)}${e.content.length > 120 ? "…" : ""}</p>
             </div>
             <div class="entry-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+            <button class="entry-delete-btn" onclick="deleteEntry(event,'${e.id}')" aria-label="Delete entry" title="Delete entry">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            </button>
           </div>`;
         });
 
@@ -2432,7 +2558,7 @@
           </button>
         </div>`;
 
-        const html = entries.length ? cards.join("") : emptyHtml;
+        const html = filtered.length ? cards.join("") : (entries.length ? `<p style="text-align:center;padding:24px 16px;font-size:13px;color:var(--color-text-muted)">No ${activeMoodFilter} entries yet.</p>` : emptyHtml);
 
         // Mobile list
         const mobileEl = document.getElementById("entries-list");
@@ -2457,8 +2583,8 @@
           return;
         }
 
-        // Tally moods from the most recent 5 entries
-        const recent = entries.slice(0, 5);
+        // Tally moods from the most recent 7 entries
+        const recent = entries.slice(0, 7);
         const tally = {};
         recent.forEach((e) => {
           const m = (e.mood || "reflective").toLowerCase();
@@ -2467,19 +2593,27 @@
         const topMood = Object.entries(tally).sort((a, b) => b[1] - a[1])[0][0];
         const moodData = getMood(topMood);
 
-        // Map mood class to a hex accent colour that matches the CSS mood colours
+        // Map mood to a hex accent colour
         const MOOD_COLORS = {
           anxious: "#eab308", frustrated: "#f97316", sad: "#60a5fa",
           confused: "#a78bfa", positive: "#4ade80", tired: "#94a3b8",
           reflective: "#818cf8"
         };
         const accentColor = MOOD_COLORS[topMood] || MOOD_COLORS.reflective;
-        const insightHtml = `Lately you've been feeling mostly <strong>${topMood}</strong> ${moodData.emoji}`;
+
+        // Build insight text — no markdown, plain emoji + label
+        const insightEl = document.createElement("span");
+        insightEl.textContent = "Lately you’ve been feeling mostly ";
+        const strong = document.createElement("strong");
+        strong.textContent = `${moodData.emoji} ${moodData.label}`;
+        strong.style.color = accentColor;
 
         [insightMobile, insightDesktop].forEach((el) => {
           if (!el) return;
-          el.innerHTML = insightHtml;
-          el.style.color = accentColor;
+          el.innerHTML = "";
+          el.appendChild(insightEl.cloneNode(true));
+          el.appendChild(strong.cloneNode(true));
+          el.style.color = "var(--color-text-muted)";
           el.style.borderLeftColor = accentColor;
           el.classList.remove("hidden");
         });
@@ -2952,6 +3086,67 @@
       }
       wireTitleEdit("entry-title-display", "entry-title-input");
       wireTitleEdit("entry-title-display-desktop", "entry-title-input-desktop");
+
+
+      // ─── Delete entry ───
+      async function deleteEntry(evt, id) {
+        evt.stopPropagation();
+        if (!confirm("Delete this entry? This can't be undone.")) return;
+        try {
+          await apiFetch(`/api/entries/${id}`, { method: "DELETE" });
+          // Remove from local list
+          entries = entries.filter((e) => e.id !== id);
+          renderEntries();
+          // If the deleted entry was open, go back to home/idle
+          if (currentEntryId === id) {
+            currentEntryId = null;
+            if (isDesktop()) {
+              showDesktopPanel("idle");
+            } else {
+              showPage("home");
+            }
+          }
+        } catch (e) {
+          alert("Could not delete the entry. Please try again.");
+        }
+      }
+
+      // ─── Export journal ───
+      function exportJournal() {
+        if (!entries.length) {
+          alert("No entries to export yet.");
+          return;
+        }
+        const lines = [];
+        lines.push("REFLEKT JOURNAL EXPORT");
+        lines.push("=".repeat(40));
+        lines.push("");
+        entries.forEach((e, i) => {
+          const date = e.created_at
+            ? new Date(e.created_at).toLocaleDateString("en-US", {
+                weekday: "long", year: "numeric", month: "long", day: "numeric",
+              })
+            : "Unknown date";
+          const mood = getMood(e.mood || "reflective");
+          const title = e.title || date;
+          lines.push(`Entry ${i + 1} — ${title}`);
+          lines.push(`Date:  ${date}`);
+          lines.push(`Mood:  ${mood.emoji} ${mood.label}`);
+          lines.push("-".repeat(40));
+          lines.push(e.content || "");
+          lines.push("");
+          lines.push("");
+        });
+        const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "reflekt-journal.txt";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
 
       // ─── Init ───
       if (isLoggedIn()) {
