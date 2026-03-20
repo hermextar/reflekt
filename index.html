@@ -3040,6 +3040,15 @@
 
           renderMessages(msgs, chatContainer);
           renderMessages(msgs, chatContainerD);
+
+          // Populate read view panels — must be inside try where entry is defined
+          showEntryReadView(entry, desktop);
+
+          if (desktop) {
+            showDesktopPanel("read");
+          } else {
+            showPage("entry");
+          }
         } catch (e) {
           const errHtml =
             '<p style="text-align:center;color:var(--color-text-muted);padding:20px;font-size:13px">Could not load this entry.</p>';
@@ -3047,15 +3056,12 @@
             chatContainer.innerHTML = errHtml;
             chatContainerD.innerHTML = errHtml;
           }
-        }
-
-        // Populate read view panels
-        showEntryReadView(entry, desktop);
-
-        if (desktop) {
-          showDesktopPanel("read");
-        } else {
-          showPage("entry");
+          // Still navigate to the panel so the error message is visible
+          if (desktop) {
+            showDesktopPanel("read");
+          } else {
+            showPage("entry");
+          }
         }
       }
 

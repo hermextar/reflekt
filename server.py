@@ -274,12 +274,15 @@ def delete_entry(entry_id):
 
 
 @app.errorhandler(404)
-def not_found(e):
-    return jsonify({'error': 'Not found'}), 404
-
 @app.errorhandler(500)
-def server_error(e):
-    return jsonify({'error': 'Internal server error'}), 500
+@app.errorhandler(503)
+def error_page(e):
+    # Return JSON for API routes, error.html for everything else
+    if request.path.startswith('/api/'):
+        code = e.code if hasattr(e, 'code') else 500
+        msgs = {404: 'Not found', 500: 'Internal server error', 503: 'Service unavailable'}
+        return jsonify({'error': msgs.get(code, 'Error')}), code
+    return send_from_directory('.', 'error.html'), (e.code if hasattr(e, 'code') else 500)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
