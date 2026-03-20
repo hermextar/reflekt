@@ -1469,6 +1469,364 @@
           transform: none;
         }
       }
+
+      /* ══════════════════════════════════════════════
+         JOURNAL CANVAS — writing experience styles
+      ══════════════════════════════════════════════ */
+
+      /* ─── Journal canvas layout ─── */
+      .journal-canvas {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 24px 24px 0;
+        overflow-y: auto;
+        position: relative;
+      }
+      .journal-canvas-date {
+        font-family: var(--font-body);
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-text-faint);
+        margin-bottom: 20px;
+        user-select: none;
+      }
+      .journal-main-textarea {
+        flex: 1;
+        width: 100%;
+        min-height: 200px;
+        resize: none;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-family: var(--font-display);
+        font-size: 19px;
+        line-height: 1.85;
+        color: var(--color-text);
+        caret-color: var(--color-primary);
+        overflow: hidden;
+      }
+      .journal-main-textarea::placeholder {
+        color: var(--color-text-faint);
+        font-style: italic;
+      }
+
+      /* ─── Nudge ghost text ─── */
+      .journal-nudge {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 20px 0 12px;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        pointer-events: none;
+      }
+      .journal-nudge.visible {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .journal-nudge-rule {
+        display: none;
+      }
+      .journal-nudge::before {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 24px;
+        right: 24px;
+        height: 1px;
+        background: var(--color-border);
+        margin-top: -8px;
+      }
+      .journal-nudge-icon {
+        font-size: 14px;
+        color: var(--color-primary);
+        opacity: 0.7;
+        flex-shrink: 0;
+        margin-top: 3px;
+        font-style: normal;
+      }
+      .journal-nudge-text {
+        font-family: var(--font-display);
+        font-size: 16px;
+        font-style: italic;
+        line-height: 1.7;
+        color: var(--color-text-muted);
+      }
+
+      /* ─── Journal footer bar ─── */
+      .journal-footer-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 24px 16px;
+        margin-top: auto;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+      .journal-canvas:focus-within ~ .journal-footer-bar,
+      .journal-footer-bar.show {
+        opacity: 1;
+      }
+      .journal-word-count {
+        font-size: 12px;
+        color: var(--color-text-faint);
+        font-family: var(--font-body);
+      }
+      .journal-footer-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .journal-autosave-label {
+        font-size: 11px;
+        color: var(--color-text-faint);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+      .journal-autosave-label.visible {
+        opacity: 1;
+      }
+      .journal-save-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 18px;
+        border-radius: var(--radius-md);
+        background: var(--color-primary);
+        color: white;
+        font-size: 13px;
+        font-weight: 600;
+        font-family: var(--font-body);
+        transition: all var(--transition);
+        opacity: 0;
+        pointer-events: none;
+      }
+      .journal-save-btn.show {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .journal-save-btn:hover {
+        background: var(--color-primary-hover);
+        box-shadow: 0 4px 16px rgba(139, 114, 232, 0.3);
+      }
+      .journal-save-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      /* ─── Post-save summary card ─── */
+      .journal-summary-card {
+        margin: 16px 24px 24px;
+        padding: 20px;
+        border-radius: var(--radius-lg);
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        display: none;
+        flex-direction: column;
+        gap: 12px;
+        animation: fadeSlideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+      .journal-summary-card.visible {
+        display: flex;
+      }
+      @keyframes fadeSlideUp {
+        from { opacity: 0; transform: translateY(12px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .summary-mood-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .summary-mood-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px;
+        border-radius: var(--radius-full);
+        font-size: 12px;
+        font-weight: 600;
+        font-family: var(--font-body);
+        background: var(--color-surface-2);
+        border: 1px solid var(--color-border);
+        color: var(--color-text-muted);
+      }
+      .summary-reflection {
+        font-family: var(--font-display);
+        font-size: 15px;
+        font-style: italic;
+        line-height: 1.65;
+        color: var(--color-text-muted);
+      }
+      .summary-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .summary-tag {
+        padding: 3px 9px;
+        border-radius: var(--radius-full);
+        font-size: 11px;
+        font-weight: 500;
+        font-family: var(--font-body);
+        background: var(--color-primary-bg);
+        color: var(--color-primary);
+        border: 1px solid rgba(139, 114, 232, 0.2);
+      }
+      .summary-actions {
+        display: flex;
+        gap: 8px;
+        padding-top: 4px;
+      }
+      .summary-continue-btn {
+        padding: 7px 14px;
+        border-radius: var(--radius-md);
+        font-size: 12px;
+        font-weight: 500;
+        font-family: var(--font-body);
+        border: 1px solid var(--color-border);
+        color: var(--color-text-muted);
+        background: transparent;
+        transition: all var(--transition);
+      }
+      .summary-continue-btn:hover {
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+      }
+
+      /* ─── Entry read/edit view ─── */
+      .journal-read-area {
+        flex: 1;
+        padding: 8px 24px 0;
+        overflow-y: auto;
+      }
+      .journal-read-date {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-text-faint);
+        margin-bottom: 16px;
+        user-select: none;
+      }
+      .journal-read-text {
+        font-family: var(--font-display);
+        font-size: 18px;
+        line-height: 1.85;
+        color: var(--color-text);
+        white-space: pre-wrap;
+        cursor: text;
+        min-height: 80px;
+        padding: 0;
+      }
+      .journal-read-text:hover {
+        color: var(--color-text);
+      }
+      .journal-read-edit-ta {
+        width: 100%;
+        resize: none;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-family: var(--font-display);
+        font-size: 18px;
+        line-height: 1.85;
+        color: var(--color-text);
+        caret-color: var(--color-primary);
+        min-height: 120px;
+        display: none;
+        overflow: hidden;
+      }
+      .journal-read-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 24px 16px;
+      }
+      .journal-read-save-btn {
+        padding: 7px 16px;
+        border-radius: var(--radius-md);
+        background: var(--color-primary);
+        color: white;
+        font-size: 12px;
+        font-weight: 600;
+        font-family: var(--font-body);
+        transition: all var(--transition);
+        display: none;
+      }
+      .journal-read-save-btn.show {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .journal-read-save-btn:hover {
+        background: var(--color-primary-hover);
+      }
+      .journal-read-summary {
+        margin: 0 24px 24px;
+        padding: 18px;
+        border-radius: var(--radius-lg);
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .journal-read-summary.visible {
+        display: flex;
+      }
+      .journal-edit-hint {
+        font-size: 11px;
+        color: var(--color-text-faint);
+        font-family: var(--font-body);
+      }
+
+      /* ─── Desktop panel overrides for journal canvas ─── */
+      @media (min-width: 900px) {
+        #desktop-panel-write,
+        #desktop-panel-read {
+          display: none;
+          flex-direction: column;
+          height: 100%;
+          overflow: hidden;
+        }
+        #desktop-panel-write.active,
+        #desktop-panel-read.active {
+          display: flex;
+        }
+        #desktop-panel-write .back-btn,
+        #desktop-panel-read .back-btn {
+          display: none;
+        }
+        #desktop-panel-write .journal-canvas {
+          padding: 32px 40px 0;
+        }
+        #desktop-panel-write .journal-footer-bar {
+          padding: 12px 40px 20px;
+        }
+        #desktop-panel-write .journal-summary-card {
+          margin: 16px 40px 24px;
+        }
+        #desktop-panel-read .journal-read-area {
+          padding: 8px 40px 0;
+        }
+        #desktop-panel-read .journal-read-footer {
+          padding: 12px 40px 20px;
+        }
+        #desktop-panel-read .journal-read-summary {
+          margin: 0 40px 28px;
+        }
+        #desktop-panel-write .journal-main-textarea {
+          font-size: 20px;
+        }
+        #desktop-panel-read .journal-read-text,
+        #desktop-panel-read .journal-read-edit-ta {
+          font-size: 20px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -1711,86 +2069,60 @@
         </div>
       </div>
 
-      <!-- ═══════════════════ NEW ENTRY PAGE (mobile) ═══════════════════ -->
+      <!-- ═══════════════════ NEW ENTRY PAGE (mobile) — journal canvas ═══════════════════ -->
       <div id="page-new" class="page">
         <header class="header">
           <button class="back-btn" id="back-from-new">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M19 12H5M12 5l-7 7 7 7" />
             </svg>
             Back
           </button>
-          <span style="font-size: 12px; color: var(--color-text-muted)"
-            >New entry</span
-          >
+          <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+            <div class="recording-badge" id="recording-badge" style="margin-bottom:0;padding:4px 10px">
+              <span class="rec-dot"></span>Listening…
+            </div>
+            <button class="mic-btn" id="mic-btn" style="padding:6px 12px;font-size:12px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px">
+                <rect x="9" y="3" width="6" height="11" rx="3"/>
+                <path d="M5 11a7 7 0 0 0 14 0"/>
+                <path d="M12 18v3M8 21h8"/>
+              </svg>Speak
+            </button>
+          </div>
         </header>
-        <div class="new-entry-body">
-          <p class="entry-date" id="entry-date"></p>
+
+        <div class="journal-canvas" id="journal-canvas-mobile">
+          <p class="journal-canvas-date" id="journal-date-mobile"></p>
           <textarea
-            class="journal-textarea"
-            id="journal-textarea"
-            placeholder="What's been weighing on you?"
+            class="journal-main-textarea"
+            id="journal-textarea-mobile"
+            placeholder="Begin writing…"
             rows="1"
+            spellcheck="true"
           ></textarea>
-          <div class="char-count" id="char-count"></div>
-          <div class="chip-row" id="chip-row-mobile">
-            <button class="prompt-chip" onclick="fillChip('journal-textarea','submit-btn',this.dataset.text)" data-text="Something&#39;s been on my mind lately...">Something's on my mind…</button>
-            <button class="prompt-chip" onclick="fillChip('journal-textarea','submit-btn',this.dataset.text)" data-text="I've been feeling overwhelmed...">Feeling overwhelmed…</button>
-            <button class="prompt-chip" onclick="fillChip('journal-textarea','submit-btn',this.dataset.text)" data-text="Something good happened today...">Something good happened…</button>
-            <button class="prompt-chip" onclick="fillChip('journal-textarea','submit-btn',this.dataset.text)" data-text="I'm struggling with...">I'm struggling with…</button>
+          <div class="journal-nudge" id="journal-nudge-mobile">
+            <span class="journal-nudge-icon">✦</span>
+            <span class="journal-nudge-text" id="journal-nudge-text-mobile"></span>
           </div>
-          <div class="recording-badge" id="recording-badge">
-            <span class="rec-dot"></span>
-            Listening… speak naturally
-          </div>
-          <div class="action-bar">
-            <button class="mic-btn" id="mic-btn">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <rect x="9" y="3" width="6" height="11" rx="3" />
-                <path d="M5 11a7 7 0 0 0 14 0" />
-                <path d="M12 18v3M8 21h8" />
-              </svg>
-              Speak
-            </button>
-            <button class="submit-btn" id="submit-btn" disabled>
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
-              </svg>
-              Submit entry
-            </button>
-            <div class="submit-error" id="submit-error-mobile">Something went wrong. Please try again.</div>
-          </div>
-          <p class="submit-footer">
-            Your thoughts are never judged — only explored.
-          </p>
         </div>
+
+        <div class="journal-footer-bar" id="journal-footer-mobile">
+          <span class="journal-word-count" id="journal-word-count-mobile"></span>
+          <div class="journal-footer-right">
+            <span class="journal-autosave-label" id="journal-autosave-mobile">Saved</span>
+            <button class="journal-save-btn" id="journal-save-btn-mobile">Save entry</button>
+          </div>
+        </div>
+
+        <div class="journal-summary-card" id="journal-summary-mobile"></div>
       </div>
 
-      <!-- ═══════════════════ ENTRY / CHAT PAGE (mobile) ═══════════════════ -->
+      <!-- ═══════════════════ ENTRY / READ PAGE (mobile) — journal view ═══════════════════ -->
       <div id="page-entry" class="page">
         <header class="header">
           <button class="back-btn" id="back-from-entry">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M19 12H5M12 5l-7 7 7 7" />
             </svg>
             Back
@@ -1802,33 +2134,26 @@
           <span class="entry-header-info" id="entry-header-time"></span>
         </header>
 
-        <div class="entry-content-card">
-          <button class="entry-toggle" id="entry-toggle">
-            Your entry
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </button>
-          <div
-            id="entry-original-text"
-            style="display: none"
-            class="entry-text"
-          ></div>
+        <div class="journal-read-area" id="journal-read-area-mobile">
+          <p class="journal-read-date" id="journal-read-date-mobile"></p>
+          <div class="journal-read-text" id="journal-read-text-mobile" title="Click to edit" onclick="journalStartEdit('mobile')"></div>
+          <textarea class="journal-read-edit-ta" id="journal-read-edit-mobile" rows="1" spellcheck="true"></textarea>
         </div>
 
-        <div class="ai-label">
+        <div class="journal-read-footer" id="journal-read-footer-mobile">
+          <span class="journal-edit-hint" id="journal-edit-hint-mobile">Tap text to edit</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="journal-autosave-label" id="journal-read-autosave-mobile"></span>
+            <button class="journal-read-save-btn" id="journal-read-save-mobile" onclick="journalReadSave('mobile')">Save changes</button>
+          </div>
+        </div>
+
+        <div class="journal-read-summary visible" id="journal-read-summary-mobile"></div>
+
+        <div class="ai-label" style="margin-top:8px">
           <div class="ai-dot">
             <svg viewBox="0 0 24 24" stroke-width="2">
-              <path
-                d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-                fill="none"
-                stroke="currentColor"
-              />
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="none" stroke="currentColor"/>
             </svg>
           </div>
           Reflekt is exploring with you
@@ -1839,20 +2164,10 @@
         <div class="reply-area">
           <div class="reply-row">
             <div class="reply-input-wrap">
-              <textarea
-                class="reply-input"
-                id="reply-input"
-                placeholder="Share your thoughts…"
-                rows="1"
-              ></textarea>
+              <textarea class="reply-input" id="reply-input" placeholder="Share your thoughts…" rows="1"></textarea>
             </div>
             <button class="send-btn" id="send-btn" disabled>
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
               </svg>
             </button>
@@ -2008,127 +2323,78 @@
           </p>
         </div>
 
-        <!-- New entry panel (desktop) -->
-        <div id="desktop-panel-new">
-          <header class="header">
-            <button class="back-btn" id="back-from-new-desktop">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M19 12H5M12 5l-7 7 7 7" />
-              </svg>
-              Back
-            </button>
-            <span style="font-size: 12px; color: var(--color-text-muted)"
-              >New entry</span
-            >
-          </header>
-          <div class="new-entry-body">
-            <p class="entry-date" id="entry-date-desktop"></p>
+        <!-- New entry panel (desktop) — journal canvas -->
+        <div id="desktop-panel-write">
+          <div class="journal-canvas" id="journal-canvas-desktop">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+              <p class="journal-canvas-date" id="journal-date-desktop" style="margin-bottom:0"></p>
+              <div style="display:flex;align-items:center;gap:8px">
+                <div class="recording-badge" id="recording-badge-desktop" style="margin-bottom:0;padding:4px 10px">
+                  <span class="rec-dot"></span>Listening…
+                </div>
+                <button class="mic-btn" id="mic-btn-desktop" style="padding:6px 12px;font-size:12px">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px">
+                    <rect x="9" y="3" width="6" height="11" rx="3"/>
+                    <path d="M5 11a7 7 0 0 0 14 0"/>
+                    <path d="M12 18v3M8 21h8"/>
+                  </svg>Speak
+                </button>
+              </div>
+            </div>
             <textarea
-              class="journal-textarea"
+              class="journal-main-textarea"
               id="journal-textarea-desktop"
-              placeholder="What's been weighing on you?"
+              placeholder="Begin writing…"
               rows="1"
+              spellcheck="true"
             ></textarea>
-            <div class="char-count" id="char-count-desktop"></div>
-            <div class="chip-row" id="chip-row-desktop">
-              <button class="prompt-chip" onclick="fillChip('journal-textarea-desktop','submit-btn-desktop',this.dataset.text)" data-text="Something&#39;s been on my mind lately...">Something's on my mind…</button>
-              <button class="prompt-chip" onclick="fillChip('journal-textarea-desktop','submit-btn-desktop',this.dataset.text)" data-text="I've been feeling overwhelmed...">Feeling overwhelmed…</button>
-              <button class="prompt-chip" onclick="fillChip('journal-textarea-desktop','submit-btn-desktop',this.dataset.text)" data-text="Something good happened today...">Something good happened…</button>
-              <button class="prompt-chip" onclick="fillChip('journal-textarea-desktop','submit-btn-desktop',this.dataset.text)" data-text="I'm struggling with...">I'm struggling with…</button>
+            <div class="journal-nudge" id="journal-nudge-desktop">
+              <span class="journal-nudge-icon">✦</span>
+              <span class="journal-nudge-text" id="journal-nudge-text-desktop"></span>
             </div>
-            <div class="recording-badge" id="recording-badge-desktop">
-              <span class="rec-dot"></span>
-              Listening… speak naturally
-            </div>
-            <div class="action-bar">
-              <button class="mic-btn" id="mic-btn-desktop">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <rect x="9" y="3" width="6" height="11" rx="3" />
-                  <path d="M5 11a7 7 0 0 0 14 0" />
-                  <path d="M12 18v3M8 21h8" />
-                </svg>
-                Speak
-              </button>
-              <button class="submit-btn" id="submit-btn-desktop" disabled>
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
-                </svg>
-                Submit entry
-              </button>
-              <div class="submit-error" id="submit-error-desktop">Something went wrong. Please try again.</div>
-            </div>
-            <p class="submit-footer">
-              Your thoughts are never judged — only explored.
-            </p>
           </div>
+
+          <div class="journal-footer-bar" id="journal-footer-desktop">
+            <span class="journal-word-count" id="journal-word-count-desktop"></span>
+            <div class="journal-footer-right">
+              <span class="journal-autosave-label" id="journal-autosave-desktop">Saved</span>
+              <button class="journal-save-btn" id="journal-save-btn-desktop">Save entry</button>
+            </div>
+          </div>
+
+          <div class="journal-summary-card" id="journal-summary-desktop"></div>
         </div>
 
-        <!-- Entry/chat panel (desktop) -->
-        <div id="desktop-panel-entry">
-          <header class="header">
-            <button class="back-btn" id="back-from-entry-desktop">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M19 12H5M12 5l-7 7 7 7" />
-              </svg>
-              Back
-            </button>
+        <!-- Entry read/edit panel (desktop) — journal view -->
+        <div id="desktop-panel-read">
+          <header class="header" style="padding: 0 40px; min-height: 56px; border-bottom: 1px solid var(--color-border); display:flex; align-items:center; gap:12px; flex-shrink:0">
             <div class="entry-title-wrap">
               <span class="entry-title-display" id="entry-title-display-desktop" title="Click to rename"></span>
               <input class="entry-title-input" id="entry-title-input-desktop" type="text" maxlength="80" aria-label="Entry title" />
             </div>
-            <span
-              class="entry-header-info"
-              id="entry-header-time-desktop"
-            ></span>
+            <span class="entry-header-info" id="entry-header-time-desktop"></span>
           </header>
 
-          <div class="entry-content-card">
-            <button class="entry-toggle" id="entry-toggle-desktop">
-              Your entry
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M6 9l6 6 6-6" />
-              </svg>
-            </button>
-            <div
-              id="entry-original-text-desktop"
-              style="display: none"
-              class="entry-text"
-            ></div>
+          <div class="journal-read-area" id="journal-read-area-desktop">
+            <p class="journal-read-date" id="journal-read-date-desktop"></p>
+            <div class="journal-read-text" id="journal-read-text-desktop" title="Click to edit" onclick="journalStartEdit('desktop')"></div>
+            <textarea class="journal-read-edit-ta" id="journal-read-edit-desktop" rows="1" spellcheck="true"></textarea>
           </div>
+
+          <div class="journal-read-footer" id="journal-read-footer-desktop">
+            <span class="journal-edit-hint" id="journal-edit-hint-desktop">Click text to edit</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span class="journal-autosave-label" id="journal-read-autosave-desktop"></span>
+              <button class="journal-read-save-btn" id="journal-read-save-desktop" onclick="journalReadSave('desktop')">Save changes</button>
+            </div>
+          </div>
+
+          <div class="journal-read-summary visible" id="journal-read-summary-desktop"></div>
 
           <div class="ai-label">
             <div class="ai-dot">
               <svg viewBox="0 0 24 24" stroke-width="2">
-                <path
-                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-                  fill="none"
-                  stroke="currentColor"
-                />
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="none" stroke="currentColor"/>
               </svg>
             </div>
             Reflekt is exploring with you
@@ -2139,20 +2405,10 @@
           <div class="reply-area">
             <div class="reply-row">
               <div class="reply-input-wrap">
-                <textarea
-                  class="reply-input"
-                  id="reply-input-desktop"
-                  placeholder="Share your thoughts…"
-                  rows="1"
-                ></textarea>
+                <textarea class="reply-input" id="reply-input-desktop" placeholder="Share your thoughts…" rows="1"></textarea>
               </div>
               <button class="send-btn" id="send-btn-desktop" disabled>
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
                 </svg>
               </button>
@@ -2381,15 +2637,12 @@
 
       // Desktop panel switcher
       function showDesktopPanel(name) {
-        document
-          .getElementById("desktop-panel-idle")
-          .classList.toggle("hidden", name !== "idle");
-        document
-          .getElementById("desktop-panel-new")
-          .classList.toggle("active", name === "new");
-        document
-          .getElementById("desktop-panel-entry")
-          .classList.toggle("active", name === "entry");
+        document.getElementById("desktop-panel-idle").classList.toggle("hidden", name !== "idle");
+        // Support both old names (new/entry) and new names (write/read)
+        const writePanel = document.getElementById("desktop-panel-write");
+        const readPanel  = document.getElementById("desktop-panel-read");
+        if (writePanel) writePanel.classList.toggle("active", name === "write" || name === "new");
+        if (readPanel)  readPanel.classList.toggle("active",  name === "read"  || name === "entry");
       }
 
       // ─── API helpers ───
@@ -2457,7 +2710,7 @@
       // ─── HOME / ENTRIES ───
       document
         .getElementById("go-new")
-        .addEventListener("click", () => showPage("new"));
+        .addEventListener("click", () => startNewEntry());
       document
         .getElementById("back-from-new")
         .addEventListener("click", () => showPage("home"));
@@ -2471,30 +2724,15 @@
       // Desktop new entry button
       document
         .getElementById("go-new-desktop")
-        .addEventListener("click", () => {
-          // Clear active entry highlight
-          document
-            .querySelectorAll(".entry-card.active-entry")
-            .forEach((c) => c.classList.remove("active-entry"));
-          showDesktopPanel("new");
-          // Reset the desktop textarea
-          const dt = document.getElementById("journal-textarea-desktop");
-          dt.value = "";
-          dt.style.height = "auto";
-          document.getElementById("char-count-desktop").textContent = "";
-          document.getElementById("submit-btn-desktop").disabled = true;
-        });
+        .addEventListener("click", () => startNewEntry());
 
       document
         .getElementById("back-from-new-desktop")
-        .addEventListener("click", () => {
-          showDesktopPanel("idle");
-        });
+        ?.addEventListener("click", () => showDesktopPanel("idle"));
       document
         .getElementById("back-from-entry-desktop")
-        .addEventListener("click", () => {
-          document
-            .querySelectorAll(".entry-card.active-entry")
+        ?.addEventListener("click", () => {
+          document.querySelectorAll(".entry-card.active-entry")
             .forEach((c) => c.classList.remove("active-entry"));
           loadEntries();
           showDesktopPanel("idle");
@@ -2621,17 +2859,23 @@
 
       // Helper: navigate to new entry screen (works on both mobile and desktop)
       function startNewEntry() {
+        document.querySelectorAll(".entry-card.active-entry")
+          .forEach((c) => c.classList.remove("active-entry"));
+        // Reset mobile canvas
+        const mTA = document.getElementById("journal-textarea-mobile");
+        if (mTA) { mTA.value = ""; mTA.style.height = "auto"; }
+        resetJournalCanvas("mobile");
+        // Reset desktop canvas
+        const dTA = document.getElementById("journal-textarea-desktop");
+        if (dTA) { dTA.value = ""; dTA.style.height = "auto"; }
+        resetJournalCanvas("desktop");
+
         if (isDesktop()) {
-          document.querySelectorAll(".entry-card.active-entry")
-            .forEach((c) => c.classList.remove("active-entry"));
-          const dt = document.getElementById("journal-textarea-desktop");
-          dt.value = "";
-          dt.style.height = "auto";
-          document.getElementById("char-count-desktop").textContent = "";
-          document.getElementById("submit-btn-desktop").disabled = true;
-          showDesktopPanel("new");
+          showDesktopPanel("write");
+          setTimeout(() => { const ta = document.getElementById("journal-textarea-desktop"); if (ta) ta.focus(); }, 80);
         } else {
           showPage("new");
+          setTimeout(() => { const ta = document.getElementById("journal-textarea-mobile"); if (ta) ta.focus(); }, 80);
         }
       }
 
@@ -2657,67 +2901,15 @@
           .replace(/"/g, "&quot;");
       }
 
-      // ─── NEW ENTRY (mobile) ───
-      const textarea = document.getElementById("journal-textarea");
-      const charCount = document.getElementById("char-count");
-      const submitBtn = document.getElementById("submit-btn");
-      const micBtn = document.getElementById("mic-btn");
-      const recBadge = document.getElementById("recording-badge");
-
-      document.getElementById("entry-date").textContent =
-        new Date().toLocaleDateString("en-US", {
-          weekday: "long",
-          month: "long",
-          day: "numeric",
-        });
-
-      textarea.addEventListener("input", () => {
-        textarea.style.height = "auto";
-        textarea.style.height = textarea.scrollHeight + "px";
-        const n = textarea.value.length;
-        charCount.textContent = n > 0 ? `${n} characters` : "";
-        submitBtn.disabled = n === 0;
-      });
-
-      // ─── NEW ENTRY (desktop) ───
-      const textareaD = document.getElementById("journal-textarea-desktop");
-      const charCountD = document.getElementById("char-count-desktop");
-      const submitBtnD = document.getElementById("submit-btn-desktop");
-      const micBtnD = document.getElementById("mic-btn-desktop");
-      const recBadgeD = document.getElementById("recording-badge-desktop");
-
-      document.getElementById("entry-date-desktop").textContent =
-        new Date().toLocaleDateString("en-US", {
-          weekday: "long",
-          month: "long",
-          day: "numeric",
-        });
-
-      textareaD.addEventListener("input", () => {
-        textareaD.style.height = "auto";
-        textareaD.style.height = textareaD.scrollHeight + "px";
-        const n = textareaD.value.length;
-        charCountD.textContent = n > 0 ? `${n} characters` : "";
-        submitBtnD.disabled = n === 0;
-      });
-
-      // ─── Rotating prompts ───
-      const PROMPTS = [
-        "What's been weighing on you?",
-        "What's on your mind right now?",
-        "How are you really feeling today?",
-        "What would you like to work through?",
-      ];
-      const randomPrompt = PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
-      textarea.placeholder = randomPrompt;
-      textareaD.placeholder = randomPrompt;
+      // ─── NEW ENTRY textarea wiring ───
+      // Handled by wireJournalCanvas() called after init
 
       // ─── Speech recognition (shared logic, works for active textarea) ───
       const hasSpeech =
         "SpeechRecognition" in window || "webkitSpeechRecognition" in window;
       if (!hasSpeech) {
-        micBtn.style.display = "none";
-        micBtnD.style.display = "none";
+        // Hide all mic buttons
+        document.querySelectorAll(".mic-btn").forEach(b => b.style.display = "none");
       }
 
       function setupMic(btn, badge, ta) {
@@ -2765,90 +2957,11 @@
           }
         });
       }
-      setupMic(micBtn, recBadge, textarea);
-      setupMic(micBtnD, recBadgeD, textareaD);
+      // Mic setup — wired in wireJournalCanvas() below
 
-      // ─── Submit entry (mobile) ───
-      submitBtn.addEventListener("click", async () => {
-        const content = textarea.value.trim();
-        if (!content) return;
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<div class="spinner"></div> Analyzing…';
-        try {
-          const entry = await apiFetch("/api/entries", {
-            method: "POST",
-            body: { content, title: "" },
-          });
-          textarea.value = "";
-          textarea.style.height = "auto";
-          charCount.textContent = "";
-          document.getElementById("submit-error-mobile")?.classList.remove("visible");
-          // Prepend the new entry to the local list immediately so both views update
-          entries.unshift(entry);
-          renderEntries();
-          await openEntry(entry.id);
-        } catch (e) {
-          if (isLoggedIn()) {
-            const errEl = document.getElementById("submit-error-mobile");
-            if (errEl) errEl.classList.add("visible");
-          }
-          submitBtn.disabled = false;
-          submitBtn.innerHTML =
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit entry';
-        }
-      });
+      // ─── Submit entry — handled by journalSave() below ───
 
-      // ─── Submit entry (desktop) ───
-      submitBtnD.addEventListener("click", async () => {
-        const content = textareaD.value.trim();
-        if (!content) return;
-        submitBtnD.disabled = true;
-        submitBtnD.innerHTML = '<div class="spinner"></div> Analyzing…';
-        try {
-          const entry = await apiFetch("/api/entries", {
-            method: "POST",
-            body: { content, title: "" },
-          });
-          textareaD.value = "";
-          textareaD.style.height = "auto";
-          charCountD.textContent = "";
-          document.getElementById("submit-error-desktop")?.classList.remove("visible");
-          // Prepend the new entry to the local list immediately so both views update
-          entries.unshift(entry);
-          renderEntries();
-          await openEntry(entry.id);
-        } catch (e) {
-          if (isLoggedIn()) {
-            const errEl = document.getElementById("submit-error-desktop");
-            if (errEl) errEl.classList.add("visible");
-          }
-          submitBtnD.disabled = false;
-          submitBtnD.innerHTML =
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit entry';
-        }
-      });
-
-      // ─── Entry toggle (mobile) ───
-      const entryToggle = document.getElementById("entry-toggle");
-      const entryOrigText = document.getElementById("entry-original-text");
-      let entryExpanded = false;
-      entryToggle.addEventListener("click", () => {
-        entryExpanded = !entryExpanded;
-        entryOrigText.style.display = entryExpanded ? "block" : "none";
-        entryToggle.classList.toggle("open", entryExpanded);
-      });
-
-      // ─── Entry toggle (desktop) ───
-      const entryToggleD = document.getElementById("entry-toggle-desktop");
-      const entryOrigTextD = document.getElementById(
-        "entry-original-text-desktop",
-      );
-      let entryExpandedD = false;
-      entryToggleD.addEventListener("click", () => {
-        entryExpandedD = !entryExpandedD;
-        entryOrigTextD.style.display = entryExpandedD ? "block" : "none";
-        entryToggleD.classList.toggle("open", entryExpandedD);
-      });
+      // ─── Entry toggle — replaced by inline read/edit view ───
 
       // ─── Chat (mobile) ───
       const chatContainer = document.getElementById("chat-container");
@@ -2898,18 +3011,10 @@
         // Determine which set of elements to use based on current layout
         const desktop = isDesktop();
 
-        // Reset mobile chat state
-        entryExpanded = false;
-        entryOrigText.style.display = "none";
-        entryToggle.classList.remove("open");
+        // Reset chat state
         chatContainer.innerHTML = "";
         replyInput.value = "";
         sendBtn.disabled = true;
-
-        // Reset desktop chat state
-        entryExpandedD = false;
-        entryOrigTextD.style.display = "none";
-        entryToggleD.classList.remove("open");
         chatContainerD.innerHTML = "";
         replyInputD.value = "";
         sendBtnD.disabled = true;
@@ -2928,15 +3033,10 @@
           const timeStr = timeAgo(entry.created_at || entry.createdAt);
           const titleText = entry.title || timeStr;
 
-          // Populate both sets (so switching breakpoints mid-session doesn't break)
-          entryOrigText.textContent = entry.content;
-          document.getElementById("entry-header-time").textContent = timeStr;
-          entryOrigTextD.textContent = entry.content;
-          document.getElementById("entry-header-time-desktop").textContent =
-            timeStr;
-
-          // Populate editable title — mobile and desktop
+          // Populate title + time — mobile and desktop
           setEntryTitle(titleText);
+          document.getElementById("entry-header-time").textContent = timeStr;
+          document.getElementById("entry-header-time-desktop").textContent = timeStr;
 
           renderMessages(msgs, chatContainer);
           renderMessages(msgs, chatContainerD);
@@ -2949,8 +3049,11 @@
           }
         }
 
+        // Populate read view panels
+        showEntryReadView(entry, desktop);
+
         if (desktop) {
-          showDesktopPanel("entry");
+          showDesktopPanel("read");
         } else {
           showPage("entry");
         }
@@ -3148,7 +3251,362 @@
         URL.revokeObjectURL(url);
       }
 
+
+      // ══════════════════════════════════════════════
+      // JOURNAL WRITING EXPERIENCE — new functions
+      // ══════════════════════════════════════════════
+
+      // Mood data (reuse existing getMood)
+      const MOOD_COLORS = {
+        anxious: "#eab308", frustrated: "#f97316", sad: "#60a5fa",
+        confused: "#a78bfa", positive: "#4ade80", tired: "#94a3b8",
+        reflective: "#818cf8"
+      };
+
+      function wordCount(text) {
+        return text.trim() ? text.trim().split(/\s+/).length : 0;
+      }
+
+      function autosizeTA(ta) {
+        ta.style.height = "auto";
+        ta.style.height = ta.scrollHeight + "px";
+      }
+
+      // Reset journal canvas to blank state
+      function resetJournalCanvas(side) {
+        const nudge   = document.getElementById(`journal-nudge-${side}`);
+        const nudgeTx = document.getElementById(`journal-nudge-text-${side}`);
+        const wc      = document.getElementById(`journal-word-count-${side}`);
+        const saveBtn = document.getElementById(`journal-save-btn-${side}`);
+        const footer  = document.getElementById(`journal-footer-${side}`);
+        const summary = document.getElementById(`journal-summary-${side}`);
+        const autosave = document.getElementById(`journal-autosave-${side}`);
+        if (nudge)   { nudge.classList.remove("visible"); }
+        if (nudgeTx) nudgeTx.textContent = "";
+        if (wc)      wc.textContent = "";
+        if (saveBtn) { saveBtn.classList.remove("show"); saveBtn.disabled = false; saveBtn.textContent = "Save entry"; }
+        if (footer)  footer.classList.remove("show");
+        if (summary) { summary.classList.remove("visible"); summary.innerHTML = ""; }
+        if (autosave) autosave.classList.remove("visible");
+        // Set today's date
+        const dateEl = document.getElementById(`journal-date-${side}`);
+        if (dateEl) dateEl.textContent = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+        // Clear nudge timer
+        if (window[`_nudgeTimer_${side}`]) clearTimeout(window[`_nudgeTimer_${side}`]);
+        if (window[`_autosaveTimer_${side}`]) clearTimeout(window[`_autosaveTimer_${side}`]);
+        window[`_nudgeFired_${side}`] = false;
+        window[`_draftId_${side}`] = null;
+      }
+
+      // Wire a journal canvas textarea
+      function wireJournalCanvas(side) {
+        const taId   = `journal-textarea-${side}`;
+        const ta     = document.getElementById(taId);
+        if (!ta) return;
+
+        // Mic
+        const micBtn  = document.getElementById(`mic-btn-${side}`);
+        const recBadge = document.getElementById(`recording-badge-${side}`);
+        if (micBtn && recBadge) setupMic(micBtn, recBadge, ta);
+
+        ta.addEventListener("input", () => {
+          autosizeTA(ta);
+          const wc = wordCount(ta.value);
+          const wcEl = document.getElementById(`journal-word-count-${side}`);
+          if (wcEl) wcEl.textContent = wc > 0 ? `${wc} word${wc !== 1 ? "s" : ""}` : "";
+
+          const saveBtn = document.getElementById(`journal-save-btn-${side}`);
+          const footer  = document.getElementById(`journal-footer-${side}`);
+          if (wc > 0) {
+            if (saveBtn) saveBtn.classList.add("show");
+            if (footer)  footer.classList.add("show");
+          } else {
+            if (saveBtn) saveBtn.classList.remove("show");
+          }
+
+          // Hide nudge when user types
+          const nudge = document.getElementById(`journal-nudge-${side}`);
+          if (nudge) nudge.classList.remove("visible");
+
+          // Nudge timer: 4s pause + ≥30 words
+          if (window[`_nudgeTimer_${side}`]) clearTimeout(window[`_nudgeTimer_${side}`]);
+          if (wc >= 30 && !window[`_nudgeFired_${side}`]) {
+            window[`_nudgeTimer_${side}`] = setTimeout(() => triggerNudge(ta.value, side), 4000);
+          }
+
+          // Autosave timer: 10s after last keystroke
+          if (window[`_autosaveTimer_${side}`]) clearTimeout(window[`_autosaveTimer_${side}`]);
+          if (wc > 0) {
+            window[`_autosaveTimer_${side}`] = setTimeout(() => autoSaveDraft(side), 10000);
+          }
+        });
+      }
+
+      // Trigger AI nudge
+      async function triggerNudge(content, side) {
+        const nudge   = document.getElementById(`journal-nudge-${side}`);
+        const nudgeTx = document.getElementById(`journal-nudge-text-${side}`);
+        if (!nudge || !nudgeTx) return;
+        window[`_nudgeFired_${side}`] = true;
+        try {
+          const data = await apiFetch("/api/nudge", { method: "POST", body: { content } });
+          if (data && data.prompt) {
+            nudgeTx.textContent = data.prompt;
+            nudge.classList.add("visible");
+            // Auto-hide after 20s of no interaction
+            setTimeout(() => nudge.classList.remove("visible"), 20000);
+          }
+        } catch (e) {
+          // Silent fail — nudges are non-critical
+        }
+      }
+
+      // Auto-save draft (silent, no summary card)
+      async function autoSaveDraft(side) {
+        const ta = document.getElementById(`journal-textarea-${side}`);
+        if (!ta || !ta.value.trim()) return;
+        const draftId = window[`_draftId_${side}`];
+        const autosaveEl = document.getElementById(`journal-autosave-${side}`);
+        try {
+          if (draftId) {
+            await apiFetch(`/api/entries/${draftId}`, {
+              method: "PATCH",
+              body: { content: ta.value.trim() }
+            });
+          } else {
+            // No existing draft — save as new entry
+            const entry = await apiFetch("/api/entries", {
+              method: "POST",
+              body: { content: ta.value.trim(), title: "" }
+            });
+            window[`_draftId_${side}`] = entry.id;
+            entries.unshift(entry);
+            renderEntries();
+          }
+          if (autosaveEl) {
+            autosaveEl.textContent = "Saved";
+            autosaveEl.classList.add("visible");
+            setTimeout(() => autosaveEl.classList.remove("visible"), 2500);
+          }
+        } catch (e) { /* silent */ }
+      }
+
+      // Explicit save — shows summary card
+      async function journalSave(side) {
+        const ta      = document.getElementById(`journal-textarea-${side}`);
+        const saveBtn = document.getElementById(`journal-save-btn-${side}`);
+        if (!ta || !ta.value.trim()) return;
+
+        const content = ta.value.trim();
+        if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "Saving…"; }
+
+        try {
+          const draftId = window[`_draftId_${side}`];
+          let entry;
+          if (draftId) {
+            await apiFetch(`/api/entries/${draftId}`, {
+              method: "PATCH",
+              body: { content }
+            });
+            entry = entries.find(e => e.id === draftId) || { id: draftId, content };
+            // Re-fetch to get reflection/tags
+            try {
+              entry = await apiFetch(`/api/entries/${draftId}`);
+            } catch (e) { /* use local */ }
+          } else {
+            entry = await apiFetch("/api/entries", {
+              method: "POST",
+              body: { content, title: "" }
+            });
+            window[`_draftId_${side}`] = entry.id;
+            entries.unshift(entry);
+            renderEntries();
+          }
+          showSummaryCard(entry, side);
+        } catch (e) {
+          if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "Save entry"; }
+        }
+      }
+
+      // Render post-save summary card
+      function showSummaryCard(entry, side) {
+        const container = document.getElementById(`journal-summary-${side}`);
+        if (!container) return;
+
+        const mood     = entry.mood || "reflective";
+        const moodData = getMood(mood);
+        const moodColor = MOOD_COLORS[mood] || MOOD_COLORS.reflective;
+        const reflection = entry.reflection || entry.ai_reflection || "";
+        const tags = entry.tags || entry.topic_tags || [];
+
+        let tagsHtml = "";
+        if (tags.length) {
+          tagsHtml = `<div class="summary-tags">${tags.map(t => `<span class="summary-tag">${escHtml(t)}</span>`).join("")}</div>`;
+        }
+
+        container.innerHTML = `
+          <div class="summary-mood-row">
+            <span class="summary-mood-chip" style="border-color:${moodColor}30;color:${moodColor}">
+              ${moodData.emoji} ${moodData.label}
+            </span>
+          </div>
+          ${reflection ? `<p class="summary-reflection">${escHtml(reflection)}</p>` : ""}
+          ${tagsHtml}
+          <div class="summary-actions">
+            <button class="summary-continue-btn" onclick="journalContinueEditing('${side}')">Keep writing</button>
+            <button class="summary-continue-btn" onclick="openEntry('${entry.id}')">View full entry</button>
+          </div>`;
+        container.classList.add("visible");
+
+        // Hide save btn, show autosave confirmation
+        const saveBtn = document.getElementById(`journal-save-btn-${side}`);
+        if (saveBtn) { saveBtn.classList.remove("show"); }
+      }
+
+      // Continue editing after save
+      function journalContinueEditing(side) {
+        const summary = document.getElementById(`journal-summary-${side}`);
+        if (summary) { summary.classList.remove("visible"); summary.innerHTML = ""; }
+        const ta = document.getElementById(`journal-textarea-${side}`);
+        if (ta) { setTimeout(() => ta.focus(), 50); }
+        // Allow nudge again after a fresh start
+        window[`_nudgeFired_${side}`] = false;
+      }
+
+      // ─── Entry read view ───
+      function showEntryReadView(entry, desktop) {
+        const side = desktop ? "desktop" : "mobile";
+        const readText = document.getElementById(`journal-read-text-${side}`);
+        const editTA   = document.getElementById(`journal-read-edit-${side}`);
+        const dateEl   = document.getElementById(`journal-read-date-${side}`);
+        const hintEl   = document.getElementById(`journal-edit-hint-${side}`);
+
+        if (readText) {
+          readText.textContent = entry.content || "";
+          readText.style.display = "block";
+        }
+        if (editTA) {
+          editTA.value = entry.content || "";
+          editTA.style.display = "none";
+        }
+        if (dateEl && entry.created_at) {
+          dateEl.textContent = new Date(entry.created_at).toLocaleDateString("en-US", {
+            weekday: "long", month: "long", day: "numeric"
+          });
+        }
+        if (hintEl) hintEl.textContent = desktop ? "Click text to edit" : "Tap text to edit";
+
+        // Hide save btn
+        const saveBtn = document.getElementById(`journal-read-save-${side}`);
+        if (saveBtn) saveBtn.classList.remove("show");
+
+        // Show summary card if available
+        const mood      = entry.mood;
+        const reflection = entry.reflection || entry.ai_reflection || "";
+        const tags       = entry.tags || entry.topic_tags || [];
+        const summaryEl  = document.getElementById(`journal-read-summary-${side}`);
+        if (summaryEl) {
+          if (mood || reflection || tags.length) {
+            const moodData  = getMood(mood || "reflective");
+            const moodColor = MOOD_COLORS[mood] || MOOD_COLORS.reflective;
+            let tagsHtml = tags.length
+              ? `<div class="summary-tags">${tags.map(t => `<span class="summary-tag">${escHtml(t)}</span>`).join("")}</div>`
+              : "";
+            summaryEl.innerHTML = `
+              <div class="summary-mood-row">
+                <span class="summary-mood-chip" style="border-color:${moodColor}30;color:${moodColor}">
+                  ${moodData.emoji} ${moodData.label}
+                </span>
+              </div>
+              ${reflection ? `<p class="summary-reflection">${escHtml(reflection)}</p>` : ""}
+              ${tagsHtml}`;
+            summaryEl.classList.add("visible");
+          } else {
+            summaryEl.classList.remove("visible");
+            summaryEl.innerHTML = "";
+          }
+        }
+      }
+
+      // Start inline edit mode
+      function journalStartEdit(side) {
+        const readText = document.getElementById(`journal-read-text-${side}`);
+        const editTA   = document.getElementById(`journal-read-edit-${side}`);
+        const saveBtn  = document.getElementById(`journal-read-save-${side}`);
+        if (!editTA) return;
+        if (readText) readText.style.display = "none";
+        editTA.style.display = "block";
+        autosizeTA(editTA);
+        editTA.focus();
+        if (saveBtn) saveBtn.classList.add("show");
+
+        // Wire autosave on the read textarea
+        editTA.oninput = () => {
+          autosizeTA(editTA);
+          if (window[`_readAutosaveTimer_${side}`]) clearTimeout(window[`_readAutosaveTimer_${side}`]);
+          window[`_readAutosaveTimer_${side}`] = setTimeout(() => journalReadSave(side, true), 10000);
+        };
+      }
+
+      // Save edits from read view
+      async function journalReadSave(side, silent = false) {
+        const editTA  = document.getElementById(`journal-read-edit-${side}`);
+        const saveBtn = document.getElementById(`journal-read-save-${side}`);
+        const readText = document.getElementById(`journal-read-text-${side}`);
+        const autosaveEl = document.getElementById(`journal-read-autosave-${side}`);
+        if (!editTA || !currentEntryId) return;
+        const content = editTA.value.trim();
+        if (!content) return;
+
+        if (!silent && saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "Saving…"; }
+        try {
+          await apiFetch(`/api/entries/${currentEntryId}`, {
+            method: "PATCH",
+            body: { content }
+          });
+          // Update local cache
+          const entry = entries.find(e => e.id === currentEntryId);
+          if (entry) { entry.content = content; renderEntries(); }
+          // Switch back to read mode
+          if (readText) { readText.textContent = content; readText.style.display = "block"; }
+          if (editTA) editTA.style.display = "none";
+          if (saveBtn) saveBtn.classList.remove("show");
+          if (autosaveEl) {
+            autosaveEl.textContent = "Saved";
+            autosaveEl.classList.add("visible");
+            setTimeout(() => autosaveEl.classList.remove("visible"), 2500);
+          }
+        } catch (e) {
+          if (!silent && saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "Save changes"; }
+        }
+      }
+
+      // ─── Keyboard shortcut: N = new entry ───
+      document.addEventListener("keydown", (e) => {
+        const tag = document.activeElement.tagName.toLowerCase();
+        const isInput = tag === "input" || tag === "textarea" || document.activeElement.isContentEditable;
+        if (e.key === "n" && !isInput && !e.ctrlKey && !e.metaKey) {
+          e.preventDefault();
+          startNewEntry();
+        }
+      });
+
+      // ─── Wire journal canvases ───
+      function initJournalCanvases() {
+        wireJournalCanvas("mobile");
+        wireJournalCanvas("desktop");
+        resetJournalCanvas("mobile");
+        resetJournalCanvas("desktop");
+
+        // Attach save button listeners
+        const saveMobile  = document.getElementById("journal-save-btn-mobile");
+        const saveDesktop = document.getElementById("journal-save-btn-desktop");
+        if (saveMobile)  saveMobile.addEventListener("click",  () => journalSave("mobile"));
+        if (saveDesktop) saveDesktop.addEventListener("click", () => journalSave("desktop"));
+      }
+
       // ─── Init ───
+      initJournalCanvases();
       if (isLoggedIn()) {
         showPage("home");
         loadEntries();

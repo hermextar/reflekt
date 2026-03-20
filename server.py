@@ -1,5 +1,6 @@
-import os
+giimport os
 import re
+import json
 from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
@@ -75,6 +76,39 @@ def create_entry():
     data = request.json
     content = data.get('content', '')
 
+    # Single AI call: mood + reflection + tags together
+    summary_response = anthropic_client.messages.create(
+        model='claude-haiku-4-5',
+        max_tokens=200,
+        system='You are a journalling assistant. Respond ONLY with valid JSON, no markdown, no explanation.',
+        messages=[{
+            'role': 'user',
+            'content': (
+                f'Analyze this journal entry and return a JSON object with these exact keys:\n'
+                f'- "mood": one word from [anxious, frustrated, sad, confused, positive, tired, reflective]\n'
+                f'- "reflection": one warm sentence (under 20 words) reflecting what the person is processing\n'
+                f'- "tags": array of 2-3 lowercase topic words (e.g. ["work", "family", "anxiety"])\n\n'
+                f'Entry: "{content}"'
+            )
+        }]
+    )
+
+    try:
+        summary_data = json.loads(summary_response.content[0].text.strip())
+        mood_raw = summary_data.get('mood', 'reflective').strip().lower()
+        mood_match = re.search(r'(anxious|frustrated|sad|confused|positive|tired|reflective)', mood_raw)
+        mood = mood_match.group(1) if mood_match else 'reflective'
+        reflection = summary_data.get('reflection', '')
+        tags = summary_data.get('tags', [])
+        if not isinstance(tags, list):
+            tags = []
+        tags = [str(t).lower().strip() for t in tags[:3]]
+    except Exception:
+        mood = 'reflective'
+        reflection = ''
+        tags = []
+
+    # AI follow-up for chat thread (kept as before)
     ai_response = anthropic_client.messages.create(
         model='claude-haiku-4-5',
         max_tokens=300,
@@ -83,23 +117,32 @@ def create_entry():
     )
     ai_message = ai_response.content[0].text
 
-    mood_response = anthropic_client.messages.create(
-        model='claude-haiku-4-5',
-        max_tokens=10,
-        messages=[{'role': 'user', 'content': f'Classify the mood of this journal entry with ONE word from: anxious, frustrated, sad, confused, positive, tired, reflective. Entry: "{content}"'}]
-    )
-    mood_raw = mood_response.content[0].text.strip().lower()
-    mood_match = re.search(r'(anxious|frustrated|sad|confused|positive|tired|reflective)', mood_raw)
-    mood = mood_match.group(1) if mood_match else 'reflective'
-
-
     default_title = datetime.utcnow().strftime('%B %-d, %Y')
-    entry = supabase.table('entries').insert({
+
+    insert_data = {
         'user_id': user_id,
         'content': encrypt(content),
         'mood': mood,
-        'title': default_title
-    }).execute()
+        'title': default_title,
+    }
+    # Save reflection and tags if columns exist
+    if reflection:
+        insert_data['ai_reflection'] = reflection
+    if tags:
+        insert_data['tags'] = tags
+        insert_data['topic_tags'] = tags
+
+    try:
+        entry = supabase.table('entries').insert(insert_data).execute()
+    except Exception:
+        # Fallback without optional columns if they don't exist yet
+        insert_data.pop('ai_reflection', None)
+        insert_data.pop('tags', None)
+        insert_data.pop('topic_tags', None)
+        entry = supabase.table('entries').insert(insert_data).execute()
+        reflection = ''
+        tags = []
+
     entry_id = entry.data[0]['id']
 
     supabase.table('messages').insert([
@@ -110,6 +153,8 @@ def create_entry():
     full_entry = supabase.table('entries').select('*').eq('id', entry_id).execute()
     result = full_entry.data[0]
     result['content'] = content  # return decrypted to frontend
+    result['reflection'] = reflection
+    result['tags'] = tags
     return jsonify(result), 201
 
 @app.route('/api/entries/<entry_id>', methods=['GET'])
@@ -166,15 +211,54 @@ def reply(entry_id):
 def update_entry(entry_id):
     user_id = get_jwt_identity()
     data = request.json
-    new_title = data.get('title', '').strip()
-    if not new_title:
-        return jsonify({'error': 'Title cannot be empty'}), 400
     # Verify ownership
     existing = supabase.table('entries').select('id').eq('id', entry_id).eq('user_id', user_id).execute()
     if not existing.data:
         return jsonify({'error': 'Not found'}), 404
-    supabase.table('entries').update({'title': new_title}).eq('id', entry_id).execute()
-    return jsonify({'id': entry_id, 'title': new_title})
+
+    update_fields = {}
+    if 'title' in data:
+        new_title = data['title'].strip()
+        if new_title:
+            update_fields['title'] = new_title
+    if 'content' in data:
+        new_content = data['content']
+        if new_content:
+            update_fields['content'] = encrypt(new_content)
+    if 'tags' in data:
+        update_fields['tags'] = data['tags']
+        update_fields['topic_tags'] = data['tags']
+
+    if not update_fields:
+        return jsonify({'error': 'Nothing to update'}), 400
+
+    supabase.table('entries').update(update_fields).eq('id', entry_id).execute()
+    resp = {'id': entry_id}
+    for k in ('title', 'tags'):
+        if k in data:
+            resp[k] = data[k]
+    return jsonify(resp)
+
+
+@app.route('/api/nudge', methods=['POST'])
+@jwt_required()
+def nudge():
+    content = request.json.get('content', '')
+    if not content or len(content.split()) < 10:
+        return jsonify({'error': 'Not enough content'}), 400
+
+    response = anthropic_client.messages.create(
+        model='claude-haiku-4-5',
+        max_tokens=80,
+        system=(
+            'You are a gentle journalling companion. Read the journal entry and return ONE short, '
+            'open-ended reflective question that helps the person go deeper. '
+            'No preamble, no quotes, just the question itself. Max 20 words.'
+        ),
+        messages=[{'role': 'user', 'content': f'Journal entry so far:\n\n{content}'}]
+    )
+    prompt = response.content[0].text.strip().strip('"\'')
+    return jsonify({'prompt': prompt})
 
 
 @app.route('/api/entries/<entry_id>', methods=['DELETE'])
