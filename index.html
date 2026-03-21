@@ -3773,6 +3773,11 @@
         document.querySelectorAll(".mic-btn").forEach(b => b.style.display = "none");
       }
 
+      // Detect Safari on iOS (requires non-continuous recognition workaround)
+      const isSafariIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+        && /Safari/i.test(navigator.userAgent)
+        && !/Chrome|CriOS/i.test(navigator.userAgent);
+
       function setupMic(btn, badge, ta) {
         btn.addEventListener("click", () => {
           if (isRecording) {
@@ -3785,31 +3790,60 @@
             const SR =
               window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SR();
-            recognition.continuous = true;
-            recognition.interimResults = true;
             recognition.lang = "en-US";
-            let finalText = ta.value;
-            recognition.onresult = (e) => {
-              let interim = "";
-              for (let i = e.resultIndex; i < e.results.length; i++) {
-                if (e.results[i].isFinal)
-                  finalText += e.results[i][0].transcript + " ";
-                else interim = e.results[i][0].transcript;
-              }
-              ta.value = finalText + interim;
-              ta.dispatchEvent(new Event("input"));
-            };
-            recognition.onend = () => {
-              isRecording = false;
-              btn.classList.remove("recording");
-              btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3M8 21h8"/></svg>Speak`;
-              badge.classList.remove("visible");
-            };
+
+            if (isSafariIOS) {
+              // iOS Safari: non-continuous mode, simulate continuous by restarting on onend
+              recognition.continuous = false;
+              recognition.interimResults = false;
+              recognition.onresult = (e) => {
+                for (let i = e.resultIndex; i < e.results.length; i++) {
+                  if (e.results[i].isFinal) {
+                    ta.value += e.results[i][0].transcript + " ";
+                    ta.dispatchEvent(new Event("input"));
+                  }
+                }
+              };
+              recognition.onend = () => {
+                // If user hasn't tapped Stop, restart immediately (synchronously)
+                if (isRecording) {
+                  recognition.start();
+                } else {
+                  btn.classList.remove("recording");
+                  btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3M8 21h8"/></svg>Speak`;
+                  badge.classList.remove("visible");
+                }
+              };
+            } else {
+              // Desktop Chrome / Firefox: full continuous mode with interim results
+              recognition.continuous = true;
+              recognition.interimResults = true;
+              let finalText = ta.value;
+              recognition.onresult = (e) => {
+                let interim = "";
+                for (let i = e.resultIndex; i < e.results.length; i++) {
+                  if (e.results[i].isFinal)
+                    finalText += e.results[i][0].transcript + " ";
+                  else interim = e.results[i][0].transcript;
+                }
+                ta.value = finalText + interim;
+                ta.dispatchEvent(new Event("input"));
+              };
+              recognition.onend = () => {
+                isRecording = false;
+                btn.classList.remove("recording");
+                btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3M8 21h8"/></svg>Speak`;
+                badge.classList.remove("visible");
+              };
+            }
+
             recognition.onerror = () => {
               isRecording = false;
               btn.classList.remove("recording");
               badge.classList.remove("visible");
             };
+
+            // Always called synchronously inside the click handler
             recognition.start();
             isRecording = true;
             btn.classList.add("recording");
