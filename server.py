@@ -277,43 +277,83 @@ def delete_entry(entry_id):
 @jwt_required()
 def insights():
     user_id = get_jwt_identity()
-    # Fetch last 20 entries
+    print(f"[insights] fetching entries for user {user_id}")
     rows = supabase.table('entries').select('content,mood,created_at').eq('user_id', user_id).order('created_at', desc=True).limit(20).execute()
-    if not rows.data or len(rows.data) < 3:
-        return jsonify({'error': 'not_enough_entries'}), 400
+
+    if not rows.data:
+        # No entries at all — return empty state gracefully
+        return jsonify({
+            'summary': "You haven't written any entries yet. Start journalling and come back!",
+            'patterns': [],
+            'growth': '',
+            'question': 'What would you like to reflect on today?'
+        })
 
     entries_text = []
     for i, e in enumerate(rows.data, 1):
-        content = decrypt(e['content'])
+        try:
+            content = decrypt(e['content'])
+        except Exception as dec_err:
+            print(f"[insights] decrypt error for entry {i}: {dec_err}")
+            content = '[entry could not be decrypted]'
         date_str = e.get('created_at', '')[:10] if e.get('created_at') else ''
         entries_text.append(f"Entry {i} ({date_str}, mood: {e.get('mood','?')}):\n{content}")
     combined = "\n\n---\n\n".join(entries_text)
 
-    response = anthropic_client.messages.create(
-        model='claude-sonnet-4-5',
-        max_tokens=800,
-        system=(
-            'You are a compassionate journalling coach. Analyze the user\'s recent journal entries and '
-            'return ONLY valid JSON with these exact keys:\n'
-            '- "summary": 2-3 warm sentences about their recent emotional state and themes\n'
-            '- "patterns": array of 2-4 short observations (each under 20 words) about recurring patterns\n'
-            '- "growth": one sentence noting positive change, resilience, or self-awareness you noticed\n'
-            '- "question": one deep open-ended reflective question (under 25 words) for them to sit with\n'
-            'No markdown. No extra fields. Pure JSON only.'
-        ),
-        messages=[{'role': 'user', 'content': f'Here are the journal entries to analyze:\n\n{combined}'}]
-    )
+    # Try preferred model, fall back to stable alternative
+    models_to_try = ['claude-sonnet-4-5', 'claude-3-5-sonnet-20241022']
+    response = None
+    for model_name in models_to_try:
+        try:
+            print(f"[insights] trying model: {model_name}")
+            response = anthropic_client.messages.create(
+                model=model_name,
+                max_tokens=900,
+                system=(
+                    'You are a compassionate journalling coach. Analyze the user's recent journal entries. '
+                    'Return ONLY a valid JSON object (no markdown fences, no extra text) with exactly these keys: '
+                    '"summary" (2-3 warm sentences about emotional state and themes), '
+                    '"patterns" (array of 2-4 short observations under 20 words each), '
+                    '"growth" (one sentence about positive change or resilience noticed), '
+                    '"question" (one deep open-ended reflective question under 25 words). '
+                    'Start your response with { and end with }.'
+                ),
+                messages=[{'role': 'user', 'content': f'Journal entries to analyze:\n\n{combined}'}]
+            )
+            print(f"[insights] model {model_name} responded OK")
+            break
+        except Exception as model_err:
+            print(f"[insights] model {model_name} failed: {model_err}")
+            response = None
+
+    if response is None:
+        return jsonify({'error': 'ai_unavailable'}), 503
+
+    raw_text = response.content[0].text.strip()
+    print(f"[insights] raw response (first 200 chars): {raw_text[:200]}")
+
+    # Strip markdown code fences if present
+    raw_text = re.sub(r'^```(?:json)?\s*', '', raw_text, flags=re.MULTILINE)
+    raw_text = re.sub(r'\s*```$', '', raw_text, flags=re.MULTILINE)
+    raw_text = raw_text.strip()
+
+    # Extract JSON object if there's surrounding text
+    json_match = re.search(r'\{[\s\S]*\}', raw_text)
+    if json_match:
+        raw_text = json_match.group(0)
+
     try:
-        result = json.loads(response.content[0].text.strip())
-        # Validate keys
+        result = json.loads(raw_text)
         for k in ('summary', 'patterns', 'growth', 'question'):
             if k not in result:
-                result[k] = ''
+                result[k] = '' if k != 'patterns' else []
         if not isinstance(result['patterns'], list):
-            result['patterns'] = []
+            result['patterns'] = [str(result['patterns'])] if result['patterns'] else []
+        print(f"[insights] parsed successfully: {list(result.keys())}")
         return jsonify(result)
-    except Exception:
-        return jsonify({'error': 'parse_error'}), 500
+    except json.JSONDecodeError as e:
+        print(f"[insights] JSON parse error: {e}\nRaw: {raw_text[:500]}")
+        return jsonify({'error': 'parse_error', 'detail': str(e)}), 500
 
 
 @app.route('/api/account', methods=['DELETE'])
