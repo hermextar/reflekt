@@ -4599,34 +4599,38 @@
       function speakText(text) {
         if (!hasTTS || !voiceEnabled) return;
         window.speechSynthesis.cancel();
-        const utt = new SpeechSynthesisUtterance(text);
-        utt.rate   = 0.95;
-        utt.pitch  = 1.0;
-        utt.volume = 1.0;
-        // Prefer a natural-sounding voice
-        const voices = window.speechSynthesis.getVoices();
-        const preferred = voices.find(v =>
-          /Samantha|Karen|Moira|Daniel|Google UK|Natural/.test(v.name)
-        ) || voices.find(v => v.lang.startsWith("en") && !v.name.includes("Google")) || voices[0];
-        if (preferred) utt.voice = preferred;
 
-        // Pulse the toggle icons while speaking
         const toggles = [
           document.getElementById("voice-toggle"),
           document.getElementById("voice-toggle-desktop"),
         ];
-        utt.onstart = () => toggles.forEach(b => b?.classList.add("speaking"));
-        utt.onend   = () => toggles.forEach(b => b?.classList.remove("speaking"));
-        utt.onerror = () => toggles.forEach(b => b?.classList.remove("speaking"));
 
-        // Voices may load async — small delay to let them populate
+        function _doSpeak() {
+          const utt = new SpeechSynthesisUtterance(text);
+          utt.rate   = 0.95;
+          utt.pitch  = 1.0;
+          utt.volume = 1.0;
+          // Prefer a natural-sounding voice
+          const voices = window.speechSynthesis.getVoices();
+          const preferred = voices.find(v =>
+            /Samantha|Karen|Moira|Daniel|Google UK|Natural/.test(v.name)
+          ) || voices.find(v => v.lang.startsWith("en") && !v.name.includes("Google")) || voices[0];
+          if (preferred) utt.voice = preferred;
+          utt.onstart = () => toggles.forEach(b => b?.classList.add("speaking"));
+          utt.onend   = () => toggles.forEach(b => b?.classList.remove("speaking"));
+          utt.onerror = () => toggles.forEach(b => b?.classList.remove("speaking"));
+          window.speechSynthesis.speak(utt);
+        }
+
+        // iOS Safari: voices may be empty until onvoiceschanged fires
+        const voices = window.speechSynthesis.getVoices();
         if (voices.length === 0) {
           window.speechSynthesis.onvoiceschanged = () => {
             window.speechSynthesis.onvoiceschanged = null;
-            window.speechSynthesis.speak(utt);
+            _doSpeak();
           };
         } else {
-          window.speechSynthesis.speak(utt);
+          _doSpeak();
         }
       }
 
@@ -5215,6 +5219,16 @@
               localStorage.setItem('reflekt_mic_asked', '1');
             });
         }
+
+      // ─── iOS Safari: unlock speech synthesis on first user gesture ───
+      document.addEventListener('click', function unlockAudio() {
+        if (window.speechSynthesis) {
+          const u = new SpeechSynthesisUtterance('');
+          u.volume = 0;
+          window.speechSynthesis.speak(u);
+        }
+        document.removeEventListener('click', unlockAudio);
+      }, { once: true });
 
       // ─── Init ───
       initJournalCanvases();
