@@ -3568,6 +3568,7 @@
         try {
           entries = await apiFetch("/api/entries");
           renderEntries();
+          if (activeTab === 'search') runSearch('', isDesktop() ? 'desktop' : 'mobile');
         } catch (e) {
           if (!isLoggedIn()) return;
           renderEntries();
