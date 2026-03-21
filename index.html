@@ -1968,6 +1968,9 @@
       .bottom-nav .nav-tab.active .nav-label {
         opacity: 1;
       }
+      /* Hide bottom nav when auth page is active */
+      #page-auth.active ~ .bottom-nav { display: none !important; }
+
       /* Keep bottom-nav hidden on desktop */
       @media (min-width: 900px) {
         .bottom-nav { display: none; }
@@ -3458,6 +3461,9 @@
             .forEach((p) => p.classList.remove("active"));
           document.getElementById("page-" + id).classList.add("active");
           window.scrollTo(0, 0);
+          // Hide bottom nav on auth page, restore on all others
+          const nav = document.querySelector('.bottom-nav');
+          if (nav) nav.style.display = id === 'auth' ? 'none' : '';
         }
       }
 
@@ -3635,6 +3641,31 @@
         // Desktop sidebar list
         const desktopEl = document.getElementById("entries-list-desktop");
         if (desktopEl) desktopEl.innerHTML = html;
+
+        // Keep search results containers in sync when input is empty
+        ['mobile','desktop'].forEach(side => {
+          const sr = document.getElementById('search-results-' + side);
+          const sm = document.getElementById('search-meta-' + side);
+          const inp = document.getElementById('search-input-' + side);
+          if (sr && (!inp || !inp.value.trim())) {
+            if (sm) sm.textContent = entries.length ? 'Recent entries' : '';
+            sr.innerHTML = entries.slice(0, 8).map(e => {
+              const mood = getMood(e.mood);
+              const preview = (e.content || '').replace(/\n/g,' ').slice(0, 120);
+              return `<div class="entry-card" data-entry-id="${e.id}" onclick="openEntry('${e.id}'); switchTab('journal')">
+                <div class="entry-card-body">
+                  ${e.title ? `<p class="entry-card-title">${escHtml(e.title)}</p>` : ''}
+                  <div class="entry-card-meta">
+                    <span class="mood-badge ${mood.cls}">${mood.emoji} ${mood.label}</span>
+                    <span class="entry-time">${timeAgo(e.created_at || e.createdAt)}</span>
+                  </div>
+                  <p class="entry-preview">${escHtml(preview)}${(e.content||'').length > 120 ? '\u2026' : ''}</p>
+                </div>
+                <div class="entry-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+              </div>`;
+            }).join('') || '<div style="padding:24px 16px;text-align:center;font-size:13px;color:var(--color-text-muted)">No entries yet.</div>';
+          }
+        });
 
         // Mood insight strip
         renderMoodInsight();
