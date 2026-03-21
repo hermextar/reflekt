@@ -80,7 +80,12 @@
       .entry-card, .msg-bubble, .reply-area,
       .journal-main-textarea, .journal-read-text, .journal-read-edit-ta,
       .bottom-nav, #desktop-topnav, .desktop-tab-panel,
-      .tab-page-body, .chart-card, .stat-card, .insights-card {
+      .tab-page-body, .chart-card, .stat-card, .insights-card ,
+        .home-body, .new-entry-body, .auth-card, .auth-body, .form-input,
+        .journal-canvas, .journal-footer-bar, .journal-summary-card,
+        .journal-read-area, .journal-read-footer, .journal-read-summary,
+        .tab-page-header, .sidebar-nav, .sidebar-footer, .search-input,
+        .settings-section, .settings-row, .mood-filter-pill, .empty-state {
         transition: background var(--transition), color var(--transition),
                     border-color var(--transition), box-shadow var(--transition);
       }
@@ -1472,7 +1477,7 @@
         /* ── Back buttons hidden on desktop (sidebar is always visible) ── */
         #desktop-panel-new .back-btn,
         #desktop-panel-entry .back-btn {
-          display: none;
+              display: flex;
         }
 
         /* ── Entry card active state tweak in sidebar ── */
@@ -1811,7 +1816,7 @@
         }
         #desktop-panel-write .back-btn,
         #desktop-panel-read .back-btn {
-          display: none;
+          display: flex;
         }
         #desktop-panel-write .journal-canvas {
           padding: 32px 40px 0;
@@ -3379,6 +3384,7 @@
       function onAuthSuccess() {
         showPage("home");
         loadEntries();
+            requestMicPermission();
       }
 
       function logout() {
@@ -5157,6 +5163,20 @@
           alert('Could not delete account. Please try again.');
         }
       }
+
+              // ─── Mic permission ───
+        function requestMicPermission() {
+          if (!hasSpeech) return;
+          if (localStorage.getItem('reflekt_mic_asked')) return;
+          navigator.mediaDevices && navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+              stream.getTracks().forEach(t => t.stop());
+              localStorage.setItem('reflekt_mic_asked', '1');
+            })
+            .catch(() => {
+              localStorage.setItem('reflekt_mic_asked', '1');
+            });
+        }
 
       // ─── Init ───
       initJournalCanvases();
