@@ -310,7 +310,7 @@ def insights():
                 model=model_name,
                 max_tokens=900,
                 system=(
-                    'You are a compassionate journalling coach. Analyze the user's recent journal entries. '
+                    """You are a compassionate journalling coach. Analyze the user's recent journal entries."""
                     'Return ONLY a valid JSON object (no markdown fences, no extra text) with exactly these keys: '
                     '"summary" (2-3 warm sentences about emotional state and themes), '
                     '"patterns" (array of 2-4 short observations under 20 words each), '
