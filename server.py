@@ -273,6 +273,62 @@ def delete_entry(entry_id):
     return jsonify({'success': True})
 
 
+@app.route('/api/insights', methods=['POST'])
+@jwt_required()
+def insights():
+    user_id = get_jwt_identity()
+    # Fetch last 20 entries
+    rows = supabase.table('entries').select('content,mood,created_at').eq('user_id', user_id).order('created_at', desc=True).limit(20).execute()
+    if not rows.data or len(rows.data) < 3:
+        return jsonify({'error': 'not_enough_entries'}), 400
+
+    entries_text = []
+    for i, e in enumerate(rows.data, 1):
+        content = decrypt(e['content'])
+        date_str = e.get('created_at', '')[:10] if e.get('created_at') else ''
+        entries_text.append(f"Entry {i} ({date_str}, mood: {e.get('mood','?')}):\n{content}")
+    combined = "\n\n---\n\n".join(entries_text)
+
+    response = anthropic_client.messages.create(
+        model='claude-sonnet-4-5',
+        max_tokens=800,
+        system=(
+            'You are a compassionate journalling coach. Analyze the user\'s recent journal entries and '
+            'return ONLY valid JSON with these exact keys:\n'
+            '- "summary": 2-3 warm sentences about their recent emotional state and themes\n'
+            '- "patterns": array of 2-4 short observations (each under 20 words) about recurring patterns\n'
+            '- "growth": one sentence noting positive change, resilience, or self-awareness you noticed\n'
+            '- "question": one deep open-ended reflective question (under 25 words) for them to sit with\n'
+            'No markdown. No extra fields. Pure JSON only.'
+        ),
+        messages=[{'role': 'user', 'content': f'Here are the journal entries to analyze:\n\n{combined}'}]
+    )
+    try:
+        result = json.loads(response.content[0].text.strip())
+        # Validate keys
+        for k in ('summary', 'patterns', 'growth', 'question'):
+            if k not in result:
+                result[k] = ''
+        if not isinstance(result['patterns'], list):
+            result['patterns'] = []
+        return jsonify(result)
+    except Exception:
+        return jsonify({'error': 'parse_error'}), 500
+
+
+@app.route('/api/account', methods=['DELETE'])
+@jwt_required()
+def delete_account():
+    user_id = get_jwt_identity()
+    # Get all entry IDs for this user
+    entry_rows = supabase.table('entries').select('id').eq('user_id', user_id).execute()
+    for entry in (entry_rows.data or []):
+        supabase.table('messages').delete().eq('entry_id', entry['id']).execute()
+    supabase.table('entries').delete().eq('user_id', user_id).execute()
+    supabase.table('users').delete().eq('id', user_id).execute()
+    return jsonify({'success': True})
+
+
 @app.errorhandler(404)
 @app.errorhandler(500)
 @app.errorhandler(503)

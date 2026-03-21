@@ -6,6 +6,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reflekt — AI Journal</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link
       href="https://api.fontshare.com/v2/css?f[]=zodiak@400,500,700&f[]=general-sans@400,500,600&display=swap"
       rel="stylesheet"
@@ -1897,6 +1898,533 @@
       }
       /* Hide reply-mic if no speech support */
       .no-speech .reply-mic-btn { display: none; }
+
+      /* ══════════════════════════════════════════════
+         5-TAB NAVIGATION SYSTEM
+      ══════════════════════════════════════════════ */
+
+      /* ─── Mobile bottom tab bar ─── */
+      .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: calc(56px + env(safe-area-inset-bottom, 0px));
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        background: var(--color-surface);
+        border-top: 1px solid var(--color-border);
+        display: flex;
+        align-items: stretch;
+        z-index: 50;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+      .bottom-nav .nav-tab {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        color: var(--color-text-faint);
+        padding: 6px 4px 2px;
+        transition: color var(--transition);
+        -webkit-tap-highlight-color: transparent;
+      }
+      .bottom-nav .nav-tab svg {
+        width: 22px;
+        height: 22px;
+        transition: color var(--transition);
+      }
+      .bottom-nav .nav-tab .nav-label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        opacity: 0;
+        transition: opacity var(--transition);
+      }
+      .bottom-nav .nav-tab.active {
+        color: var(--color-primary);
+      }
+      .bottom-nav .nav-tab.active .nav-label {
+        opacity: 1;
+      }
+      /* Keep bottom-nav hidden on desktop */
+      @media (min-width: 900px) {
+        .bottom-nav { display: none; }
+      }
+
+      /* ─── Offset pages for bottom tab bar on mobile ─── */
+      @media (max-width: 899px) {
+        .page.has-bottom-nav {
+          padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+        }
+        /* auth page doesn't need the offset */
+        #page-auth { padding-bottom: 0; }
+        #page-new  { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
+        #page-entry { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
+      }
+
+      /* ─── Sidebar nav icons (desktop) ─── */
+      .sidebar-nav {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 2px;
+        padding: 8px 12px 0;
+        border-bottom: 1px solid var(--color-border);
+        margin-bottom: 0;
+      }
+      .sidebar-nav .snav-tab {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        padding: 7px 4px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        border-radius: var(--radius-md);
+        color: var(--color-text-faint);
+        transition: color var(--transition), background var(--transition);
+        min-width: 0;
+      }
+      .sidebar-nav .snav-tab svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+      }
+      .sidebar-nav .snav-tab .snav-label {
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        opacity: 0;
+        transition: opacity var(--transition);
+        white-space: nowrap;
+      }
+      .sidebar-nav .snav-tab.active {
+        color: var(--color-primary);
+        background: var(--color-primary-bg);
+      }
+      .sidebar-nav .snav-tab.active .snav-label {
+        opacity: 1;
+      }
+      .sidebar-nav .snav-tab:hover:not(.active) {
+        color: var(--color-text-muted);
+        background: var(--color-surface-2);
+      }
+
+      /* ─── Desktop: new tab full-panel pages ─── */
+      @media (min-width: 900px) {
+        .desktop-tab-panel {
+          display: none;
+          flex-direction: column;
+          height: 100%;
+          overflow-y: auto;
+        }
+        .desktop-tab-panel.active {
+          display: flex;
+        }
+        /* Journal tab: show sidebar content + desktop-main as before */
+        #desktop-main.journal-active { display: flex; }
+        #desktop-main.tab-hidden     { display: none; }
+        /* Sidebar journal section: hide when non-journal tab active */
+        #sidebar-entries-container.tab-hidden { display: none; }
+        #sidebar-entries-container.tab-visible { display: flex; flex-direction: column; flex: 1; overflow-y: auto; }
+      }
+
+      /* ─── Shared tab page styles ─── */
+      .tab-page-header {
+        padding: 28px 24px 4px;
+        flex-shrink: 0;
+      }
+      .tab-page-title {
+        font-family: var(--font-display);
+        font-size: 26px;
+        font-weight: 500;
+        letter-spacing: -0.4px;
+        color: var(--color-text);
+        margin-bottom: 4px;
+      }
+      .tab-page-sub {
+        font-size: 13px;
+        color: var(--color-text-muted);
+      }
+      .tab-page-body {
+        flex: 1;
+        padding: 20px 20px 32px;
+        overflow-y: auto;
+      }
+
+      /* ─── Insights tab ─── */
+      .insights-generate-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 12px;
+        border-radius: var(--radius-md);
+        background: var(--color-primary);
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: var(--font-body);
+        cursor: pointer;
+        border: none;
+        margin-bottom: 24px;
+        transition: background var(--transition), opacity var(--transition);
+      }
+      .insights-generate-btn:hover { background: var(--color-primary-hover); }
+      .insights-generate-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+      .insights-cache-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+        font-size: 12px;
+        color: var(--color-text-faint);
+      }
+      .insights-cache-bar button {
+        font-size: 12px;
+        color: var(--color-primary);
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        font-family: var(--font-body);
+      }
+      .insights-section { margin-bottom: 20px; }
+      .insights-summary {
+        font-family: var(--font-display);
+        font-size: 17px;
+        line-height: 1.75;
+        color: var(--color-text);
+        padding: 20px;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        margin-bottom: 20px;
+      }
+      .insights-card {
+        padding: 16px 18px;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--color-border);
+        background: var(--color-surface);
+        margin-bottom: 12px;
+      }
+      .insights-card-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        color: var(--color-text-faint);
+      }
+      .insights-patterns-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .insights-patterns-list li {
+        display: flex;
+        gap: 10px;
+        font-size: 14px;
+        line-height: 1.55;
+        color: var(--color-text-muted);
+      }
+      .insights-patterns-list li::before {
+        content: "✦";
+        color: var(--color-primary);
+        font-size: 11px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .insights-growth-card {
+        background: rgba(74, 222, 128, 0.06);
+        border-color: rgba(74, 222, 128, 0.2);
+      }
+      .insights-growth-card .insights-card-label { color: #4ade80; }
+      .insights-growth-text {
+        font-size: 14px;
+        line-height: 1.65;
+        color: var(--color-text-muted);
+      }
+      .insights-question-card {
+        background: var(--color-primary-bg);
+        border-color: rgba(139, 114, 232, 0.25);
+      }
+      .insights-question-card .insights-card-label { color: var(--color-primary); }
+      .insights-question-text {
+        font-family: var(--font-display);
+        font-size: 18px;
+        font-style: italic;
+        line-height: 1.65;
+        color: var(--color-text);
+      }
+      .insights-empty, .trends-empty, .search-empty {
+        text-align: center;
+        padding: 48px 24px;
+        color: var(--color-text-muted);
+        font-size: 15px;
+        line-height: 1.65;
+      }
+      .insights-empty-icon, .trends-empty-icon {
+        font-size: 32px;
+        margin-bottom: 16px;
+      }
+      /* Pulse skeleton for loading */
+      .insights-loading {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .insights-skeleton {
+        height: 80px;
+        border-radius: var(--radius-lg);
+        background: var(--color-surface);
+        animation: skeletonPulse 1.4s ease-in-out infinite;
+      }
+      @keyframes skeletonPulse {
+        0%, 100% { opacity: 1; }
+        50%       { opacity: 0.4; }
+      }
+
+      /* ─── Trends tab ─── */
+      .trends-stats-strip {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 24px;
+      }
+      .stat-card {
+        padding: 14px 12px;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        text-align: center;
+      }
+      .stat-card-value {
+        font-family: var(--font-display);
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--color-primary);
+        line-height: 1;
+        margin-bottom: 4px;
+      }
+      .stat-card-label {
+        font-size: 11px;
+        color: var(--color-text-faint);
+        font-weight: 500;
+      }
+      .chart-card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+      .chart-card-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--color-text-muted);
+        margin-bottom: 12px;
+        letter-spacing: 0.02em;
+      }
+      .chart-wrap {
+        position: relative;
+        width: 100%;
+      }
+      .chart-wrap canvas { width: 100% !important; }
+
+      /* ─── Search tab ─── */
+      .search-input-wrap {
+        position: relative;
+        margin-bottom: 20px;
+      }
+      .search-input-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--color-text-faint);
+        pointer-events: none;
+      }
+      .search-input-icon svg { width: 18px; height: 18px; }
+      .search-input {
+        width: 100%;
+        padding: 13px 16px 13px 44px;
+        border-radius: var(--radius-lg);
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        outline: none;
+        font-family: var(--font-body);
+        font-size: 15px;
+        color: var(--color-text);
+        transition: border-color var(--transition);
+      }
+      .search-input:focus { border-color: var(--color-primary); }
+      .search-input::placeholder { color: var(--color-text-faint); }
+      .search-results-meta {
+        font-size: 12px;
+        color: var(--color-text-faint);
+        margin-bottom: 12px;
+      }
+      .search-highlight {
+        background: rgba(139, 114, 232, 0.22);
+        border-radius: 2px;
+        padding: 0 1px;
+      }
+
+      /* ─── Settings tab ─── */
+      .settings-section {
+        margin-bottom: 32px;
+      }
+      .settings-section-title {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--color-text-faint);
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--color-border);
+      }
+      .settings-about-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .settings-about-logo .logo-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: var(--color-primary-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-primary);
+      }
+      .settings-about-logo .logo-icon svg { width: 18px; height: 18px; }
+      .settings-about-logo .logo-name { font-family: var(--font-display); font-size: 20px; font-weight: 700; }
+      .settings-mission {
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--color-text-muted);
+        margin-bottom: 10px;
+      }
+      .settings-built-in {
+        font-size: 12px;
+        color: var(--color-text-faint);
+      }
+      .settings-version {
+        font-size: 11px;
+        color: var(--color-text-faint);
+        margin-top: 6px;
+      }
+      .privacy-bullets {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .privacy-bullet {
+        display: flex;
+        gap: 10px;
+        font-size: 13px;
+        line-height: 1.55;
+        color: var(--color-text-muted);
+      }
+      .privacy-bullet::before {
+        content: "🔒";
+        font-size: 14px;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .settings-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--color-border);
+      }
+      .settings-row:last-child { border-bottom: none; }
+      .settings-row-label {
+        font-size: 14px;
+        color: var(--color-text);
+        font-weight: 500;
+      }
+      .settings-row-sub {
+        font-size: 12px;
+        color: var(--color-text-faint);
+        margin-top: 2px;
+      }
+      /* Toggle switch */
+      .toggle-switch {
+        position: relative;
+        width: 44px;
+        height: 26px;
+        flex-shrink: 0;
+      }
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        position: absolute;
+      }
+      .toggle-track {
+        position: absolute;
+        inset: 0;
+        border-radius: 13px;
+        background: var(--color-border);
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .toggle-track::after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: white;
+        top: 3px;
+        left: 3px;
+        transition: transform 0.2s;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      }
+      .toggle-switch input:checked + .toggle-track {
+        background: var(--color-primary);
+      }
+      .toggle-switch input:checked + .toggle-track::after {
+        transform: translateX(18px);
+      }
+      .settings-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 16px;
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        font-weight: 500;
+        font-family: var(--font-body);
+        cursor: pointer;
+        border: 1px solid var(--color-border);
+        color: var(--color-text-muted);
+        background: transparent;
+        transition: all var(--transition);
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      .settings-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+      .settings-btn.danger { color: var(--color-error); border-color: var(--color-error-border); }
+      .settings-btn.danger:hover { background: var(--color-error-bg); }
+      .settings-btn svg { width: 16px; height: 16px; }
     </style>
   </head>
   <body>
@@ -2025,7 +2553,7 @@
       </div>
 
       <!-- ═══════════════════ HOME PAGE (mobile) ═══════════════════ -->
-      <div id="page-home" class="page">
+      <div id="page-home" class="page has-bottom-nav">
         <header class="header">
           <div class="logo">
             <div class="logo-icon">
@@ -2157,7 +2685,7 @@
       </div>
 
       <!-- ═══════════════════ NEW ENTRY PAGE (mobile) — journal canvas ═══════════════════ -->
-      <div id="page-new" class="page">
+      <div id="page-new" class="page has-bottom-nav">
         <header class="header">
           <button class="back-btn" id="back-from-new">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -2206,7 +2734,7 @@
       </div>
 
       <!-- ═══════════════════ ENTRY / READ PAGE (mobile) — journal view ═══════════════════ -->
-      <div id="page-entry" class="page">
+      <div id="page-entry" class="page has-bottom-nav">
         <header class="header">
           <button class="back-btn" id="back-from-entry">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -2268,6 +2796,52 @@
           </div>
           <p class="reply-hint">Enter to send · Shift+Enter for new line</p>
         </div>
+      </div>
+
+
+      <!-- ═══════════════════ INSIGHTS PAGE (mobile) ═══════════════════ -->
+      <div id="page-insights" class="page has-bottom-nav">
+        <div class="tab-page-header">
+          <h1 class="tab-page-title">Your Reflections</h1>
+          <p class="tab-page-sub">Patterns from your journal</p>
+        </div>
+        <div class="tab-page-body" id="insights-body-mobile"></div>
+      </div>
+
+      <!-- ═══════════════════ TRENDS PAGE (mobile) ═══════════════════ -->
+      <div id="page-trends" class="page has-bottom-nav">
+        <div class="tab-page-header">
+          <h1 class="tab-page-title">Trends</h1>
+          <p class="tab-page-sub">How you've been feeling</p>
+        </div>
+        <div class="tab-page-body" id="trends-body-mobile"></div>
+      </div>
+
+      <!-- ═══════════════════ SEARCH PAGE (mobile) ═══════════════════ -->
+      <div id="page-search" class="page has-bottom-nav">
+        <div class="tab-page-header">
+          <h1 class="tab-page-title">Search</h1>
+        </div>
+        <div class="tab-page-body">
+          <div class="search-input-wrap">
+            <span class="search-input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+              </svg>
+            </span>
+            <input class="search-input" id="search-input-mobile" type="text" placeholder="Search entries…" autocomplete="off" />
+          </div>
+          <div class="search-results-meta" id="search-meta-mobile"></div>
+          <div id="search-results-mobile" class="entries-list"></div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════ SETTINGS PAGE (mobile) ═══════════════════ -->
+      <div id="page-settings" class="page has-bottom-nav">
+        <div class="tab-page-header">
+          <h1 class="tab-page-title">Settings</h1>
+        </div>
+        <div class="tab-page-body" id="settings-body-mobile"></div>
       </div>
 
       <!-- ═══════════════════ DESKTOP TOP NAV ═══════════════════
@@ -2372,8 +2946,44 @@
            Left column inside the body row.
       ════════════════════════════════════════════════════════════ -->
       <aside class="desktop-sidebar" id="desktop-sidebar">
+        <!-- Sidebar nav tabs -->
+        <nav class="sidebar-nav" id="sidebar-nav" role="tablist">
+          <button class="snav-tab active" data-tab="journal" onclick="switchTab('journal')" role="tab" aria-label="Journal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+            </svg>
+            <span class="snav-label">Journal</span>
+          </button>
+          <button class="snav-tab" data-tab="insights" onclick="switchTab('insights')" role="tab" aria-label="Insights">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            <span class="snav-label">Insights</span>
+          </button>
+          <button class="snav-tab" data-tab="trends" onclick="switchTab('trends')" role="tab" aria-label="Trends">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
+              <line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/>
+            </svg>
+            <span class="snav-label">Trends</span>
+          </button>
+          <button class="snav-tab" data-tab="search" onclick="switchTab('search')" role="tab" aria-label="Search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <span class="snav-label">Search</span>
+          </button>
+          <button class="snav-tab" data-tab="settings" onclick="switchTab('settings')" role="tab" aria-label="Settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+            <span class="snav-label">Settings</span>
+          </button>
+        </nav>
+
         <!-- Entries + new entry button -->
-        <div class="sidebar-entries" id="sidebar-entries-container">
+        <div class="sidebar-entries tab-visible" id="sidebar-entries-container">
           <button class="new-entry-btn" id="go-new-desktop">
             <div class="new-entry-icon">
               <svg viewBox="0 0 24 24" stroke-width="2.5">
@@ -2534,8 +3144,89 @@
             <p class="reply-hint">Enter to send · Shift+Enter for new line</p>
           </div>
         </div>
+        <!-- ─── Desktop Insights panel ─── -->
+        <div id="desktop-panel-insights" class="desktop-tab-panel">
+          <div class="tab-page-header">
+            <h1 class="tab-page-title">Your Reflections</h1>
+            <p class="tab-page-sub">Patterns from your journal</p>
+          </div>
+          <div class="tab-page-body" id="insights-body-desktop"></div>
+        </div>
+
+        <!-- ─── Desktop Trends panel ─── -->
+        <div id="desktop-panel-trends" class="desktop-tab-panel">
+          <div class="tab-page-header">
+            <h1 class="tab-page-title">Trends</h1>
+            <p class="tab-page-sub">How you've been feeling</p>
+          </div>
+          <div class="tab-page-body" id="trends-body-desktop"></div>
+        </div>
+
+        <!-- ─── Desktop Search panel ─── -->
+        <div id="desktop-panel-search" class="desktop-tab-panel">
+          <div class="tab-page-header">
+            <h1 class="tab-page-title">Search</h1>
+          </div>
+          <div class="tab-page-body">
+            <div class="search-input-wrap">
+              <span class="search-input-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+                </svg>
+              </span>
+              <input class="search-input" id="search-input-desktop" type="text" placeholder="Search entries…" autocomplete="off" />
+            </div>
+            <div class="search-results-meta" id="search-meta-desktop"></div>
+            <div id="search-results-desktop" class="entries-list"></div>
+          </div>
+        </div>
+
+        <!-- ─── Desktop Settings panel ─── -->
+        <div id="desktop-panel-settings" class="desktop-tab-panel">
+          <div class="tab-page-header">
+            <h1 class="tab-page-title">Settings</h1>
+          </div>
+          <div class="tab-page-body" id="settings-body-desktop"></div>
+        </div>
+
       </main>
       </div><!-- /.desktop-body-row -->
+      <!-- ═══════════════════ BOTTOM TAB BAR (mobile only) ═══════════════════ -->
+      <nav class="bottom-nav" id="bottom-nav" role="tablist">
+        <button class="nav-tab active" data-tab="journal" onclick="switchTab('journal')" role="tab" aria-label="Journal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+          <span class="nav-label">Journal</span>
+        </button>
+        <button class="nav-tab" data-tab="insights" onclick="switchTab('insights')" role="tab" aria-label="Insights">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+          <span class="nav-label">Insights</span>
+        </button>
+        <button class="nav-tab" data-tab="trends" onclick="switchTab('trends')" role="tab" aria-label="Trends">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/>
+          </svg>
+          <span class="nav-label">Trends</span>
+        </button>
+        <button class="nav-tab" data-tab="search" onclick="switchTab('search')" role="tab" aria-label="Search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+          </svg>
+          <span class="nav-label">Search</span>
+        </button>
+        <button class="nav-tab" data-tab="settings" onclick="switchTab('settings')" role="tab" aria-label="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          <span class="nav-label">Settings</span>
+        </button>
+      </nav>
+
     </div>
     <!-- /.app -->
 
@@ -3862,8 +4553,577 @@
         }
       }
 
+
+      // ══════════════════════════════════════════════════════════════════════
+      // 5-TAB NAVIGATION SYSTEM
+      // ══════════════════════════════════════════════════════════════════════
+
+      let activeTab = 'journal';
+
+      // Chart instances (kept so we can destroy before recreating)
+      let chartMoodLine   = null;
+      let chartMoodDonut  = null;
+      let chartActivity   = null;
+
+      // switchTab: the single entry-point for all tab changes
+      function switchTab(tab) {
+        if (tab === activeTab && tab !== 'trends') return; // allow re-render for trends
+        activeTab = tab;
+
+        const desktop = isDesktop();
+
+        // ── Update active state on all nav buttons ──
+        document.querySelectorAll('.nav-tab, .snav-tab').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.tab === tab);
+        });
+
+        if (desktop) {
+          _switchTabDesktop(tab);
+        } else {
+          _switchTabMobile(tab);
+        }
+
+        // ── Tab-specific init ──
+        if (tab === 'insights') renderInsightsTab();
+        if (tab === 'trends')   renderTrendsTab();
+        if (tab === 'search') {
+          const inp = document.getElementById(desktop ? 'search-input-desktop' : 'search-input-mobile');
+          if (inp) { inp.value = ''; runSearch('', desktop ? 'desktop' : 'mobile'); setTimeout(() => inp.focus(), 80); }
+        }
+        if (tab === 'settings') renderSettingsTab();
+      }
+
+      function _switchTabMobile(tab) {
+        // Hide all mobile pages except auth
+        document.querySelectorAll('.page:not(#page-auth)').forEach(p => p.classList.remove('active'));
+        if (tab === 'journal') {
+          document.getElementById('page-home').classList.add('active');
+        } else {
+          const el = document.getElementById('page-' + tab);
+          if (el) el.classList.add('active');
+        }
+      }
+
+      function _switchTabDesktop(tab) {
+        const journalPanels = ['desktop-panel-idle','desktop-panel-write','desktop-panel-read'];
+        const tabPanels     = ['desktop-panel-insights','desktop-panel-trends','desktop-panel-search','desktop-panel-settings'];
+        const sidebarEntries = document.getElementById('sidebar-entries-container');
+
+        if (tab === 'journal') {
+          // Restore journal layout
+          journalPanels.forEach(id => {
+            const el = document.getElementById(id);
+            // Only restore idle if no other panel is active
+          });
+          // Show idle if nothing is currently open
+          showDesktopPanel('idle');
+          tabPanels.forEach(id => document.getElementById(id)?.classList.remove('active'));
+          if (sidebarEntries) { sidebarEntries.classList.remove('tab-hidden'); sidebarEntries.classList.add('tab-visible'); }
+        } else {
+          // Hide all journal panels, show the right tab panel
+          journalPanels.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+              el.classList.remove('active');
+              if (id === 'desktop-panel-idle') el.classList.add('hidden');
+            }
+          });
+          tabPanels.forEach(id => {
+            document.getElementById(id)?.classList.toggle('active', id === 'desktop-panel-' + tab);
+          });
+          if (sidebarEntries) { sidebarEntries.classList.add('tab-hidden'); sidebarEntries.classList.remove('tab-visible'); }
+        }
+      }
+
+      // ══════════════════════════════════════════════
+      // TAB 2 — INSIGHTS
+      // ══════════════════════════════════════════════
+      const INSIGHTS_CACHE_KEY = 'reflekt_insights';
+      const INSIGHTS_TTL_MS    = 60 * 60 * 1000; // 1 hour
+
+      function renderInsightsTab() {
+        const side = isDesktop() ? 'desktop' : 'mobile';
+        const bodyEl = document.getElementById(`insights-body-${side}`);
+        if (!bodyEl) return;
+
+        // Check if enough entries
+        if (entries.length < 3) {
+          bodyEl.innerHTML = `<div class="insights-empty">
+            <div class="insights-empty-icon">✦</div>
+            <p><strong>Write a few more entries and come back.</strong></p>
+            <p style="margin-top:8px;font-size:13px">Your patterns will start to emerge after you've written at least 3 entries.</p>
+          </div>`;
+          return;
+        }
+
+        // Check cache
+        let cached = null;
+        try { cached = JSON.parse(localStorage.getItem(INSIGHTS_CACHE_KEY)); } catch(e) {}
+        const now = Date.now();
+        const cacheAge = cached ? Math.round((now - cached.ts) / 60000) : null;
+        const cacheValid = cached && (now - cached.ts) < INSIGHTS_TTL_MS;
+
+        if (cacheValid && cached.data) {
+          _renderInsightsData(bodyEl, cached.data, cacheAge);
+          return;
+        }
+
+        // Show generate button (fresh or expired)
+        bodyEl.innerHTML = `
+          <button class="insights-generate-btn" id="insights-gen-btn-${side}" onclick="generateInsights('${side}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            Generate Insights
+          </button>
+          ${cached && !cacheValid ? '<p style="font-size:12px;color:var(--color-text-faint);text-align:center;margin-top:-12px;margin-bottom:16px">Your last insights have expired — generate fresh ones.</p>' : ''}`;
+      }
+
+      async function generateInsights(side) {
+        const bodyEl = document.getElementById(`insights-body-${side}`);
+        const btn    = document.getElementById(`insights-gen-btn-${side}`);
+        if (btn) { btn.disabled = true; btn.textContent = 'Analyzing your entries…'; }
+        bodyEl.innerHTML = `<div class="insights-loading">
+          <div class="insights-skeleton"></div>
+          <div class="insights-skeleton" style="height:60px;opacity:0.7"></div>
+          <div class="insights-skeleton" style="height:100px;opacity:0.5"></div>
+          <div class="insights-skeleton" style="height:80px;opacity:0.3"></div>
+        </div>`;
+        try {
+          const data = await apiFetch('/api/insights', { method: 'POST', body: {} });
+          localStorage.setItem(INSIGHTS_CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
+          _renderInsightsData(bodyEl, data, 0);
+          // Mirror to the other side if both exist
+          const otherSide = side === 'desktop' ? 'mobile' : 'desktop';
+          const otherBody = document.getElementById(`insights-body-${otherSide}`);
+          if (otherBody) _renderInsightsData(otherBody, data, 0);
+        } catch (e) {
+          bodyEl.innerHTML = `<div class="insights-empty">
+            <p>Could not generate insights right now. Please try again in a moment.</p>
+            <button class="insights-generate-btn" style="margin-top:16px" onclick="generateInsights('${side}')">Try again</button>
+          </div>`;
+        }
+      }
+
+      function _renderInsightsData(bodyEl, data, ageMinutes) {
+        const ageLabel = ageMinutes === 0 ? 'Just now' : `${ageMinutes} minute${ageMinutes !== 1 ? 's' : ''} ago`;
+        const side = bodyEl.id.includes('desktop') ? 'desktop' : 'mobile';
+
+        const patternsHtml = (data.patterns || []).map(p =>
+          `<li>${escHtml(p)}</li>`).join('');
+
+        bodyEl.innerHTML = `
+          <div class="insights-cache-bar">
+            <span>Generated ${ageLabel}</span>
+            <button onclick="clearInsightsCache('${side}')">Refresh</button>
+          </div>
+          <div class="insights-summary">${escHtml(data.summary || '')}</div>
+          ${patternsHtml ? `
+          <div class="insights-card">
+            <div class="insights-card-label">Patterns</div>
+            <ul class="insights-patterns-list">${patternsHtml}</ul>
+          </div>` : ''}
+          ${data.growth ? `
+          <div class="insights-card insights-growth-card">
+            <div class="insights-card-label">Growth</div>
+            <p class="insights-growth-text">${escHtml(data.growth)}</p>
+          </div>` : ''}
+          ${data.question ? `
+          <div class="insights-card insights-question-card">
+            <div class="insights-card-label">Sit with this</div>
+            <p class="insights-question-text">${escHtml(data.question)}</p>
+          </div>` : ''}`;
+      }
+
+      function clearInsightsCache(side) {
+        localStorage.removeItem(INSIGHTS_CACHE_KEY);
+        const bodyEl = document.getElementById(`insights-body-${side}`);
+        if (bodyEl) renderInsightsTab();
+      }
+
+      // ══════════════════════════════════════════════
+      // TAB 3 — TRENDS
+      // ══════════════════════════════════════════════
+      const MOOD_NUM = { positive:5, reflective:4, confused:3, tired:3, anxious:2, frustrated:2, sad:1 };
+      const MOOD_COLORS_HEX = {
+        anxious:'#eab308', frustrated:'#f97316', sad:'#60a5fa',
+        confused:'#a78bfa', positive:'#4ade80', tired:'#94a3b8', reflective:'#818cf8'
+      };
+
+      function renderTrendsTab() {
+        const side = isDesktop() ? 'desktop' : 'mobile';
+        const bodyEl = document.getElementById(`trends-body-${side}`);
+        if (!bodyEl) return;
+
+        if (entries.length < 3) {
+          bodyEl.innerHTML = `<div class="trends-empty">
+            <div class="trends-empty-icon">📊</div>
+            <p>Write at least 3 entries to see your trends.</p>
+          </div>`;
+          return;
+        }
+
+        // Destroy old charts to avoid canvas reuse errors
+        [chartMoodLine, chartMoodDonut, chartActivity].forEach(c => { try { c?.destroy(); } catch(e){} });
+        chartMoodLine = chartMoodDonut = chartActivity = null;
+
+        // ── Stats ──
+        const total = entries.length;
+        const { currentStreak, longestStreak } = calcStreaks(entries);
+
+        // ── Mood over time (last 30 days) ──
+        const now = new Date();
+        const thirtyDaysAgo = new Date(now - 30 * 86400000);
+        const recent = entries.filter(e => e.created_at && new Date(e.created_at) >= thirtyDaysAgo);
+        const moodLineLabels = recent.map(e => {
+          const d = new Date(e.created_at);
+          return `${d.getMonth()+1}/${d.getDate()}`;
+        }).reverse();
+        const moodLineData = recent.map(e => MOOD_NUM[e.mood] || 3).reverse();
+
+        // ── Mood distribution ──
+        const moodCounts = {};
+        entries.forEach(e => { moodCounts[e.mood || 'reflective'] = (moodCounts[e.mood || 'reflective'] || 0) + 1; });
+        const donutLabels = Object.keys(moodCounts);
+        const donutData   = donutLabels.map(m => moodCounts[m]);
+        const donutColors = donutLabels.map(m => MOOD_COLORS_HEX[m] || '#818cf8');
+
+        // ── Weekly activity (last 8 weeks) ──
+        const weeks = [];
+        const weekCounts = [];
+        for (let i = 7; i >= 0; i--) {
+          const wStart = new Date(now - (i + 1) * 7 * 86400000);
+          const wEnd   = new Date(now - i * 7 * 86400000);
+          const label  = `Wk ${8 - i}`;
+          const count  = entries.filter(e => {
+            const d = e.created_at ? new Date(e.created_at) : null;
+            return d && d >= wStart && d < wEnd;
+          }).length;
+          weeks.push(label);
+          weekCounts.push(count);
+        }
+
+        const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+        const gridColor  = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+        const labelColor = isDark ? '#7b79a0' : '#6b68a0';
+        const chartDefaults = {
+          animation: { duration: 400 },
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: gridColor }, ticks: { color: labelColor, font: { size: 11 } } },
+            y: { grid: { color: gridColor }, ticks: { color: labelColor, font: { size: 11 } } }
+          }
+        };
+
+        bodyEl.innerHTML = `
+          <div class="trends-stats-strip">
+            <div class="stat-card"><div class="stat-card-value">${total}</div><div class="stat-card-label">Total Entries</div></div>
+            <div class="stat-card"><div class="stat-card-value">${currentStreak}</div><div class="stat-card-label">Day Streak</div></div>
+            <div class="stat-card"><div class="stat-card-value">${longestStreak}</div><div class="stat-card-label">Best Streak</div></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-title">Mood over time — last 30 days</div>
+            <div class="chart-wrap"><canvas id="chart-mood-line-${side}"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-title">Mood distribution</div>
+            <div class="chart-wrap" style="max-width:260px;margin:0 auto"><canvas id="chart-mood-donut-${side}"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-title">Journaling activity — last 8 weeks</div>
+            <div class="chart-wrap"><canvas id="chart-activity-${side}"></canvas></div>
+          </div>`;
+
+        // Give DOM a tick to render before Chart.js init
+        requestAnimationFrame(() => {
+          const lineCtx   = document.getElementById(`chart-mood-line-${side}`)?.getContext('2d');
+          const donutCtx  = document.getElementById(`chart-mood-donut-${side}`)?.getContext('2d');
+          const barCtx    = document.getElementById(`chart-activity-${side}`)?.getContext('2d');
+
+          if (lineCtx) {
+            chartMoodLine = new Chart(lineCtx, {
+              type: 'line',
+              data: {
+                labels: moodLineLabels,
+                datasets: [{
+                  data: moodLineData,
+                  borderColor: '#8b72e8',
+                  backgroundColor: 'rgba(139,114,232,0.1)',
+                  tension: 0.4,
+                  fill: true,
+                  pointBackgroundColor: '#8b72e8',
+                  pointRadius: 4,
+                }]
+              },
+              options: { ...chartDefaults, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, min:1, max:5, ticks: { ...chartDefaults.scales.y.ticks, stepSize:1, callback: v => (['','Sad','Low','Okay','Good','Positive'][v] || v) } } } }
+            });
+          }
+          if (donutCtx) {
+            chartMoodDonut = new Chart(donutCtx, {
+              type: 'doughnut',
+              data: { labels: donutLabels, datasets: [{ data: donutData, backgroundColor: donutColors, borderWidth: 0 }] },
+              options: {
+                animation: { duration: 400 },
+                plugins: { legend: { display: true, position: 'bottom', labels: { color: labelColor, font: { size: 11 }, padding: 12 } } },
+                cutout: '60%'
+              }
+            });
+          }
+          if (barCtx) {
+            chartActivity = new Chart(barCtx, {
+              type: 'bar',
+              data: {
+                labels: weeks,
+                datasets: [{ data: weekCounts, backgroundColor: 'rgba(139,114,232,0.5)', borderColor: '#8b72e8', borderWidth: 1, borderRadius: 4 }]
+              },
+              options: { ...chartDefaults, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, min:0, ticks: { ...chartDefaults.scales.y.ticks, stepSize:1 } } } }
+            });
+          }
+        });
+      }
+
+      function calcStreaks(entriesArr) {
+        // Group entries by calendar day
+        const days = new Set(entriesArr.map(e => {
+          if (!e.created_at) return null;
+          const d = new Date(e.created_at);
+          return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+        }).filter(Boolean));
+
+        const sortedDays = [...days].sort().reverse();
+        if (!sortedDays.length) return { currentStreak: 0, longestStreak: 0 };
+
+        let currentStreak = 0;
+        let longestStreak = 0;
+        let streak = 0;
+        let prevDate = null;
+
+        for (const dayStr of sortedDays) {
+          if (!prevDate) { streak = 1; prevDate = dayStr; continue; }
+          const [y,m,d] = dayStr.split('-').map(Number);
+          const [py,pm,pd] = prevDate.split('-').map(Number);
+          const curr = new Date(y, m, d);
+          const prev = new Date(py, pm, pd);
+          const diff = (prev - curr) / 86400000;
+          if (diff === 1) { streak++; }
+          else { longestStreak = Math.max(longestStreak, streak); streak = 1; }
+          prevDate = dayStr;
+        }
+        longestStreak = Math.max(longestStreak, streak);
+
+        // Current streak: check if today or yesterday has an entry
+        const today = new Date();
+        const todayStr = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+        const yest = new Date(today - 86400000);
+        const yestStr = `${yest.getFullYear()}-${yest.getMonth()}-${yest.getDate()}`;
+        if (!days.has(todayStr) && !days.has(yestStr)) currentStreak = 0;
+        else {
+          // Walk back from today
+          let cs = 0; let d = new Date(today);
+          for (let i = 0; i < 365; i++) {
+            const s = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+            if (days.has(s)) { cs++; d = new Date(d - 86400000); }
+            else break;
+          }
+          currentStreak = cs;
+        }
+        return { currentStreak, longestStreak };
+      }
+
+      // ══════════════════════════════════════════════
+      // TAB 4 — SEARCH
+      // ══════════════════════════════════════════════
+      let _searchDebounce = null;
+
+      function runSearch(query, side) {
+        const resultsEl = document.getElementById(`search-results-${side}`);
+        const metaEl    = document.getElementById(`search-meta-${side}`);
+        if (!resultsEl || !metaEl) return;
+
+        if (!query.trim()) {
+          metaEl.textContent = '';
+          resultsEl.innerHTML = '';
+          return;
+        }
+
+        const q = query.toLowerCase();
+        const matched = entries.filter(e => {
+          const content = (e.content || '').toLowerCase();
+          const title   = (e.title   || '').toLowerCase();
+          const mood    = (e.mood    || '').toLowerCase();
+          return content.includes(q) || title.includes(q) || mood.includes(q);
+        });
+
+        metaEl.textContent = `${matched.length} result${matched.length !== 1 ? 's' : ''} for "${query}"`;
+
+        if (!matched.length) {
+          resultsEl.innerHTML = `<div class="search-empty">No entries match <em>"${escHtml(query)}"</em></div>`;
+          return;
+        }
+
+        resultsEl.innerHTML = matched.map(e => {
+          const mood    = getMood(e.mood || 'reflective');
+          const timeStr = timeAgo(e.created_at);
+          const title   = e.title || timeStr;
+          // Highlight query in preview
+          const raw     = e.content || '';
+          const idx     = raw.toLowerCase().indexOf(q);
+          let preview   = '';
+          if (idx >= 0) {
+            const start   = Math.max(0, idx - 40);
+            const end     = Math.min(raw.length, idx + q.length + 60);
+            const snippet = raw.slice(start, end);
+            preview = escHtml(snippet).replace(
+              new RegExp(escHtml(query).replace(/[-[\]{}()*+?.,\^$|#\s]/g, '\$&'), 'gi'),
+              m => `<mark class="search-highlight">${m}</mark>`
+            );
+            if (start > 0) preview = '…' + preview;
+            if (end < raw.length) preview += '…';
+          } else {
+            preview = escHtml(raw.slice(0, 100)) + (raw.length > 100 ? '…' : '');
+          }
+          return `<div class="entry-card" onclick="openEntry('${e.id}'); switchTab('journal')">
+            <div class="entry-card-body">
+              <div class="entry-card-meta">
+                <span class="entry-card-mood" style="color:${MOOD_COLORS_HEX[e.mood] || '#818cf8'}">${mood.emoji} ${mood.label}</span>
+                <span class="entry-card-time">${timeStr}</span>
+              </div>
+              <div class="entry-card-title">${escHtml(title)}</div>
+              <div class="entry-card-preview" style="font-size:13px;color:var(--color-text-muted);margin-top:4px;line-height:1.5">${preview}</div>
+            </div>
+          </div>`;
+        }).join('');
+      }
+
+      function wireSearchInputs() {
+        ['mobile', 'desktop'].forEach(side => {
+          const inp = document.getElementById(`search-input-${side}`);
+          if (!inp) return;
+          inp.addEventListener('input', () => {
+            clearTimeout(_searchDebounce);
+            _searchDebounce = setTimeout(() => runSearch(inp.value, side), 300);
+          });
+        });
+      }
+
+      // ══════════════════════════════════════════════
+      // TAB 5 — SETTINGS
+      // ══════════════════════════════════════════════
+      function renderSettingsTab() {
+        const sides = ['mobile', 'desktop'];
+        sides.forEach(side => {
+          const bodyEl = document.getElementById(`settings-body-${side}`);
+          if (!bodyEl) return;
+
+          const isDarkTheme  = document.documentElement.getAttribute('data-theme') !== 'light';
+          const voiceOn      = localStorage.getItem('reflekt_voice') === 'on';
+
+          bodyEl.innerHTML = `
+            <!-- About -->
+            <div class="settings-section">
+              <div class="settings-section-title">About Reflekt</div>
+              <div class="settings-about-logo">
+                <div class="logo-icon" style="width:36px;height:36px;border-radius:10px;background:var(--color-primary-bg);display:flex;align-items:center;justify-content:center;color:var(--color-primary)">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" stroke="none">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  </svg>
+                </div>
+                <span style="font-family:var(--font-display);font-size:20px;font-weight:700">Reflekt</span>
+              </div>
+              <p class="settings-mission">Reflekt is a safe space to think out loud. It's not a chatbot — it's a journal that understands you. AI helps you go deeper, not give you answers.</p>
+              <p class="settings-built-in">Built with care in Kitchener, Ontario.</p>
+              <p class="settings-version">v1.0.0</p>
+            </div>
+
+            <!-- Privacy -->
+            <div class="settings-section">
+              <div class="settings-section-title">Privacy &amp; Security</div>
+              <p style="font-size:13px;font-weight:600;color:var(--color-text);margin-bottom:12px">Your privacy is non-negotiable.</p>
+              <div class="privacy-bullets">
+                <div class="privacy-bullet">All entries are encrypted using AES-256 (Fernet) before being stored — no one can read them in plain text.</div>
+                <div class="privacy-bullet">Only you can read your entries — not even the server can access them unencrypted.</div>
+                <div class="privacy-bullet">Authentication uses JWT tokens stored only on your device — no cookies, no tracking.</div>
+                <div class="privacy-bullet">Your data is never shared, sold, or used to train AI models.</div>
+              </div>
+            </div>
+
+            <!-- Preferences -->
+            <div class="settings-section">
+              <div class="settings-section-title">Preferences</div>
+              <div class="settings-row">
+                <div>
+                  <div class="settings-row-label">AI voice</div>
+                  <div class="settings-row-sub">Read AI responses aloud</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="settings-voice-${side}" ${voiceOn ? 'checked' : ''} onchange="settingsToggleVoice(this)" />
+                  <span class="toggle-track"></span>
+                </label>
+              </div>
+              <div class="settings-row">
+                <div>
+                  <div class="settings-row-label">Dark mode</div>
+                  <div class="settings-row-sub">Toggle light or dark theme</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="settings-theme-${side}" ${isDarkTheme ? 'checked' : ''} onchange="settingsToggleTheme(this)" />
+                  <span class="toggle-track"></span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Your Data -->
+            <div class="settings-section">
+              <div class="settings-section-title">Your Data</div>
+              <button class="settings-btn" onclick="exportJournal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Export Journal
+              </button>
+              <button class="settings-btn danger" onclick="deleteAccount()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                </svg>
+                Delete Account
+              </button>
+            </div>`;
+        });
+      }
+
+      function settingsToggleVoice(checkbox) {
+        // Keep all voice toggles in sync
+        voiceEnabled = checkbox.checked;
+        localStorage.setItem('reflekt_voice', voiceEnabled ? 'on' : 'off');
+        if (!voiceEnabled) window.speechSynthesis?.cancel();
+        applyVoiceState();
+        // Sync all settings toggles
+        document.querySelectorAll('[id^="settings-voice-"]').forEach(el => { el.checked = voiceEnabled; });
+      }
+
+      function settingsToggleTheme(checkbox) {
+        const t = checkbox.checked ? 'dark' : 'light';
+        setTheme(t);
+        // Sync all settings toggles
+        document.querySelectorAll('[id^="settings-theme-"]').forEach(el => { el.checked = checkbox.checked; });
+      }
+
+      async function deleteAccount() {
+        const confirmed = confirm("Are you sure you want to delete your account? This will permanently delete all your entries and your account. This cannot be undone.");
+        if (!confirmed) return;
+        const confirmed2 = confirm("Last chance: permanently delete everything?");
+        if (!confirmed2) return;
+        try {
+          await apiFetch('/api/account', { method: 'DELETE' });
+          logout();
+        } catch(e) {
+          alert('Could not delete account. Please try again.');
+        }
+      }
+
       // ─── Init ───
       initJournalCanvases();
+      wireSearchInputs();
       if (isLoggedIn()) {
         showPage("home");
         loadEntries();
