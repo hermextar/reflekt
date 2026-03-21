@@ -2447,7 +2447,7 @@
       .topnav-tabs {
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 10px;
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
@@ -4651,17 +4651,15 @@
         const journalPanels = ['desktop-panel-idle','desktop-panel-write','desktop-panel-read'];
         const tabPanels     = ['desktop-panel-insights','desktop-panel-trends','desktop-panel-search','desktop-panel-settings'];
         const sidebarEntries = document.getElementById('sidebar-entries-container');
+        const sidebar        = document.getElementById('desktop-sidebar');
 
         if (tab === 'journal') {
           // Restore journal layout
-          journalPanels.forEach(id => {
-            const el = document.getElementById(id);
-            // Only restore idle if no other panel is active
-          });
           // Show idle if nothing is currently open
           showDesktopPanel('idle');
           tabPanels.forEach(id => document.getElementById(id)?.classList.remove('active'));
           if (sidebarEntries) { sidebarEntries.classList.remove('tab-hidden'); sidebarEntries.classList.add('tab-visible'); }
+          if (sidebar) sidebar.style.display = 'flex';
         } else {
           // Hide all journal panels, show the right tab panel
           journalPanels.forEach(id => {
@@ -4675,6 +4673,7 @@
             document.getElementById(id)?.classList.toggle('active', id === 'desktop-panel-' + tab);
           });
           if (sidebarEntries) { sidebarEntries.classList.add('tab-hidden'); sidebarEntries.classList.remove('tab-visible'); }
+          if (sidebar) sidebar.style.display = 'none';
         }
       }
 
