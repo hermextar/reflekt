@@ -4,16 +4,18 @@ UI/UX
 
     ❗have the option to dictate beyond just the first entry (after ai responds and you go to follow up the dictation feature is gone)
 
-    ❗once signed in, stay signed in
+    ✅once signed in, stay signed in
 
     ❗ask for microphone permissions once
 
-    ❗ability to delete entries   
+    ✅ability to delete entries   
 
-    ❗ability to rename entries?
+    ✅ability to rename entries?
 
     ❗other feature ideas?
-        -option to have ai talk back to you instead  of type?
+        ✅-option to have ai talk back to you   instead  of type?
+            ❗-more natural sounding voice?
+                ❗-costs?
 
 
     ❗desktop UX
@@ -51,3 +53,5 @@ Other/misc
 
 
 
+curl -o index.html https://raw.githubusercontent.com/hermextar/reflekt/main/index.html
+curl -o server.py https://raw.githubusercontent.com/hermextar/reflekt/main/server.py
