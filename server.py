@@ -301,7 +301,7 @@ def insights():
     combined = "\n\n---\n\n".join(entries_text)
 
     # Try preferred model, fall back to stable alternative
-    models_to_try = ['claude-sonnet-4-5', 'claude-3-5-sonnet-20241022']
+    models_to_try = ['claude-haiku-4-5']
     response = None
     for model_name in models_to_try:
         try:
