@@ -3053,6 +3053,9 @@
         <div id="desktop-panel-write">
           <div class="journal-canvas" id="journal-canvas-desktop">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+              <button class="back-btn" id="back-from-new-desktop" onclick="showDesktopPanel('idle')" title="Back to home" style="margin-right:auto">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+              </button>
               <p class="journal-canvas-date" id="journal-date-desktop" style="margin-bottom:0"></p>
               <div style="display:flex;align-items:center;gap:8px">
                 <div class="recording-badge" id="recording-badge-desktop" style="margin-bottom:0;padding:4px 10px">
@@ -3094,6 +3097,9 @@
         <!-- Entry read/edit panel (desktop) — journal view -->
         <div id="desktop-panel-read">
           <header class="header" style="padding: 0 40px; min-height: 56px; border-bottom: 1px solid var(--color-border); display:flex; align-items:center; gap:12px; flex-shrink:0">
+                          <button class="back-btn" id="back-from-entry-desktop" onclick="showDesktopPanel('idle')" title="Back to home">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+              </button>
             <div class="entry-title-wrap">
               <span class="entry-title-display" id="entry-title-display-desktop" title="Click to rename"></span>
               <input class="entry-title-input" id="entry-title-input-desktop" type="text" maxlength="80" aria-label="Entry title" />
