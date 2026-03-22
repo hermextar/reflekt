@@ -1,6 +1,6 @@
 UI/UX
     ✅supabase entries encrypted
-    ❗smooth transition between light/dark
+    ✅smooth transition between light/dark
 
     ❗have the option to dictate beyond just the first entry (after ai responds and you go to follow up the dictation feature is gone)
 
@@ -22,7 +22,7 @@ UI/UX
         ✅ -header issue
         ✅-make mobile view fill screen?
         ❗-in desktop, no way to go back to "home" screen while already in an entry
-        ❗-drop shadow when hovering over entries for floating feel
+        ✅-drop shadow when hovering over entries for floating feel
 
 
     
