@@ -62,7 +62,7 @@
       }
       html {
         -webkit-font-smoothing: antialiased;
-        scroll-behavior: smooth;
+        scroll-behavior: smooth;   transition: background-color var(--transition), color var(--transition);
       }
       body {
         min-height: 100dvh;
@@ -668,7 +668,7 @@
         border-color: var(--color-primary);
         background: var(--color-surface-2);
         transform: translateY(-1px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(0, 0, 0, 0.12);
       }
       .entry-card.active-entry {
         border-color: var(--color-primary);
@@ -1483,7 +1483,7 @@
         /* ── Entry card active state tweak in sidebar ── */
         .desktop-sidebar .entry-card:hover {
           transform: translateY(-1px);
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(0, 0, 0, 0.12);
         }
       }
 
