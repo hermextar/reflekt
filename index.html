@@ -3423,6 +3423,7 @@
       }
 
       function logout() {
+        stopAudio();
         clearToken();
         entries = [];
         document.getElementById("login-email").value = "";
@@ -3467,6 +3468,7 @@
       // On mobile: use the original page system.
       // On desktop: hide auth overlay and show desktop panels.
       function showPage(id) {
+        stopAudio();
         if (isDesktop()) {
           // Auth page is a fixed overlay — toggle its display
           const authPage = document.getElementById("page-auth");
@@ -3495,6 +3497,7 @@
 
       // Desktop panel switcher
       function showDesktopPanel(name) {
+        stopAudio();
         document.getElementById("desktop-panel-idle").classList.toggle("hidden", name !== "idle");
         // Support both old names (new/entry) and new names (write/read)
         const writePanel = document.getElementById("desktop-panel-write");
@@ -4642,7 +4645,7 @@
       function toggleVoice() {
         voiceEnabled = !voiceEnabled;
         localStorage.setItem("reflekt_voice", voiceEnabled ? "on" : "off");
-        if (!voiceEnabled && _currentAudio) { _currentAudio.pause(); _currentAudio = null; }
+        if (!voiceEnabled) stopAudio();
         applyVoiceState();
       }
 
@@ -4654,11 +4657,22 @@
       // ─── ElevenLabs TTS ───
       let _currentAudio = null;
 
+      function stopAudio() {
+        if (_currentAudio) {
+          _currentAudio.pause();
+          _currentAudio = null;
+        }
+        const toggles = [
+          document.getElementById("voice-toggle"),
+          document.getElementById("voice-toggle-desktop"),
+        ];
+        toggles.forEach(b => b?.classList.remove("speaking"));
+      }
+
       async function speakText(text) {
         if (!voiceEnabled || !text) return;
 
-        // Stop any currently playing audio
-        if (_currentAudio) { _currentAudio.pause(); _currentAudio = null; }
+        stopAudio(); // stop anything currently playing
 
         const toggles = [
           document.getElementById("voice-toggle"),
@@ -4676,6 +4690,7 @@
           const blob = await res.blob();
           const url = URL.createObjectURL(blob);
           const audio = new Audio(url);
+          audio.loop = false;
           _currentAudio = audio;
           toggles.forEach(b => b?.classList.add("speaking"));
           audio.onended = () => {
@@ -4691,6 +4706,7 @@
           };
           audio.play();
         } catch (e) {
+          console.error("[speakText] ElevenLabs TTS failed:", e);
           toggles.forEach(b => b?.classList.remove("speaking"));
           _speakTextFallback(text);
         }
@@ -4721,6 +4737,7 @@
       // switchTab: the single entry-point for all tab changes
       function switchTab(tab) {
         if (tab === activeTab && tab !== 'trends') return; // allow re-render for trends
+        stopAudio();
         activeTab = tab;
 
         const desktop = isDesktop();
@@ -5263,7 +5280,7 @@
       function settingsToggleVoice(checkbox) {
         voiceEnabled = checkbox.checked;
         localStorage.setItem('reflekt_voice', voiceEnabled ? 'on' : 'off');
-        if (!voiceEnabled && _currentAudio) { _currentAudio.pause(); _currentAudio = null; }
+        if (!voiceEnabled) stopAudio();
         applyVoiceState();
         document.querySelectorAll('[id^="settings-voice-"]').forEach(el => { el.checked = voiceEnabled; });
       }
