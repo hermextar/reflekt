@@ -2471,6 +2471,32 @@
       .topnav-tab:hover { color: var(--color-text-muted); background: var(--color-surface-2); }
       .topnav-tab.active { color: var(--color-primary); background: var(--color-primary-bg); }
       @media (max-width: 899px) { .topnav-tabs { display: none; } }
+
+      /* ─── Voice gender toggle in Settings ─── */
+      .voice-gender-btn {
+        padding: 5px 14px;
+        border-radius: var(--radius-full);
+        font-size: 12px;
+        font-weight: 600;
+        font-family: var(--font-body);
+        cursor: pointer;
+        border: 1px solid;
+        transition: all var(--transition);
+      }
+      .voice-gender-active {
+        background: var(--color-primary-bg);
+        border-color: var(--color-primary) !important;
+        color: var(--color-primary);
+      }
+      .voice-gender-inactive {
+        background: transparent;
+        border-color: var(--color-border) !important;
+        color: var(--color-text-muted);
+      }
+      .voice-gender-btn:hover {
+        border-color: var(--color-primary) !important;
+        color: var(--color-primary);
+      }
     </style>
   </head>
   <body>
@@ -3502,6 +3528,7 @@
           throw new Error("Session expired. Please sign in again.");
         }
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        if (opts._raw) return res;
         return res.json();
       }
 
@@ -4587,10 +4614,9 @@
       // ══════════════════════════════════════════════
       // AI VOICE — TTS for assistant messages
       // ══════════════════════════════════════════════
-      const hasTTS = "speechSynthesis" in window;
       let voiceEnabled = localStorage.getItem("reflekt_voice") === "on";
 
-      // Apply initial state to both toggles
+      // ─── Voice toggle state ───
       function applyVoiceState() {
         const toggles = [
           document.getElementById("voice-toggle"),
@@ -4611,16 +4637,12 @@
           const el = document.getElementById(id);
           if (el) el.style.display = voiceEnabled ? "inline" : "none";
         });
-        // Hide toggles entirely if TTS not available
-        if (!hasTTS) {
-          toggles.forEach((btn) => { if (btn) btn.style.display = "none"; });
-        }
       }
 
       function toggleVoice() {
         voiceEnabled = !voiceEnabled;
         localStorage.setItem("reflekt_voice", voiceEnabled ? "on" : "off");
-        if (!voiceEnabled) window.speechSynthesis.cancel(); // stop any active speech
+        if (!voiceEnabled && _currentAudio) { _currentAudio.pause(); _currentAudio = null; }
         applyVoiceState();
       }
 
@@ -4629,43 +4651,59 @@
       document.getElementById("voice-toggle-desktop")?.addEventListener("click", toggleVoice);
       applyVoiceState();
 
-      // Speak a string (cancels any current speech first)
-      function speakText(text) {
-        if (!hasTTS || !voiceEnabled) return;
-        window.speechSynthesis.cancel();
+      // ─── ElevenLabs TTS ───
+      let _currentAudio = null;
+
+      async function speakText(text) {
+        if (!voiceEnabled || !text) return;
+
+        // Stop any currently playing audio
+        if (_currentAudio) { _currentAudio.pause(); _currentAudio = null; }
 
         const toggles = [
           document.getElementById("voice-toggle"),
           document.getElementById("voice-toggle-desktop"),
         ];
 
-        function _doSpeak() {
-          const utt = new SpeechSynthesisUtterance(text);
-          utt.rate   = 0.95;
-          utt.pitch  = 1.0;
-          utt.volume = 1.0;
-          // Prefer a natural-sounding voice
-          const voices = window.speechSynthesis.getVoices();
-          const preferred = voices.find(v =>
-            /Samantha|Karen|Moira|Daniel|Google UK|Natural/.test(v.name)
-          ) || voices.find(v => v.lang.startsWith("en") && !v.name.includes("Google")) || voices[0];
-          if (preferred) utt.voice = preferred;
-          utt.onstart = () => toggles.forEach(b => b?.classList.add("speaking"));
-          utt.onend   = () => toggles.forEach(b => b?.classList.remove("speaking"));
-          utt.onerror = () => toggles.forEach(b => b?.classList.remove("speaking"));
-          window.speechSynthesis.speak(utt);
-        }
+        const voiceGender = localStorage.getItem("reflekt_voice_gender") || "female";
 
-        // iOS Safari: voices may be empty until onvoiceschanged fires
-        const voices = window.speechSynthesis.getVoices();
-        if (voices.length === 0) {
-          window.speechSynthesis.onvoiceschanged = () => {
-            window.speechSynthesis.onvoiceschanged = null;
-            _doSpeak();
+        try {
+          const res = await apiFetch("/api/tts", {
+            method: "POST",
+            body: { text: text.slice(0, 4096), voice: voiceGender },
+            _raw: true,
+          });
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const audio = new Audio(url);
+          _currentAudio = audio;
+          toggles.forEach(b => b?.classList.add("speaking"));
+          audio.onended = () => {
+            toggles.forEach(b => b?.classList.remove("speaking"));
+            URL.revokeObjectURL(url);
+            _currentAudio = null;
           };
-        } else {
-          _doSpeak();
+          audio.onerror = () => {
+            toggles.forEach(b => b?.classList.remove("speaking"));
+            URL.revokeObjectURL(url);
+            _currentAudio = null;
+            _speakTextFallback(text);
+          };
+          audio.play();
+        } catch (e) {
+          toggles.forEach(b => b?.classList.remove("speaking"));
+          _speakTextFallback(text);
         }
+      }
+
+      function _speakTextFallback(text) {
+        if (!("speechSynthesis" in window)) return;
+        const utt = new SpeechSynthesisUtterance(text);
+        utt.rate = 0.95;
+        const voices = window.speechSynthesis.getVoices();
+        const preferred = voices.find(v => /Samantha|Karen|Daniel/i.test(v.name)) || voices[0];
+        if (preferred) utt.voice = preferred;
+        window.speechSynthesis.speak(utt);
       }
 
 
@@ -5181,6 +5219,18 @@
               </div>
               <div class="settings-row">
                 <div>
+                  <div class="settings-row-label">AI Voice</div>
+                  <div class="settings-row-sub">Choose the voice you hear</div>
+                </div>
+                <div style="display:flex;gap:6px">
+                  <button id="voice-gender-female-${side}" onclick="setVoiceGender('female')"
+                    class="voice-gender-btn ${localStorage.getItem('reflekt_voice_gender') !== 'male' ? 'voice-gender-active' : 'voice-gender-inactive'}">Female</button>
+                  <button id="voice-gender-male-${side}" onclick="setVoiceGender('male')"
+                    class="voice-gender-btn ${localStorage.getItem('reflekt_voice_gender') === 'male' ? 'voice-gender-active' : 'voice-gender-inactive'}">Male</button>
+                </div>
+              </div>
+              <div class="settings-row">
+                <div>
                   <div class="settings-row-label">Dark mode</div>
                   <div class="settings-row-sub">Toggle light or dark theme</div>
                 </div>
@@ -5211,13 +5261,21 @@
       }
 
       function settingsToggleVoice(checkbox) {
-        // Keep all voice toggles in sync
         voiceEnabled = checkbox.checked;
         localStorage.setItem('reflekt_voice', voiceEnabled ? 'on' : 'off');
-        if (!voiceEnabled) window.speechSynthesis?.cancel();
+        if (!voiceEnabled && _currentAudio) { _currentAudio.pause(); _currentAudio = null; }
         applyVoiceState();
-        // Sync all settings toggles
         document.querySelectorAll('[id^="settings-voice-"]').forEach(el => { el.checked = voiceEnabled; });
+      }
+
+      function setVoiceGender(gender) {
+        localStorage.setItem('reflekt_voice_gender', gender);
+        document.querySelectorAll('.voice-gender-btn').forEach(btn => {
+          const isFemale = btn.id && btn.id.startsWith('voice-gender-female');
+          const isMatch  = (isFemale && gender === 'female') || (!isFemale && gender === 'male');
+          btn.classList.toggle('voice-gender-active', isMatch);
+          btn.classList.toggle('voice-gender-inactive', !isMatch);
+        });
       }
 
       function settingsToggleTheme(checkbox) {
@@ -5253,16 +5311,6 @@
               localStorage.setItem('reflekt_mic_asked', '1');
             });
         }
-
-      // ─── iOS Safari: unlock speech synthesis on first user gesture ───
-      document.addEventListener('click', function unlockAudio() {
-        if (window.speechSynthesis) {
-          const u = new SpeechSynthesisUtterance('');
-          u.volume = 0;
-          window.speechSynthesis.speak(u);
-        }
-        document.removeEventListener('click', unlockAudio);
-      }, { once: true });
 
       // ─── Init ───
       initJournalCanvases();

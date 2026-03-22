@@ -6,6 +6,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+import requests
 import anthropic
 from supabase import create_client
 from cryptography.fernet import Fernet
@@ -20,6 +21,7 @@ jwt = JWTManager(app)
 anthropic_client = anthropic.Anthropic(api_key=os.environ.get('ANTHROPIC_API_KEY'))
 supabase = create_client(os.environ.get('SUPABASE_URL'), os.environ.get('SUPABASE_KEY'))
 fernet = Fernet(os.environ.get('ENCRYPTION_KEY').encode())
+elevenlabs_api_key = os.environ.get('ELEVENLABS_API_KEY', '')
 
 def encrypt(text):
     return fernet.encrypt(text.encode()).decode()
@@ -367,6 +369,54 @@ def delete_account():
     supabase.table('entries').delete().eq('user_id', user_id).execute()
     supabase.table('users').delete().eq('id', user_id).execute()
     return jsonify({'success': True})
+
+
+@app.route('/api/tts', methods=['POST'])
+@jwt_required()
+def tts():
+    data = request.json or {}
+    text = data.get('text', '').strip()
+    voice_param = data.get('voice', 'female')
+
+    if not text:
+        return jsonify({'error': 'text is required'}), 400
+    if len(text) > 4096:
+        text = text[:4096]
+
+    VOICE_IDS = {
+        'female': 'BIvP0GN1cAtSRTxNHnWS',  # Ellen
+        'male':   'Bj9UqZbhQsanLzgalpEG',   # Austin
+    }
+    voice_id = VOICE_IDS.get(voice_param, VOICE_IDS['female'])
+
+    if not elevenlabs_api_key:
+        return jsonify({'error': 'ElevenLabs API key not configured'}), 503
+
+    try:
+        resp = requests.post(
+            f'https://api.elevenlabs.io/v1/text-to-speech/{voice_id}',
+            headers={
+                'xi-api-key': elevenlabs_api_key,
+                'Content-Type': 'application/json',
+                'Accept': 'audio/mpeg',
+            },
+            json={
+                'text': text,
+                'model_id': 'eleven_multilingual_v2',
+            },
+            timeout=30,
+            stream=True,
+        )
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f'[tts] ElevenLabs request failed: {e}')
+        return jsonify({'error': 'TTS service unavailable'}), 503
+
+    from flask import Response
+    return Response(
+        resp.iter_content(chunk_size=4096),
+        content_type='audio/mpeg',
+    )
 
 
 @app.errorhandler(404)
