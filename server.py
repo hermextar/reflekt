@@ -374,49 +374,23 @@ def delete_account():
 @app.route('/api/tts', methods=['POST'])
 @jwt_required()
 def tts():
-    data = request.json or {}
-    text = data.get('text', '').strip()
-    voice_param = data.get('voice', 'female')
-
+    data = request.json
+    text = (data.get('text') or '')[:4096]
+    voice = data.get('voice', 'female')
     if not text:
-        return jsonify({'error': 'text is required'}), 400
-    if len(text) > 4096:
-        text = text[:4096]
-
-    VOICE_IDS = {
-        'female': 'BIvP0GN1cAtSRTxNHnWS',  # Ellen
-        'male':   'Bj9UqZbhQsanLzgalpEG',   # Austin
-    }
-    voice_id = VOICE_IDS.get(voice_param, VOICE_IDS['female'])
-
-    if not elevenlabs_api_key:
-        return jsonify({'error': 'ElevenLabs API key not configured'}), 503
-
-    try:
-        resp = requests.post(
-            f'https://api.elevenlabs.io/v1/text-to-speech/{voice_id}',
-            headers={
-                'xi-api-key': elevenlabs_api_key,
-                'Content-Type': 'application/json',
-                'Accept': 'audio/mpeg',
-            },
-            json={
-                'text': text,
-                'model_id': 'eleven_multilingual_v2',
-            },
-            timeout=30,
-            stream=True,
-        )
-        resp.raise_for_status()
-    except requests.RequestException as e:
-        print(f'[tts] ElevenLabs request failed: {e}')
-        return jsonify({'error': 'TTS service unavailable'}), 503
-
-    from flask import Response
-    return Response(
-        resp.iter_content(chunk_size=4096),
-        content_type='audio/mpeg',
+        return jsonify({'error': 'No text provided'}), 400
+    voice_id = 'BIvP0GN1cAtSRTxNHnWS' if voice == 'female' else 'Bj9UqZbhQsanLzgalpEG'
+    eleven_key = os.environ.get('ELEVENLABS_API_KEY')
+    resp = requests.post(
+        f'https://api.elevenlabs.io/v1/text-to-speech/{voice_id}',
+        headers={'xi-api-key': eleven_key, 'Content-Type': 'application/json'},
+        json={'text': text, 'model_id': 'eleven_multilingual_v2'}
     )
+    if not resp.ok:
+        print(f'[tts] ElevenLabs error {resp.status_code}: {resp.text[:200]}')
+        return jsonify({'error': 'TTS failed'}), 502
+    from flask import Response
+    return Response(resp.content, mimetype='audio/mpeg')
 
 
 @app.errorhandler(404)

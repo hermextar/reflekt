@@ -4660,55 +4660,38 @@
       function stopAudio() {
         if (_currentAudio) {
           _currentAudio.pause();
+          _currentAudio.src = '';
           _currentAudio = null;
         }
-        const toggles = [
-          document.getElementById("voice-toggle"),
-          document.getElementById("voice-toggle-desktop"),
-        ];
-        toggles.forEach(b => b?.classList.remove("speaking"));
+        document.querySelectorAll('.voice-toggle').forEach(b => b.classList.remove('speaking'));
       }
 
       async function speakText(text) {
         if (!voiceEnabled || !text) return;
-
-        stopAudio(); // stop anything currently playing
-
-        const toggles = [
-          document.getElementById("voice-toggle"),
-          document.getElementById("voice-toggle-desktop"),
-        ];
-
-        const voiceGender = localStorage.getItem("reflekt_voice_gender") || "female";
-
+        stopAudio();
+        const voiceGender = localStorage.getItem('reflekt_voice_gender') || 'female';
         try {
-          const res = await apiFetch("/api/tts", {
-            method: "POST",
-            body: { text: text.slice(0, 4096), voice: voiceGender },
-            _raw: true,
+          const res = await fetch(API + '/api/tts', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + getToken()
+            },
+            body: JSON.stringify({ text: text.slice(0, 4096), voice: voiceGender })
           });
+          if (!res.ok) throw new Error('TTS ' + res.status);
           const blob = await res.blob();
           const url = URL.createObjectURL(blob);
           const audio = new Audio(url);
           audio.loop = false;
           _currentAudio = audio;
-          toggles.forEach(b => b?.classList.add("speaking"));
-          audio.onended = () => {
-            toggles.forEach(b => b?.classList.remove("speaking"));
-            URL.revokeObjectURL(url);
-            _currentAudio = null;
-          };
-          audio.onerror = () => {
-            toggles.forEach(b => b?.classList.remove("speaking"));
-            URL.revokeObjectURL(url);
-            _currentAudio = null;
-            _speakTextFallback(text);
-          };
+          document.querySelectorAll('.voice-toggle').forEach(b => b.classList.add('speaking'));
+          audio.onended = () => { stopAudio(); URL.revokeObjectURL(url); };
+          audio.onerror = () => { stopAudio(); URL.revokeObjectURL(url); };
           audio.play();
         } catch (e) {
-          console.error("[speakText] ElevenLabs TTS failed:", e);
-          toggles.forEach(b => b?.classList.remove("speaking"));
-          _speakTextFallback(text);
+          console.error('[speakText] ElevenLabs TTS failed:', e);
+          stopAudio();
         }
       }
 
