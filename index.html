@@ -2808,12 +2808,21 @@
           </div>
           <span class="entry-header-info" id="entry-header-time"></span>
           <div style="display:flex;align-items:center;gap:4px;margin-left:auto;flex-shrink:0">
+            <button class="icon-btn" id="theme-toggle-entry" aria-label="Toggle theme" title="Toggle theme" onclick="setTheme(getTheme()==='dark'?'light':'dark')">
+              <svg id="theme-icon-dark-em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+              <svg id="theme-icon-light-em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            </button>
             <button class="voice-toggle" id="voice-toggle-entry" aria-label="Toggle AI voice" title="AI voice" onclick="toggleVoice()">
               <svg id="voice-icon-off-e" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
               </svg>
               <svg id="voice-icon-on-e" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+              </svg>
+            </button>
+            <button class="icon-btn" aria-label="Delete entry" title="Delete entry" onclick="deleteEntryFromHeader()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
               </svg>
             </button>
             <button class="icon-btn" onclick="exportSingleEntry()" aria-label="Export entry" title="Export this entry">
@@ -3145,12 +3154,21 @@
             </div>
             <span class="entry-header-info" id="entry-header-time-desktop"></span>
             <div style="display:flex;align-items:center;gap:4px;margin-left:auto;flex-shrink:0">
+              <button class="icon-btn" id="theme-toggle-entry-d" aria-label="Toggle theme" title="Toggle theme" onclick="setTheme(getTheme()==='dark'?'light':'dark')">
+                <svg id="theme-icon-dark-ed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                <svg id="theme-icon-light-ed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+              </button>
               <button class="voice-toggle" id="voice-toggle-entry-d" aria-label="Toggle AI voice" title="AI voice" onclick="toggleVoice()">
                 <svg id="voice-icon-off-ed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
                 </svg>
                 <svg id="voice-icon-on-ed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
                   <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                </svg>
+              </button>
+              <button class="icon-btn" aria-label="Delete entry" title="Delete entry" onclick="deleteEntryFromHeader()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
                 </svg>
               </button>
               <button class="icon-btn" onclick="exportSingleEntry()" aria-label="Export entry" title="Export this entry">
@@ -3462,16 +3480,11 @@
       }
       function setTheme(t) {
         html.setAttribute("data-theme", t);
-        // Mobile icons
-        document.getElementById("theme-icon-dark").style.display =
-          t === "dark" ? "inline" : "none";
-        document.getElementById("theme-icon-light").style.display =
-          t === "light" ? "inline" : "none";
-        // Desktop sidebar icons
-        document.getElementById("theme-icon-dark-d").style.display =
-          t === "dark" ? "inline" : "none";
-        document.getElementById("theme-icon-light-d").style.display =
-          t === "light" ? "inline" : "none";
+        const isDark = t === "dark";
+        const offIds = ["theme-icon-dark", "theme-icon-dark-d", "theme-icon-dark-em", "theme-icon-dark-ed"];
+        const onIds  = ["theme-icon-light", "theme-icon-light-d", "theme-icon-light-em", "theme-icon-light-ed"];
+        offIds.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = isDark ? "inline" : "none"; });
+        onIds.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = isDark ? "none" : "inline"; });
       }
       if (window.matchMedia("(prefers-color-scheme: light)").matches)
         setTheme("light");
@@ -3952,8 +3965,12 @@
       );
 
       // ─── Open entry ───
+      let _isLoadingEntry = false;
+
       async function openEntry(id) {
-        stopAudio();
+        stopAudio(); // always first — kills any playing audio immediately
+        if (_isLoadingEntry) return; // prevent concurrent/double loads
+        _isLoadingEntry = true;
         currentEntryId = id;
 
         // Determine which set of elements to use based on current layout
@@ -3991,6 +4008,7 @@
 
           // Populate read view panels — must be inside try where entry is defined
           showEntryReadView(entry, desktop);
+          applyVoiceState(); // sync voice toggle icons in entry header
 
           if (desktop) {
             showDesktopPanel("read");
@@ -4010,6 +4028,8 @@
           } else {
             showPage("entry");
           }
+        } finally {
+          _isLoadingEntry = false;
         }
       }
 
@@ -4168,6 +4188,13 @@
         } catch (e) {
           alert("Could not delete the entry. Please try again.");
         }
+      }
+
+      // ─── Delete from entry header ───
+      async function deleteEntryFromHeader() {
+        if (!currentEntryId) return;
+        const fakeEvt = { stopPropagation: () => {} };
+        deleteEntry(fakeEvt, currentEntryId);
       }
 
       // ─── Export journal ───
@@ -4385,12 +4412,22 @@
           const draftId = window[`_draftId_${side}`];
           let entry;
           if (draftId) {
+            // Draft was auto-saved — PATCH content, then POST a fresh entry to get AI analysis
+            // (PATCH doesn't run AI; we need a full POST for mood/reflection/tags)
             await apiFetch(`/api/entries/${draftId}`, {
-              method: "PATCH",
-              body: { content }
+              method: "DELETE",
+            }).catch(() => {}); // best-effort delete the partial draft
+            entry = await apiFetch("/api/entries", {
+              method: "POST",
+              body: { content, title: "" }
             });
-            entry = entries.find(e => e.id === draftId) || { id: draftId, content };
+            // Remove the old draft from local list and add the new full entry
+            entries = entries.filter(e => e.id !== draftId);
+            window[`_draftId_${side}`] = entry.id;
+            entries.unshift(entry);
+            renderEntries();
           } else {
+            // Fresh entry — POST returns full entry with mood/reflection/tags
             entry = await apiFetch("/api/entries", {
               method: "POST",
               body: { content, title: "" }
@@ -4401,6 +4438,7 @@
           }
           showSummaryCard(entry, side);
         } catch (e) {
+          console.error("[journalSave] error:", e);
           if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "Submit entry"; }
         }
       }
