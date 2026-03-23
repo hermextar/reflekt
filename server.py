@@ -36,9 +36,9 @@ def decrypt(text):
 def index():
     return send_from_directory('.', 'index.html')
 
-@app.route('/novu logo.jpeg')
+@app.route('/novu logo.png')
 def serve_logo():
-    return send_from_directory('.', 'novu logo.jpeg')
+    return send_from_directory('.', 'novu logo.png')
 
 @app.route('/api/register', methods=['POST'])
 def register():
