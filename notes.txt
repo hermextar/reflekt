@@ -16,7 +16,10 @@ BUGS
 
 
 UI/UX
+    ❗replace browser tab logo
+
     ✅supabase entries encrypted
+    
     ✅smooth transition between light/dark
 
     ✅have the option to dictate beyond just the first entry (after ai responds and you go to follow up the dictation feature is gone)
@@ -28,11 +31,6 @@ UI/UX
     ✅ability to delete entries   
 
     ✅ability to rename entries?
-
-    ❗other feature ideas?
-        ✅-option to have ai talk back to you   instead  of type?
-            ❗-more natural sounding voice?
-                ❗-costs?
 
 
     ✅desktop UX
