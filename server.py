@@ -36,6 +36,10 @@ def decrypt(text):
 def index():
     return send_from_directory('.', 'index.html')
 
+@app.route('/novu logo.jpeg')
+def serve_logo():
+    return send_from_directory('.', 'novu logo.jpeg')
+
 @app.route('/api/register', methods=['POST'])
 def register():
     data = request.json
@@ -114,7 +118,7 @@ def create_entry():
     ai_response = anthropic_client.messages.create(
         model='claude-haiku-4-5',
         max_tokens=300,
-        system='You are Reflekt, a warm and emotionally intelligent journalling companion. Your role is to help the user explore their thoughts and feelings with curiosity and compassion. Ask one thoughtful follow-up question at a time. Reflect back what you hear. Validate their emotions without judgment. Never give direct advice or diagnoses. Keep responses concise — 2 to 4 sentences max.',
+        system='You are Novu, a warm and emotionally intelligent journalling companion. Your role is to help the user explore their thoughts and feelings with curiosity and compassion. Ask one thoughtful follow-up question at a time. Reflect back what you hear. Validate their emotions without judgment. Never give direct advice or diagnoses. Keep responses concise — 2 to 4 sentences max.',
         messages=[{'role': 'user', 'content': f'The user just wrote their first journal entry: "{content}". Respond warmly and gently — acknowledge what they shared, then ask one thoughtful question to help them explore further. Be brief and human.'}]
     )
     ai_message = ai_response.content[0].text
@@ -195,7 +199,7 @@ def reply(entry_id):
     ai_response = anthropic_client.messages.create(
         model='claude-haiku-4-5',
         max_tokens=400,
-        system='You are Reflekt, a warm and emotionally intelligent journalling companion. Your role is to help the user explore their thoughts and feelings with curiosity and compassion. Ask one thoughtful follow-up question at a time. Reflect back what you hear. Validate their emotions without judgment. Never give direct advice or diagnoses. Keep responses concise — 2 to 4 sentences max.',
+        system='You are Novu, a warm and emotionally intelligent journalling companion. Your role is to help the user explore their thoughts and feelings with curiosity and compassion. Ask one thoughtful follow-up question at a time. Reflect back what you hear. Validate their emotions without judgment. Never give direct advice or diagnoses. Keep responses concise — 2 to 4 sentences max.',
         messages=messages
     )
     ai_message = ai_response.content[0].text
