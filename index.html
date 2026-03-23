@@ -2754,10 +2754,10 @@
             Back
           </button>
           <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
-            <div class="recording-badge" id="recording-badge" style="margin-bottom:0;padding:4px 10px">
+            <div class="recording-badge" id="recording-badge-mobile" style="margin-bottom:0;padding:4px 10px">
               <span class="rec-dot"></span>Listening…
             </div>
-            <button class="mic-btn" id="mic-btn" style="padding:6px 12px;font-size:12px">
+            <button class="mic-btn" id="mic-btn-mobile" style="padding:6px 12px;font-size:12px">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px">
                 <rect x="9" y="3" width="6" height="11" rx="3"/>
                 <path d="M5 11a7 7 0 0 0 14 0"/>
@@ -2786,7 +2786,7 @@
           <span class="journal-word-count" id="journal-word-count-mobile"></span>
           <div class="journal-footer-right">
             <span class="journal-autosave-label" id="journal-autosave-mobile">Saved</span>
-            <button class="journal-save-btn" id="journal-save-btn-mobile">Save entry</button>
+            <button class="journal-save-btn" id="journal-save-btn-mobile">Submit entry</button>
           </div>
         </div>
 
@@ -2807,11 +2807,21 @@
             <input class="entry-title-input" id="entry-title-input" type="text" maxlength="80" aria-label="Entry title" />
           </div>
           <span class="entry-header-info" id="entry-header-time"></span>
-          <button class="icon-btn" onclick="exportSingleEntry()" aria-label="Export entry" title="Export this entry" style="margin-left:auto;flex-shrink:0">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
-          </button>
+          <div style="display:flex;align-items:center;gap:4px;margin-left:auto;flex-shrink:0">
+            <button class="voice-toggle" id="voice-toggle-entry" aria-label="Toggle AI voice" title="AI voice" onclick="toggleVoice()">
+              <svg id="voice-icon-off-e" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+              </svg>
+              <svg id="voice-icon-on-e" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+              </svg>
+            </button>
+            <button class="icon-btn" onclick="exportSingleEntry()" aria-label="Export entry" title="Export this entry">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+            </button>
+          </div>
         </header>
 
         <div class="journal-read-area" id="journal-read-area-mobile">
@@ -3116,7 +3126,7 @@
             <span class="journal-word-count" id="journal-word-count-desktop"></span>
             <div class="journal-footer-right">
               <span class="journal-autosave-label" id="journal-autosave-desktop">Saved</span>
-              <button class="journal-save-btn" id="journal-save-btn-desktop">Save entry</button>
+              <button class="journal-save-btn" id="journal-save-btn-desktop">Submit entry</button>
             </div>
           </div>
 
@@ -3134,11 +3144,21 @@
               <input class="entry-title-input" id="entry-title-input-desktop" type="text" maxlength="80" aria-label="Entry title" />
             </div>
             <span class="entry-header-info" id="entry-header-time-desktop"></span>
-            <button class="icon-btn" onclick="exportSingleEntry()" aria-label="Export entry" title="Export this entry" style="margin-left:auto;flex-shrink:0">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-              </svg>
-            </button>
+            <div style="display:flex;align-items:center;gap:4px;margin-left:auto;flex-shrink:0">
+              <button class="voice-toggle" id="voice-toggle-entry-d" aria-label="Toggle AI voice" title="AI voice" onclick="toggleVoice()">
+                <svg id="voice-icon-off-ed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+                </svg>
+                <svg id="voice-icon-on-ed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                </svg>
+              </button>
+              <button class="icon-btn" onclick="exportSingleEntry()" aria-label="Export entry" title="Export this entry">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+              </button>
+            </div>
           </header>
 
           <div class="journal-read-area" id="journal-read-area-desktop">
@@ -3931,6 +3951,7 @@
 
       // ─── Open entry ───
       async function openEntry(id) {
+        stopAudio();
         currentEntryId = id;
 
         // Determine which set of elements to use based on current layout
@@ -4242,7 +4263,7 @@
         if (nudge)   { nudge.classList.remove("visible"); }
         if (nudgeTx) nudgeTx.textContent = "";
         if (wc)      wc.textContent = "";
-        if (saveBtn) { saveBtn.classList.remove("show"); saveBtn.disabled = false; saveBtn.textContent = "Save entry"; }
+        if (saveBtn) { saveBtn.classList.remove("show"); saveBtn.disabled = false; saveBtn.textContent = "Submit entry"; }
         if (footer)  footer.classList.remove("show");
         if (summary) { summary.classList.remove("visible"); summary.innerHTML = ""; }
         if (autosave) autosave.classList.remove("visible");
@@ -4367,10 +4388,6 @@
               body: { content }
             });
             entry = entries.find(e => e.id === draftId) || { id: draftId, content };
-            // Re-fetch to get reflection/tags
-            try {
-              entry = await apiFetch(`/api/entries/${draftId}`);
-            } catch (e) { /* use local */ }
           } else {
             entry = await apiFetch("/api/entries", {
               method: "POST",
@@ -4382,7 +4399,7 @@
           }
           showSummaryCard(entry, side);
         } catch (e) {
-          if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "Save entry"; }
+          if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "Submit entry"; }
         }
       }
 
@@ -4409,11 +4426,7 @@
             </span>
           </div>
           ${reflection ? `<p class="summary-reflection">${escHtml(reflection)}</p>` : ""}
-          ${tagsHtml}
-          <div class="summary-actions">
-            <button class="summary-continue-btn" onclick="journalContinueEditing('${side}')">Keep writing</button>
-            <button class="summary-continue-btn" onclick="openEntry('${entry.id}')">View full entry</button>
-          </div>`;
+          ${tagsHtml}`;
         container.classList.add("visible");
 
         // Hide save btn, show autosave confirmation
@@ -4624,9 +4637,11 @@
         const toggles = [
           document.getElementById("voice-toggle"),
           document.getElementById("voice-toggle-desktop"),
-        ];
-        const iconOffIds = ["voice-icon-off",   "voice-icon-off-d"];
-        const iconOnIds  = ["voice-icon-on",    "voice-icon-on-d"];
+          document.getElementById("voice-toggle-entry"),
+          document.getElementById("voice-toggle-entry-d"),
+        ].filter(Boolean);
+        const iconOffIds = ["voice-icon-off", "voice-icon-off-d", "voice-icon-off-e", "voice-icon-off-ed"];
+        const iconOnIds  = ["voice-icon-on",  "voice-icon-on-d",  "voice-icon-on-e",  "voice-icon-on-ed"];
         toggles.forEach((btn) => {
           if (!btn) return;
           btn.classList.toggle("active", voiceEnabled);
