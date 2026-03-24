@@ -5134,6 +5134,23 @@
       // ══════════════════════════════════════════════
       let _searchDebounce = null;
 
+      function _searchEntryCard(e, query) {
+        const mood    = getMood(e.mood || 'reflective');
+        const timeStr = timeAgo(e.created_at || e.createdAt);
+        const preview = (e.content || '').replace(/\n/g, ' ').slice(0, 120);
+        return `<div class="entry-card" data-entry-id="${e.id}" onclick="openEntry('${e.id}'); switchTab('journal')">
+          <div class="entry-card-body">
+            ${e.title ? `<p class="entry-card-title">${escHtml(e.title)}</p>` : ''}
+            <div class="entry-card-meta">
+              <span class="mood-badge ${mood.cls}">${mood.emoji} ${mood.label}</span>
+              <span class="entry-time">${timeStr}</span>
+            </div>
+            <p class="entry-preview">${escHtml(preview)}${(e.content||'').length > 120 ? '\u2026' : ''}</p>
+          </div>
+          <div class="entry-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+        </div>`;
+      }
+
       function runSearch(query, side) {
         const resultsEl = document.getElementById(`search-results-${side}`);
         const metaEl    = document.getElementById(`search-meta-${side}`);
@@ -5265,8 +5282,8 @@
               </div>
               <div class="settings-row">
                 <div>
-                  <div class="settings-row-label">AI Voice</div>
-                  <div class="settings-row-sub">Choose the voice you hear</div>
+                  <div class="settings-row-label">Voice gender</div>
+                  <div class="settings-row-sub">Female or male narrator</div>
                 </div>
                 <div style="display:flex;gap:6px">
                   <button id="voice-gender-female-${side}" onclick="setVoiceGender('female')"
