@@ -11,7 +11,7 @@ BUGS
         ⁉️- takes a long time?
         ❗- have tts stop when entry is exited
         ❗- have volume button and theme toggle       visible in entries (only on mobile)
-        ❗- have delete entry button visible inside entries
+        ✅- have delete entry button visible inside entries
         ⁉️- save entry not only takes forever but also just freezes, the ai analyzation only works when you exit the entry and reload. please resolve this as it used to be so incredibly fast it was almost scary.
 
 
@@ -38,7 +38,7 @@ UI/UX
         ✅-make mobile view fill screen?
         ✅-in desktop, no way to go back to "home" screen while already in an entry
         ✅-drop shadow when hovering over entries for floating feel
-        ❗-volume toggle should not appear in entry on desktop, rather only on mobile
+        ✅-volume toggle should not appear in entry on desktop, rather only on mobile
 
     
 Pages
@@ -47,7 +47,7 @@ Pages
     ✅-edit mode
         -
     ❗-notebooks/spaces
-        -context for notebooks?
+        -
     ✅-about us
         -
     -breathing workouts/visualization?
