@@ -38,6 +38,7 @@ UI/UX
         ✅-make mobile view fill screen?
         ✅-in desktop, no way to go back to "home" screen while already in an entry
         ✅-drop shadow when hovering over entries for floating feel
+        ❗-volume toggle should not appear in entry on desktop, rather only on mobile
 
     
 Pages
