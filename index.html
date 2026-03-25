@@ -71,6 +71,7 @@
         line-height: 1.6;
         color: var(--color-text);
         background: var(--color-bg);
+        -webkit-overflow-scrolling: touch;
         transition:
           background var(--transition),
           color var(--transition);
@@ -1504,6 +1505,8 @@
         flex-direction: column;
         padding: 24px 24px 0;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-y;
         position: relative;
       }
       .journal-canvas-date {
@@ -4392,7 +4395,7 @@
         if (!ta || !ta.value.trim()) return;
 
         const content = ta.value.trim();
-        if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "Saving…"; }
+        if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "Submitting…"; }
 
         try {
           const draftId = window[`_draftId_${side}`];
@@ -4423,6 +4426,7 @@
             renderEntries();
           }
           showSummaryCard(entry, side);
+          setTimeout(() => openEntry(entry.id), 1200);
         } catch (e) {
           console.error("[journalSave] error:", e);
           if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "Submit entry"; }
@@ -4711,8 +4715,13 @@
 
       async function speakText(text) {
         if (!voiceEnabled || !text) return;
-        stopAudio();
         const session = ++_ttsSession;
+        if (_currentAudio) {
+          _currentAudio.pause();
+          _currentAudio.src = '';
+          _currentAudio = null;
+        }
+        document.querySelectorAll('.voice-toggle').forEach(b => b.classList.remove('speaking'));
         const voiceGender = localStorage.getItem('reflekt_voice_gender') || 'female';
         try {
           const res = await fetch(API + '/api/tts', {
