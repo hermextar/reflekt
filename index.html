@@ -4295,8 +4295,6 @@
       function autosizeTA(ta) {
         ta.style.height = "auto";
         ta.style.height = ta.scrollHeight + "px";
-        const canvas = ta.closest('.journal-canvas');
-        if (canvas) canvas.scrollTop = canvas.scrollHeight;
       }
 
       // Reset journal canvas to blank state
@@ -4467,12 +4465,24 @@
             renderEntries();
           }
           showSummaryCard(entry, side);
-          setTimeout(() => openEntry(entry.id), 1200);
+          setTimeout(async () => {
+            await openEntry(entry.id);
+            if (voiceEnabled) {
+              const containers = [chatContainer, chatContainerD];
+              for (const container of containers) {
+                const msgs = container.querySelectorAll('.msg.assistant .msg-bubble');
+                if (msgs.length > 0) {
+                  const firstMsg = msgs[0].textContent;
+                  if (firstMsg) { speakText(firstMsg); break; }
+                }
+              }
+            }
+          }, 1200);
         } catch (e) {
           console.error("[journalSave] error:", e);
           if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "Submit entry"; }
         } finally {
-          journalSave._inProgress = false;
+          setTimeout(() => { journalSave._inProgress = false; }, 1400);
           if (entryForm) entryForm.style.pointerEvents = '';
           if (progressBar) {
             progressBar.className = 'submit-progress-bar done';
