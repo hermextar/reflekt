@@ -1508,6 +1508,7 @@
         -webkit-overflow-scrolling: touch;
         touch-action: pan-y;
         position: relative;
+        min-height: 0;
       }
       .journal-canvas-date {
         font-family: var(--font-body);
@@ -1520,9 +1521,9 @@
         user-select: none;
       }
       .journal-main-textarea {
-        flex: 1;
+        flex: none;
         width: 100%;
-        min-height: 200px;
+        min-height: 60vh;
         resize: none;
         background: transparent;
         border: none;
@@ -4267,6 +4268,8 @@
       function autosizeTA(ta) {
         ta.style.height = "auto";
         ta.style.height = ta.scrollHeight + "px";
+        const canvas = ta.closest('.journal-canvas');
+        if (canvas) canvas.scrollTop = canvas.scrollHeight;
       }
 
       // Reset journal canvas to blank state
@@ -4704,10 +4707,9 @@
       let _currentAudio = null;
 
       function stopAudio() {
-        _ttsSession++; // invalidate any in-flight speakText calls
+        _ttsSession++;
         if (_currentAudio) {
-          _currentAudio.pause();
-          _currentAudio.src = '';
+          try { _currentAudio.stop(); } catch(e) {}
           _currentAudio = null;
         }
         document.querySelectorAll('.voice-toggle').forEach(b => b.classList.remove('speaking'));
@@ -4717,11 +4719,11 @@
         if (!voiceEnabled || !text) return;
         const session = ++_ttsSession;
         if (_currentAudio) {
-          _currentAudio.pause();
-          _currentAudio.src = '';
+          try { _currentAudio.stop(); } catch(e) {}
           _currentAudio = null;
         }
         document.querySelectorAll('.voice-toggle').forEach(b => b.classList.remove('speaking'));
+
         const voiceGender = localStorage.getItem('reflekt_voice_gender') || 'female';
         try {
           const res = await fetch(API + '/api/tts', {
@@ -4733,22 +4735,29 @@
             body: JSON.stringify({ text: text.slice(0, 4096), voice: voiceGender })
           });
           if (!res.ok) throw new Error('TTS ' + res.status);
-          const blob = await res.blob();
-          // Check if this session is still current before playing
-          if (session !== _ttsSession) { return; } // stale — discard blob silently
-          const url = URL.createObjectURL(blob);
-          const audio = new Audio(url);
-          audio.loop = false;
-          // Final check after object creation
-          if (session !== _ttsSession) { URL.revokeObjectURL(url); return; }
-          _currentAudio = audio;
+          const arrayBuffer = await res.arrayBuffer();
+          if (session !== _ttsSession) return;
+
+          const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+          if (session !== _ttsSession) { audioCtx.close(); return; }
+
+          const source = audioCtx.createBufferSource();
+          source.buffer = audioBuffer;
+          source.connect(audioCtx.destination);
+
+          _currentAudio = source;
           document.querySelectorAll('.voice-toggle').forEach(b => b.classList.add('speaking'));
-          audio.onended = () => { stopAudio(); URL.revokeObjectURL(url); };
-          audio.onerror = () => { stopAudio(); URL.revokeObjectURL(url); };
-          audio.play();
+
+          source.onended = () => {
+            document.querySelectorAll('.voice-toggle').forEach(b => b.classList.remove('speaking'));
+            _currentAudio = null;
+            audioCtx.close();
+          };
+          source.start(0);
         } catch (e) {
-          console.error('[speakText] ElevenLabs TTS failed:', e);
-          stopAudio();
+          console.error('[speakText] TTS failed:', e);
+          document.querySelectorAll('.voice-toggle').forEach(b => b.classList.remove('speaking'));
         }
       }
 
