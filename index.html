@@ -2507,9 +2507,36 @@
         border-color: var(--color-primary) !important;
         color: var(--color-primary);
       }
+      /* ─── Submit progress bar ─── */
+      .submit-progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        width: 0%;
+        background: var(--color-primary, #7c6ffb);
+        z-index: 9999;
+        border-radius: 0 2px 2px 0;
+        transition: width 0.4s ease;
+        pointer-events: none;
+      }
+      .submit-progress-bar.active {
+        animation: progressFill 4.5s ease forwards;
+      }
+      @keyframes progressFill {
+        0%   { width: 0%; }
+        60%  { width: 75%; }
+        85%  { width: 88%; }
+        100% { width: 92%; }
+      }
+      .submit-progress-bar.done {
+        width: 100% !important;
+        transition: width 0.2s ease;
+      }
     </style>
   </head>
   <body>
+    <div class="submit-progress-bar" id="submitProgressBar"></div>
     <div id="offline-banner">You're offline — changes won't be saved until you reconnect.</div>
     <div class="app">
       <!-- ═══════════════════ AUTH PAGE ═══════════════════ -->
@@ -4393,12 +4420,23 @@
 
       // Explicit save — shows summary card
       async function journalSave(side) {
+        if (journalSave._inProgress) return;
+        journalSave._inProgress = true;
+
         const ta      = document.getElementById(`journal-textarea-${side}`);
         const saveBtn = document.getElementById(`journal-save-btn-${side}`);
-        if (!ta || !ta.value.trim()) return;
+        if (!ta || !ta.value.trim()) { journalSave._inProgress = false; return; }
 
         const content = ta.value.trim();
         if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "Submitting…"; }
+
+        // Block taps on the journal canvas while in flight
+        const entryForm = document.getElementById('page-new') || document.querySelector('.journal-canvas');
+        if (entryForm) entryForm.style.pointerEvents = 'none';
+
+        // Show progress bar
+        const progressBar = document.getElementById('submitProgressBar');
+        if (progressBar) progressBar.className = 'submit-progress-bar active';
 
         try {
           const draftId = window[`_draftId_${side}`];
@@ -4433,6 +4471,13 @@
         } catch (e) {
           console.error("[journalSave] error:", e);
           if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "Submit entry"; }
+        } finally {
+          journalSave._inProgress = false;
+          if (entryForm) entryForm.style.pointerEvents = '';
+          if (progressBar) {
+            progressBar.className = 'submit-progress-bar done';
+            setTimeout(() => { progressBar.className = 'submit-progress-bar'; }, 400);
+          }
         }
       }
 
