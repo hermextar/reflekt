@@ -4754,7 +4754,7 @@
       function stopAudio() {
         _ttsSession++;
         if (_currentAudio) {
-          try { _currentAudio.stop(); } catch(e) {}
+          try { _currentAudio.pause(); _currentAudio.src = ''; } catch(e) {}
           _currentAudio = null;
         }
         document.querySelectorAll('.voice-toggle').forEach(b => b.classList.remove('speaking'));
@@ -4763,8 +4763,10 @@
       async function speakText(text) {
         if (!voiceEnabled || !text) return;
         const session = ++_ttsSession;
+
+        // Stop any currently playing audio
         if (_currentAudio) {
-          try { _currentAudio.stop(); } catch(e) {}
+          try { _currentAudio.pause(); _currentAudio.src = ''; } catch(e) {}
           _currentAudio = null;
         }
         document.querySelectorAll('.voice-toggle').forEach(b => b.classList.remove('speaking'));
@@ -4780,29 +4782,39 @@
             body: JSON.stringify({ text: text.slice(0, 4096), voice: voiceGender })
           });
           if (!res.ok) throw new Error('TTS ' + res.status);
-          const arrayBuffer = await res.arrayBuffer();
+          const blob = await res.blob();
           if (session !== _ttsSession) return;
 
-          const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-          const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-          if (session !== _ttsSession) { audioCtx.close(); return; }
+          const url = URL.createObjectURL(blob);
+          const audio = new Audio(url);
+          audio.preload = 'auto';
+          _currentAudio = audio;
 
-          const source = audioCtx.createBufferSource();
-          source.buffer = audioBuffer;
-          source.connect(audioCtx.destination);
-
-          _currentAudio = source;
           document.querySelectorAll('.voice-toggle').forEach(b => b.classList.add('speaking'));
 
-          source.onended = () => {
+          audio.onended = () => {
             document.querySelectorAll('.voice-toggle').forEach(b => b.classList.remove('speaking'));
             _currentAudio = null;
-            audioCtx.close();
+            URL.revokeObjectURL(url);
           };
-          source.start(0);
+          audio.onerror = () => {
+            document.querySelectorAll('.voice-toggle').forEach(b => b.classList.remove('speaking'));
+            _currentAudio = null;
+            URL.revokeObjectURL(url);
+          };
+
+          // Resume AudioContext to unblock autoplay on iOS
+          try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            await ctx.resume();
+            ctx.close();
+          } catch(e) {}
+
+          await audio.play();
         } catch (e) {
           console.error('[speakText] TTS failed:', e);
           document.querySelectorAll('.voice-toggle').forEach(b => b.classList.remove('speaking'));
+          _currentAudio = null;
         }
       }
 
