@@ -4955,7 +4955,25 @@
           return;
         }
 
-        // No cache — show generate button
+        // No cache — check if history exists
+        let history = [];
+        try { history = JSON.parse(localStorage.getItem(INSIGHTS_HISTORY_KEY)) || []; } catch(e) {}
+
+        if (history.length > 0) {
+          // Show most recent from history with a regenerate button at top
+          const latest = history[0];
+          bodyEl.innerHTML = `
+            <button class="insights-generate-btn" id="insights-gen-btn-${side}" onclick="generateInsights('${side}')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+              Generate New Insights
+            </button>`;
+          _renderInsightsData(bodyEl, latest.data, Math.round((Date.now() - latest.ts) / 60000));
+          return;
+        }
+
+        // No cache and no history — show generate button only
         bodyEl.innerHTML = `
           <button class="insights-generate-btn" id="insights-gen-btn-${side}" onclick="generateInsights('${side}')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
@@ -5015,7 +5033,8 @@
         const patternsHtml = (data.patterns || []).map(p =>
           `<li>${escHtml(p)}</li>`).join('');
 
-        bodyEl.innerHTML = `
+        const contentDiv = document.createElement('div');
+        contentDiv.innerHTML = `
           <div class="insights-cache-bar">
             <span>Generated ${ageLabel}</span>
             <button onclick="clearInsightsCache('${side}')">Refresh</button>
@@ -5036,6 +5055,7 @@
             <div class="insights-card-label">Sit with this</div>
             <p class="insights-question-text">${escHtml(data.question)}</p>
           </div>` : ''}`;
+        bodyEl.appendChild(contentDiv);
 
         // Append past insights history
         let history = [];
@@ -5231,7 +5251,7 @@
         const days = new Set(entriesArr.map(e => {
           if (!e.created_at) return null;
           const d = new Date(e.created_at);
-          return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+          return d.toISOString().slice(0, 10);
         }).filter(Boolean));
 
         const sortedDays = [...days].sort().reverse();
@@ -5244,10 +5264,8 @@
 
         for (const dayStr of sortedDays) {
           if (!prevDate) { streak = 1; prevDate = dayStr; continue; }
-          const [y,m,d] = dayStr.split('-').map(Number);
-          const [py,pm,pd] = prevDate.split('-').map(Number);
-          const curr = new Date(y, m, d);
-          const prev = new Date(py, pm, pd);
+          const curr = new Date(dayStr);
+          const prev = new Date(prevDate);
           const diff = (prev - curr) / 86400000;
           if (diff === 1) { streak++; }
           else { longestStreak = Math.max(longestStreak, streak); streak = 1; }
@@ -5257,15 +5275,15 @@
 
         // Current streak: check if today or yesterday has an entry
         const today = new Date();
-        const todayStr = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+        const todayStr = today.toISOString().slice(0, 10);
         const yest = new Date(today - 86400000);
-        const yestStr = `${yest.getFullYear()}-${yest.getMonth()}-${yest.getDate()}`;
+        const yestStr = yest.toISOString().slice(0, 10);
         if (!days.has(todayStr) && !days.has(yestStr)) currentStreak = 0;
         else {
           // Walk back from today
           let cs = 0; let d = new Date(today);
           for (let i = 0; i < 365; i++) {
-            const s = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+            const s = d.toISOString().slice(0, 10);
             if (days.has(s)) { cs++; d = new Date(d - 86400000); }
             else break;
           }
