@@ -47,23 +47,25 @@ UI/UX
         ✅-drop shadow when hovering over entries for floating feel
         ✅-volume toggle should not appear in entry on desktop, rather only on mobile
 
+Future features 
+    -
     
-Pages
-   ✅ -home 
-        -
-    ✅-edit mode
-        -
-    ❗-notebooks/spaces
-        -
-    ✅-about us
-        -
-    -breathing workouts/visualization?
-        -
-        
-    ✅-settings
-        -
-    ✅other   
-       ✅ -error screens / messaging
+    Pages
+    ✅ -home 
+            -
+        ✅-edit mode
+            -
+        ❗-notebooks/spaces
+            -
+        ✅-about us
+            -
+        -breathing workouts/visualization?
+            -
+            
+        ✅-settings
+            -
+        ✅other   
+        ✅ -error screens / messaging
 
 
 Other/misc
@@ -75,6 +77,12 @@ Other/misc
     ❗personal context?
     ❗have weekly insights be generated and saved for ability to view past insights in the future
     ❗move entry category buttons to search tab?
+    ❗multiple models?
+    ❗therapist / client side app distinction?
+        - ability for therapist to tweak model
+    ❗highest paid tier gives ability to change voices 
+    ❗FAQ
+    ❗about us / how we started / mission page 
     
 
 
