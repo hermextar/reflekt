@@ -15,6 +15,7 @@ BUGS
         ✅ save entry not only takes forever but also just freezes, the ai analyzation only works when you exit the entry and reload. please resolve this as it used to be so incredibly fast it was almost scary.
         ✅- TTS doesn't work while connected to a bluetooth device
         ✅- inability to scroll during entry while dictating 
+        ❗- when i generate a new insight there is an  empty placeholder at the top of the screen that doesn't disappear until i refresh the page
         
         iOS only
         ❗-dual entry creation glitch?
@@ -23,7 +24,7 @@ BUGS
         ❗-have a stop button for mic feature in follow up 
         
 UI/UX
-    ❗replace browser tab logo
+    ✅replace browser tab logo
 
     ✅supabase entries encrypted
     
@@ -46,7 +47,7 @@ UI/UX
         ✅-in desktop, no way to go back to "home" screen while already in an entry
         ✅-drop shadow when hovering over entries for floating feel
         ✅-volume toggle should not appear in entry on desktop, rather only on mobile
-
+        ❗- control+enter should = submit entry
 Future features 
     -
     
@@ -76,6 +77,7 @@ Other/misc
     ❗how to handle things like subscriptions and API 
     ❗personal context?
     ❗have weekly insights be generated and saved for ability to view past insights in the future
+        have past weekly insights preserve all insight data
     ❗move entry category buttons to search tab?
     ❗multiple models?
     ❗therapist / client side app distinction?
