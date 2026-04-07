@@ -6,6 +6,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/novu%20logo.png" />
     <link rel="apple-touch-icon" href="/novu%20logo.png" />
+    <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#8b72e8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Novu — AI Journal</title>
@@ -6978,5 +6979,12 @@
       }
       // If not logged in, page-auth is already active by default
     </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+    }
+  </script>
   </body>
 </html>
