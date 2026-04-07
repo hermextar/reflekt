@@ -5811,51 +5811,98 @@
       // ══════════════════════════════════════════════
       // REPLY MIC — speak into the chat reply box
       // ══════════════════════════════════════════════
+      // ─── Reply mic: module-level state (shared across mobile + desktop) ───
+      let replyRecognition = null;
+      let replyRecording   = false;
+      let _replyActiveBtnId = null; // which button is currently active
+
+      const MIC_ICON_HTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+        <rect x="9" y="3" width="6" height="11" rx="3"/>
+        <path d="M5 11a7 7 0 0 0 14 0"/>
+        <path d="M12 18v3M8 21h8"/>
+      </svg>`;
+      const STOP_ICON_HTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+        <rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor" stroke="none"/>
+      </svg>`;
+
+      function _stopReplyMic() {
+        replyRecording = false;
+        if (replyRecognition) {
+          try { replyRecognition.stop(); } catch(e) {}
+          replyRecognition = null;
+        }
+        ["reply-mic-btn", "reply-mic-btn-desktop"].forEach(id => {
+          const b = document.getElementById(id);
+          if (b) {
+            b.classList.remove("recording");
+            b.setAttribute("aria-label", "Speak reply");
+            b.innerHTML = MIC_ICON_HTML;
+          }
+        });
+        _replyActiveBtnId = null;
+      }
+
+      function _startReplyMic(btnId, inputId) {
+        if (!hasSpeech) return;
+        const btn   = document.getElementById(btnId);
+        const input = document.getElementById(inputId);
+        if (!btn || !input) return;
+
+        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        replyRecognition = new SR();
+        replyRecognition.lang             = "en-US";
+        replyRecognition.continuous       = !isSafariIOS;
+        replyRecognition.interimResults   = !isSafariIOS;
+
+        const existingText = input.value;
+
+        replyRecognition.onresult = function(event) {
+          let interim = "";
+          let final   = "";
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            if (event.results[i].isFinal) final   += event.results[i][0].transcript;
+            else                          interim += event.results[i][0].transcript;
+          }
+          input.value = existingText + (existingText && final ? " " : "") + final + interim;
+          input.dispatchEvent(new Event("input"));
+          const sendBtn = document.getElementById(inputId === "reply-input" ? "send-btn" : "send-btn-desktop");
+          if (sendBtn) sendBtn.disabled = input.value.trim().length === 0;
+        };
+
+        replyRecognition.onerror = function(e) {
+          console.error("[replyMic] error", e.error);
+          _stopReplyMic();
+        };
+
+        replyRecognition.onend = function() {
+          // If user hasn't tapped Stop, restart to keep listening (iOS pattern)
+          if (replyRecording) {
+            try { replyRecognition.start(); } catch(e) { _stopReplyMic(); }
+          }
+        };
+
+        replyRecording      = true;
+        _replyActiveBtnId   = btnId;
+        replyRecognition.start();
+        btn.classList.add("recording");
+        btn.setAttribute("aria-label", "Stop recording");
+        btn.innerHTML = STOP_ICON_HTML;
+      }
+
       function setupReplyMic(btnId, inputId) {
         const btn = document.getElementById(btnId);
-        const input = document.getElementById(inputId);
-        if (!btn || !input || !hasSpeech) return;
-
-        let replyRecognition = null;
-        let replyRecording = false;
-
-        btn.addEventListener("click", () => {
+        if (!btn || !hasSpeech) return;
+        btn.addEventListener("click", function() {
           if (replyRecording) {
-            replyRecognition && replyRecognition.stop();
-            replyRecording = false;
-            btn.classList.remove("recording");
-            return;
+            _stopReplyMic();
+          } else {
+            _startReplyMic(btnId, inputId);
           }
-          const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-          replyRecognition = new SR();
-          replyRecognition.continuous = false; // single utterance for replies
-          replyRecognition.interimResults = false;
-          replyRecognition.lang = "en-US";
-
-          replyRecognition.onresult = (e) => {
-            const transcript = e.results[0][0].transcript;
-            // Append to whatever is already typed
-            const sep = input.value.trim() ? " " : "";
-            input.value += sep + transcript;
-            input.dispatchEvent(new Event("input"));
-            input.focus();
-          };
-          replyRecognition.onend = () => {
-            replyRecording = false;
-            btn.classList.remove("recording");
-          };
-          replyRecognition.onerror = () => {
-            replyRecording = false;
-            btn.classList.remove("recording");
-          };
-          replyRecognition.start();
-          replyRecording = true;
-          btn.classList.add("recording");
         });
       }
 
-      setupReplyMic("reply-mic-btn", "reply-input");
-      setupReplyMic("reply-mic-btn-desktop", "reply-input-desktop");
+      setupReplyMic("reply-mic-btn",         "reply-input");
+      setupReplyMic("reply-mic-btn-desktop",  "reply-input-desktop");
 
       // ══════════════════════════════════════════════
       // AI VOICE — TTS for assistant messages
