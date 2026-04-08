@@ -95,8 +95,22 @@ for computer
 
 
 EXPENSES LIST
+
+
     -claude API
     -openAI API
     -railway
     -supabase
     -ELEVENLABS API   
+
+Notes by date
+    04/08/26
+        theres a few bugs that ive noticed on iOS (i still have to get my hands on an android to bug test there as well) 
+        1. there is no way i can refresh without quitting and reopening the app (id like to be able to pull down and see an animation like you see in most apps
+
+        2. the ai response TTS doesn't read responses aloud (im assuming this problem is localized to iOS as a webkit issue?), however once ai has analyzed and responded to what ive said, if i swipe down into the control center of my phone and look at the "now playing section" where music usually resides, there is audio that i can press play on and the ai voice comes through: 
+
+        3. I can't see insights that i had already generated on my account from the website on my desktop
+
+        4. I do not want the user to be able to zoom in or out on the app, i want it to me stuck in the viewport size that we predetermined 
+
