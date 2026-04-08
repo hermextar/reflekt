@@ -116,3 +116,5 @@ Notes by date
         
         5. when generating new insights on all platforms, the same glitch happens where an empty insights slot remains at the top until page is refreshed
 
+        6. journal menu bar to low down on PWA (word journal gets cut off)
+
