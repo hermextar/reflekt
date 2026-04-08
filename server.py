@@ -40,6 +40,39 @@ def index():
 def serve_logo():
     return send_from_directory('.', 'novu logo.png')
 
+@app.route('/manifest.json')
+def manifest():
+    data = {
+        "name": "Novu \u2014 AI Journal",
+        "short_name": "Novu",
+        "description": "Your private AI-powered journal",
+        "start_url": "https://novujournal.com/",
+        "display": "standalone",
+        "background_color": "#0d0c14",
+        "theme_color": "#8b72e8",
+        "orientation": "portrait",
+        "icons": [
+            {"src": "/novu%20logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+            {"src": "/novu%20logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+        ]
+    }
+    from flask import Response
+    return Response(json.dumps(data), mimetype='application/json')
+
+@app.route('/sw.js')
+def service_worker():
+    sw_content = """const CACHE = 'novu-v1';
+const OFFLINE = ['/'];
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(OFFLINE)));
+});
+self.addEventListener('fetch', e => {
+  if (e.request.method !== 'GET') return;
+  e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+});"""
+    from flask import Response
+    return Response(sw_content, mimetype='application/javascript')
+
 @app.route('/api/register', methods=['POST'])
 def register():
     data = request.json
