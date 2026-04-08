@@ -113,4 +113,6 @@ Notes by date
         3. I can't see insights that i had already generated on my account from the website on my desktop
 
         4. I do not want the user to be able to zoom in or out on the app, i want it to me stuck in the viewport size that we predetermined 
+        
+        5. when generating new insights on all platforms, the same glitch happens where an empty insights slot remains at the top until page is refreshed
 
