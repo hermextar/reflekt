@@ -2690,19 +2690,24 @@
       }
       /* ─── Audio player bar ─── */
       .msg-row {
-        display: inline-flex;
-        align-items: flex-end;
-        gap: 8px;
+        position: relative;
+        display: block;
         max-width: 85%;
+        padding-right: 48px;
       }
+
       .msg-row .msg-bubble {
-        flex: 1;
+        display: block;
+        width: 100%;
       }
 
       .msg-audio-player {
         display: none;
+        position: absolute;
+        right: 0;
+        bottom: 0;
         align-items: center;
-        flex-shrink: 0;
+        justify-content: center;
       }
 
       .audio-playpause {
@@ -2720,11 +2725,13 @@
           background var(--transition),
           transform var(--transition);
       }
+
       .audio-playpause:hover {
         background: var(--color-primary);
         color: #fff;
         transform: scale(1.08);
       }
+
       .audio-playpause svg {
         width: 18px;
         height: 18px;
