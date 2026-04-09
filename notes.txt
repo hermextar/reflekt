@@ -123,3 +123,5 @@ Notes by date
        ❗ 8. on mobile it says "enter to send shift + enter for new line" it shouldn't say that on mobile, just desktop"
 
        ❗ 9. design new "rounder" "liquid glass style" menu bar (similar to calendar menu bar) for desktop/tablet
+
+       ❗10. highlight feature gone?
