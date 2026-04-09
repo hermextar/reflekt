@@ -11,20 +11,25 @@ import anthropic
 from supabase import create_client
 from cryptography.fernet import Fernet
 
+
 app = Flask(__name__, static_folder='.')
 CORS(app)
 bcrypt = Bcrypt(app)
 
+
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'change-this-in-production')
 jwt = JWTManager(app)
+
 
 anthropic_client = anthropic.Anthropic(api_key=os.environ.get('ANTHROPIC_API_KEY'))
 supabase = create_client(os.environ.get('SUPABASE_URL'), os.environ.get('SUPABASE_KEY'))
 fernet = Fernet(os.environ.get('ENCRYPTION_KEY').encode())
 elevenlabs_api_key = os.environ.get('ELEVENLABS_API_KEY', '')
 
+
 def encrypt(text):
     return fernet.encrypt(text.encode()).decode()
+
 
 def decrypt(text):
     try:
@@ -32,13 +37,45 @@ def decrypt(text):
     except Exception:
         return text  # fallback for any unencrypted legacy entries
 
+
 @app.route('/')
 def index():
     return send_from_directory('.', 'index.html')
 
+
 @app.route('/novu logo.png')
 def serve_logo():
     return send_from_directory('.', 'novu logo.png')
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('.', 'favicon.ico')
+
+@app.route('/favicon-96x96.png')
+def favicon_png():
+    return send_from_directory('.', 'favicon-96x96.png')
+
+@app.route('/favicon.svg')
+def favicon_svg():
+    return send_from_directory('.', 'favicon.svg')
+
+@app.route('/apple-touch-icon.png')
+def apple_touch_icon():
+    return send_from_directory('.', 'apple-touch-icon.png')
+
+@app.route('/web-app-manifest-192x192.png')
+def manifest_icon_192():
+    return send_from_directory('.', 'web-app-manifest-192x192.png')
+
+@app.route('/web-app-manifest-512x512.png')
+def manifest_icon_512():
+    return send_from_directory('.', 'web-app-manifest-512x512.png')
+
+@app.route('/site.webmanifest')
+def site_webmanifest():
+    return send_from_directory('.', 'site.webmanifest')
+
 
 @app.route('/manifest.json')
 def manifest():
@@ -59,6 +96,7 @@ def manifest():
     from flask import Response
     return Response(json.dumps(data), mimetype='application/json')
 
+
 @app.route('/sw.js')
 def service_worker():
     sw_content = """const CACHE = 'novu-v1';
@@ -72,6 +110,7 @@ self.addEventListener('fetch', e => {
 });"""
     from flask import Response
     return Response(sw_content, mimetype='application/javascript')
+
 
 @app.route('/api/register', methods=['POST'])
 def register():
@@ -88,6 +127,7 @@ def register():
     token = create_access_token(identity=user.data[0]['id'])
     return jsonify({'token': token, 'email': email}), 201
 
+
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.json
@@ -99,6 +139,7 @@ def login():
     token = create_access_token(identity=user.data[0]['id'])
     return jsonify({'token': token, 'email': email})
 
+
 @app.route('/api/entries', methods=['GET'])
 @jwt_required()
 def get_entries():
@@ -108,12 +149,14 @@ def get_entries():
         entry['content'] = decrypt(entry['content'])
     return jsonify(entries.data)
 
+
 @app.route('/api/entries', methods=['POST'])
 @jwt_required()
 def create_entry():
     user_id = get_jwt_identity()
     data = request.json
     content = data.get('content', '')
+
 
     # Single AI call: mood + reflection + tags together
     summary_response = anthropic_client.messages.create(
@@ -132,6 +175,7 @@ def create_entry():
         }]
     )
 
+
     try:
         summary_data = json.loads(summary_response.content[0].text.strip())
         mood_raw = summary_data.get('mood', 'reflective').strip().lower()
@@ -147,6 +191,7 @@ def create_entry():
         reflection = ''
         tags = []
 
+
     # AI follow-up for chat thread (kept as before)
     ai_response = anthropic_client.messages.create(
         model='claude-haiku-4-5',
@@ -156,7 +201,9 @@ def create_entry():
     )
     ai_message = ai_response.content[0].text
 
+
     default_title = datetime.utcnow().strftime('%B %-d, %Y')
+
 
     insert_data = {
         'user_id': user_id,
@@ -164,17 +211,16 @@ def create_entry():
         'mood': mood,
         'title': default_title,
     }
-    # Save reflection and tags if columns exist
     if reflection:
         insert_data['ai_reflection'] = reflection
     if tags:
         insert_data['tags'] = tags
         insert_data['topic_tags'] = tags
 
+
     try:
         entry = supabase.table('entries').insert(insert_data).execute()
     except Exception:
-        # Fallback without optional columns if they don't exist yet
         insert_data.pop('ai_reflection', None)
         insert_data.pop('tags', None)
         insert_data.pop('topic_tags', None)
@@ -182,19 +228,22 @@ def create_entry():
         reflection = ''
         tags = []
 
+
     entry_id = entry.data[0]['id']
+
 
     supabase.table('messages').insert([
         {'entry_id': entry_id, 'role': 'assistant', 'content': encrypt(ai_message)}
     ]).execute()
 
-    # Re-fetch so created_at and all server-set fields are guaranteed present
+
     full_entry = supabase.table('entries').select('*').eq('id', entry_id).execute()
     result = full_entry.data[0]
-    result['content'] = content  # return decrypted to frontend
+    result['content'] = content
     result['reflection'] = reflection
     result['tags'] = tags
     return jsonify(result), 201
+
 
 @app.route('/api/entries/<entry_id>', methods=['GET'])
 @jwt_required()
@@ -207,6 +256,7 @@ def get_entry(entry_id):
     result['content'] = decrypt(result['content'])
     return jsonify(result)
 
+
 @app.route('/api/entries/<entry_id>/messages', methods=['GET'])
 @jwt_required()
 def get_messages(entry_id):
@@ -214,6 +264,7 @@ def get_messages(entry_id):
     for m in msgs.data:
         m['content'] = decrypt(m['content'])
     return jsonify(msgs.data)
+
 
 @app.route('/api/entries/<entry_id>/reply', methods=['POST'])
 @jwt_required()
@@ -250,7 +301,6 @@ def reply(entry_id):
 def update_entry(entry_id):
     user_id = get_jwt_identity()
     data = request.json
-    # Verify ownership
     existing = supabase.table('entries').select('id').eq('id', entry_id).eq('user_id', user_id).execute()
     if not existing.data:
         return jsonify({'error': 'Not found'}), 404
@@ -320,7 +370,6 @@ def insights():
     rows = supabase.table('entries').select('content,mood,created_at').eq('user_id', user_id).order('created_at', desc=True).limit(20).execute()
 
     if not rows.data:
-        # No entries at all — return empty state gracefully
         return jsonify({
             'summary': "You haven't written any entries yet. Start journalling and come back!",
             'patterns': [],
@@ -339,7 +388,6 @@ def insights():
         entries_text.append(f"Entry {i} ({date_str}, mood: {e.get('mood','?')}):\n{content}")
     combined = "\n\n---\n\n".join(entries_text)
 
-    # Try preferred model, fall back to stable alternative
     models_to_try = ['claude-haiku-4-5']
     response = None
     for model_name in models_to_try:
@@ -371,12 +419,10 @@ def insights():
     raw_text = response.content[0].text.strip()
     print(f"[insights] raw response (first 200 chars): {raw_text[:200]}")
 
-    # Strip markdown code fences if present
     raw_text = re.sub(r'^```(?:json)?\s*', '', raw_text, flags=re.MULTILINE)
     raw_text = re.sub(r'\s*```$', '', raw_text, flags=re.MULTILINE)
     raw_text = raw_text.strip()
 
-    # Extract JSON object if there's surrounding text
     json_match = re.search(r'\{[\s\S]*\}', raw_text)
     if json_match:
         raw_text = json_match.group(0)
@@ -399,7 +445,6 @@ def insights():
 @jwt_required()
 def delete_account():
     user_id = get_jwt_identity()
-    # Get all entry IDs for this user
     entry_rows = supabase.table('entries').select('id').eq('user_id', user_id).execute()
     for entry in (entry_rows.data or []):
         supabase.table('messages').delete().eq('entry_id', entry['id']).execute()
@@ -434,12 +479,12 @@ def tts():
 @app.errorhandler(500)
 @app.errorhandler(503)
 def error_page(e):
-    # Return JSON for API routes, error.html for everything else
     if request.path.startswith('/api/'):
         code = e.code if hasattr(e, 'code') else 500
         msgs = {404: 'Not found', 500: 'Internal server error', 503: 'Service unavailable'}
         return jsonify({'error': msgs.get(code, 'Error')}), code
     return send_from_directory('.', 'error.html'), (e.code if hasattr(e, 'code') else 500)
+
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
