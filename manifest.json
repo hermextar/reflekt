@@ -4,7 +4,8 @@
   "description": "Your private AI-powered journal",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0d0c14",
+  // "background_color": "#0d0c14",
+  "background_color": "#8b72e8",
   "theme_color": "#8b72e8",
   "orientation": "portrait",
   "icons": [
