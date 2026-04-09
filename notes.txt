@@ -125,3 +125,5 @@ Notes by date
        ❗ 9. design new "rounder" "liquid glass style" menu bar (similar to calendar menu bar) for desktop/tablet
 
        ❗10. highlight feature gone?
+
+       ❗11. custom delete (non apple) popup?
