@@ -2689,14 +2689,13 @@
         display: none;
       }
       /* ─── Audio player bar ─── */
-      .msg-body {
-        display: flex;
-        flex-direction: row;
+      .msg-row {
+        display: inline-flex;
         align-items: flex-end;
         gap: 8px;
         max-width: 85%;
       }
-      .msg-body .msg-bubble {
+      .msg-row .msg-bubble {
         flex: 1;
       }
 
@@ -2705,6 +2704,7 @@
         align-items: center;
         flex-shrink: 0;
       }
+
       .audio-playpause {
         width: 36px;
         height: 36px;
@@ -5125,15 +5125,15 @@
         if (role === "assistant") {
           div.innerHTML = `
             <div class="msg-avatar"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="none" stroke="currentColor"/></svg></div>
-            <div class="msg-body">
-              <div class="msg-bubble">${escHtml(content)}</div>
-              <div class="msg-audio-player" style="display:none;">
-                <button class="audio-playpause" aria-label="Play">
-                  <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
-                  <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                </button>
-              </div>
-            </div>`;
+ <div class="msg-row">
+  <div class="msg-bubble">${escHtml(content)}</div>
+  <div class="msg-audio-player" style="display:none;">
+    <button class="audio-playpause" aria-label="Play">
+      <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+      <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+    </button>
+  </div>
+</div>`;
           // Only speak new AI replies — not historical messages loaded on entry open
           if (!isError && speak) speakText(content, div);
         } else {
