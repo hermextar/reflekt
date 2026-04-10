@@ -127,3 +127,7 @@ Notes by date
        ❗10. highlight feature gone?
 
        ❗11. custom delete (non apple) popup?
+
+       ❗12. new background color
+
+       ❗13. get rid of scroll bar on righthand side
