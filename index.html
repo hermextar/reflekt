@@ -86,6 +86,13 @@
           background-color var(--transition),
           color var(--transition);
       }
+      * {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      *::-webkit-scrollbar {
+        display: none;
+      }
       body {
         min-height: 100dvh;
         font-family: var(--font-body);
