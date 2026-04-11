@@ -435,10 +435,50 @@ def insights():
         if not isinstance(result['patterns'], list):
             result['patterns'] = [str(result['patterns'])] if result['patterns'] else []
         print(f"[insights] parsed successfully: {list(result.keys())}")
+        # Persist to Supabase for cross-device sync
+        try:
+            saved = supabase.table('insights').insert({
+                'user_id': user_id,
+                'content': json.dumps(result)
+            }).execute()
+            if saved.data:
+                result['id'] = saved.data[0]['id']
+                result['created_at'] = saved.data[0]['created_at']
+        except Exception as save_err:
+            print(f'[insights] Supabase save error (non-fatal): {save_err}')
         return jsonify(result)
     except json.JSONDecodeError as e:
         print(f"[insights] JSON parse error: {e}\nRaw: {raw_text[:500]}")
         return jsonify({'error': 'parse_error', 'detail': str(e)}), 500
+
+
+@app.route('/api/insights/history', methods=['GET'])
+@jwt_required()
+def insights_history():
+    user_id = get_jwt_identity()
+    rows = supabase.table('insights').select('*').eq('user_id', user_id).order('created_at', desc=True).execute()
+    history = []
+    for row in (rows.data or []):
+        try:
+            data = json.loads(row['content'])
+        except Exception:
+            continue
+        import datetime as _dt
+        ts_str = row.get('created_at', '')
+        try:
+            ts_ms = int(_dt.datetime.fromisoformat(ts_str.replace('Z', '+00:00')).timestamp() * 1000)
+        except Exception:
+            ts_ms = 0
+        history.append({'id': row['id'], 'ts': ts_ms, 'data': data})
+    return jsonify(history)
+
+
+@app.route('/api/insights/<insight_id>', methods=['DELETE'])
+@jwt_required()
+def delete_insight(insight_id):
+    user_id = get_jwt_identity()
+    supabase.table('insights').delete().eq('id', insight_id).eq('user_id', user_id).execute()
+    return jsonify({'success': True})
 
 
 @app.route('/api/account', methods=['DELETE'])
