@@ -138,3 +138,7 @@ Notes by date
        ❗15. make doc same size as all other apps
 
        ❗16. fix empty space at top of display on iphone
+
+       ❗17. dock should not be visible when typing in an entry
+
+       ❗18. when user goes to novujournal.com on a mobile device it should auto take them to app store
