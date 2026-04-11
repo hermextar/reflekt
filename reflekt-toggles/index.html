@@ -6474,6 +6474,8 @@
       }
 
       function _renderInsightsData(bodyEl, data, ageMinutes, insightId) {
+        // Clear any loading skeletons / previous content before appending
+        bodyEl.innerHTML = "";
         const ageLabel =
           ageMinutes === 0 ? "Just now" : (
             _formatInsightAge(Date.now() - ageMinutes * 60000)

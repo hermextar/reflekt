@@ -2014,8 +2014,8 @@
         bottom: 0;
         left: 0;
         right: 0;
-        height: calc(86px + env(safe-area-inset-bottom, 0px));
-        padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+        height: calc(72px + env(safe-area-inset-bottom, 0px));
+        padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
         background: var(--color-surface);
         border-top: 1px solid var(--color-border);
         display: flex;
@@ -3146,7 +3146,6 @@
             placeholder="Begin writing…"
             rows="1"
             spellcheck="true"
-            inputmode="text"
           ></textarea>
           <div class="journal-nudge" id="journal-nudge-mobile">
             <span class="journal-nudge-icon">✦</span>
@@ -6348,22 +6347,18 @@
 
       async function loadInsightsHistory() {
         try {
-          const rows = await apiFetch("/api/insights/history");
+          const rows = await apiFetch('/api/insights/history');
           _insightsHistory = rows; // [{id, ts, data}, ...] newest first
           // Sync to localStorage as offline cache
           if (rows.length > 0) {
-            localStorage.setItem(
-              INSIGHTS_CACHE_KEY,
-              JSON.stringify({ ts: rows[0].ts, data: rows[0].data }),
-            );
+            localStorage.setItem(INSIGHTS_CACHE_KEY, JSON.stringify({ ts: rows[0].ts, data: rows[0].data }));
             localStorage.setItem(INSIGHTS_HISTORY_KEY, JSON.stringify(rows));
           }
         } catch (e) {
           // Fall back to localStorage if network unavailable
           _insightsHistory = [];
           try {
-            const h =
-              JSON.parse(localStorage.getItem(INSIGHTS_HISTORY_KEY)) || [];
+            const h = JSON.parse(localStorage.getItem(INSIGHTS_HISTORY_KEY)) || [];
             _insightsHistory = h;
           } catch (le) {}
         }
@@ -6372,11 +6367,7 @@
       function _getInsightsHistory() {
         // Prefer in-memory (Supabase-backed), fall back to localStorage
         if (_insightsHistory !== null) return _insightsHistory;
-        try {
-          return JSON.parse(localStorage.getItem(INSIGHTS_HISTORY_KEY)) || [];
-        } catch (e) {
-          return [];
-        }
+        try { return JSON.parse(localStorage.getItem(INSIGHTS_HISTORY_KEY)) || []; } catch(e) { return []; }
       }
 
       async function renderInsightsTab() {
@@ -6445,22 +6436,19 @@
             body: {},
           });
           // data may include {id, created_at} from server after Supabase insert
-          const ts =
-            data.created_at ? new Date(data.created_at).getTime() : Date.now();
+          const ts = data.created_at
+            ? new Date(data.created_at).getTime()
+            : Date.now();
           const newEntry = { id: data.id || null, ts, data };
 
           // Update in-memory history (source of truth)
           if (_insightsHistory === null) _insightsHistory = [];
           _insightsHistory.unshift(newEntry);
-          if (_insightsHistory.length > 10)
-            _insightsHistory = _insightsHistory.slice(0, 10);
+          if (_insightsHistory.length > 10) _insightsHistory = _insightsHistory.slice(0, 10);
 
           // Keep localStorage as offline cache
           localStorage.setItem(INSIGHTS_CACHE_KEY, JSON.stringify(newEntry));
-          localStorage.setItem(
-            INSIGHTS_HISTORY_KEY,
-            JSON.stringify(_insightsHistory),
-          );
+          localStorage.setItem(INSIGHTS_HISTORY_KEY, JSON.stringify(_insightsHistory));
 
           _renderInsightsData(bodyEl, data, 0, newEntry.id);
           // Mirror to the other side if both exist
@@ -6486,6 +6474,8 @@
       }
 
       function _renderInsightsData(bodyEl, data, ageMinutes, insightId) {
+        // Clear any loading skeletons / previous content before appending
+        bodyEl.innerHTML = "";
         const ageLabel =
           ageMinutes === 0 ? "Just now" : (
             _formatInsightAge(Date.now() - ageMinutes * 60000)
