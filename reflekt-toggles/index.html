@@ -6456,7 +6456,7 @@
           const otherBody = document.getElementById(
             `insights-body-${otherSide}`,
           );
-          if (otherBody) _renderInsightsData(otherBody, data, 0, newEntry.id);
+          if (otherBody) { otherBody.innerHTML = ""; _renderInsightsData(otherBody, data, 0, newEntry.id); }
         } catch (e) {
           bodyEl.innerHTML = `<div class="insights-empty">
             <p>Could not generate insights right now. Please try again in a moment.</p>
@@ -6481,6 +6481,14 @@
             _formatInsightAge(Date.now() - ageMinutes * 60000)
           );
         const side = bodyEl.id.includes("desktop") ? "desktop" : "mobile";
+
+        // Always prepend the Generate button so it's present regardless of caller
+        const genBtn = document.createElement("button");
+        genBtn.className = "insights-generate-btn";
+        genBtn.id = `insights-gen-btn-${side}`;
+        genBtn.setAttribute("onclick", `generateInsights('${side}')`);
+        genBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> Generate New Insights`;
+        bodyEl.appendChild(genBtn);
 
         const patternsHtml = (data.patterns || [])
           .map((p) => `<li>${escHtml(p)}</li>`)
