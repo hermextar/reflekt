@@ -1095,7 +1095,7 @@
       .chat-container {
         flex: 1;
         overflow-y: auto;
-        padding: 0 16px 12px;
+        padding: 0 16px calc(86px + env(safe-area-inset-bottom, 0px) + 12px);
         display: flex;
         flex-direction: column;
         gap: 10px;
