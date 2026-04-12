@@ -1250,6 +1250,11 @@
         margin-top: 6px;
         padding-left: 2px;
       }
+      @media (max-width: 768px) {
+        .reply-hint {
+          display: none;
+        }
+      }
 
       /* ─── Skeleton ─── */
       .skeleton {
@@ -5036,7 +5041,12 @@
         sendBtn.disabled = !replyInput.value.trim();
       });
       replyInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && !e.shiftKey && replyInput.value.trim()) {
+        if (
+          e.key === "Enter" &&
+          !e.shiftKey &&
+          replyInput.value.trim() &&
+          !isMobile()
+        ) {
           e.preventDefault();
           sendReply(chatContainer, replyInput, sendBtn);
         }
