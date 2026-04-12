@@ -1188,6 +1188,9 @@
         padding: 12px 16px;
         background: var(--color-bg);
         padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+        position: sticky;
+        bottom: 0;
+        z-index: 10;
       }
       .reply-row {
         display: flex;
@@ -5057,15 +5060,25 @@
       replyInput.addEventListener("focus", () => {
         if (isMobile()) {
           document.body.classList.add("keyboard-open");
-          setTimeout(() => {
-            replyInput.scrollIntoView({ behavior: "smooth", block: "end" });
-          }, 300);
         }
       });
 
       replyInput.addEventListener("blur", () => {
         document.body.classList.remove("keyboard-open");
       });
+
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", () => {
+          const replyArea = document.querySelector(".reply-area");
+          if (!replyArea) return;
+          if (isMobile() && document.activeElement === replyInput) {
+            const offset = window.innerHeight - window.visualViewport.height;
+            replyArea.style.transform = `translateY(-${offset}px)`;
+          } else {
+            replyArea.style.transform = "";
+          }
+        });
+      }
       sendBtn.addEventListener("click", () =>
         sendReply(chatContainer, replyInput, sendBtn),
       );
