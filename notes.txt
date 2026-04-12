@@ -120,27 +120,31 @@ Notes by date
         
         ✅ 7. mic shouldn't ask for permissions each time
 
-        ❗ 8. on mobile it says "enter to send shift + enter for new line" it shouldn't say that on mobile, just desktop"
+        ✅ 8. on mobile it says "enter to send shift + enter for new line" it shouldn't say that on mobile, just desktop"
 
         ❗ 9. design new "rounder" "liquid glass style" menu bar (similar to calendar menu bar) for desktop/tablet
 
         ✅10. highlight feature gone?
 
-        ❗11. custom delete (non apple) popup?
+        ❗11. custom delete (non apple) popup? (needs capacitor set up first)
 
-        ❗12. new background color
+        ❗12. new background color?
 
         ✅13. get rid of scroll bar on righthand side
 
         ❗14. autoscroll to bottom when in an entry
 
-        ❗15. make doc same size as all other apps
+        ✅15. make doc same size as all other apps
 
         ❗16. fix empty space at top of display on iphone
 
-        ❗17. dock should not be visible when typing in an entry
+        ✅17. dock should not be visible when typing in an entry
 
         ❗18. when user goes to novujournal.com on a mobile device it should auto take them to app store
 
         ❗19. get rid of keyboard nav arrows (needs capacitor set up first)
+
+        ❗20. custom reminder alerts? (needs capacitor set up first)
+
+        ❗21. when scrolling through entries dock sometimes appears
         
