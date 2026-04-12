@@ -2029,6 +2029,9 @@
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
       }
+      .keyboard-open .bottom-nav {
+        display: none;
+      }
       .bottom-nav .nav-tab {
         flex: 1;
         display: flex;
@@ -5050,6 +5053,18 @@
           e.preventDefault();
           sendReply(chatContainer, replyInput, sendBtn);
         }
+      });
+      replyInput.addEventListener("focus", () => {
+        if (isMobile()) {
+          document.body.classList.add("keyboard-open");
+          setTimeout(() => {
+            replyInput.scrollIntoView({ behavior: "smooth", block: "end" });
+          }, 300);
+        }
+      });
+
+      replyInput.addEventListener("blur", () => {
+        document.body.classList.remove("keyboard-open");
       });
       sendBtn.addEventListener("click", () =>
         sendReply(chatContainer, replyInput, sendBtn),
