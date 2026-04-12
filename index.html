@@ -1095,7 +1095,7 @@
       .chat-container {
         flex: 1;
         overflow-y: auto;
-        padding: 0 16px calc(86px + env(safe-area-inset-bottom, 0px) + 12px);
+        padding: 0 16px 12px;
         display: flex;
         flex-direction: column;
         gap: 10px;
@@ -1188,15 +1188,6 @@
         padding: 12px 16px;
         background: var(--color-bg);
         padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 10;
-      }
-      /* chat-container bottom padding accounts for fixed reply bar */
-      .chat-container {
-        padding-bottom: calc(86px + env(safe-area-inset-bottom, 16px)) !important;
       }
       .reply-row {
         display: flex;
@@ -1503,17 +1494,10 @@
           min-height: 0;
           padding: 0 20px 12px;
         }
-        /* Desktop: reply-area is in normal flow (not fixed) inside the panel */
-        #desktop-panel-read .reply-area,
         #desktop-panel-entry .reply-area {
-          position: static;
           flex-shrink: 0;
           padding: 12px 20px;
           padding-bottom: 12px;
-        }
-        #desktop-panel-read .chat-container,
-        #desktop-panel-entry .chat-container {
-          padding-bottom: 16px !important;
         }
 
         /* ── Hide redundant voice and theme toggles in desktop entry panel header ── */
@@ -2044,9 +2028,6 @@
         z-index: 50;
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-      }
-      .keyboard-open .bottom-nav {
-        display: none;
       }
       .bottom-nav .nav-tab {
         flex: 1;
@@ -5070,28 +5051,6 @@
           sendReply(chatContainer, replyInput, sendBtn);
         }
       });
-      replyInput.addEventListener("focus", () => {
-        if (isMobile()) {
-          document.body.classList.add("keyboard-open");
-        }
-      });
-
-      replyInput.addEventListener("blur", () => {
-        document.body.classList.remove("keyboard-open");
-      });
-
-      if (window.visualViewport) {
-        window.visualViewport.addEventListener("resize", () => {
-          const replyArea = document.querySelector(".reply-area");
-          if (!replyArea) return;
-          if (isMobile() && document.activeElement === replyInput) {
-            const offset = window.innerHeight - window.visualViewport.height;
-            replyArea.style.transform = `translateY(-${offset}px)`;
-          } else {
-            replyArea.style.transform = "";
-          }
-        });
-      }
       sendBtn.addEventListener("click", () =>
         sendReply(chatContainer, replyInput, sendBtn),
       );
@@ -7208,31 +7167,6 @@
             .catch(() => {
               localStorage.setItem("reflekt_mic_asked", "1");
             });
-      }
-
-      // ─── iOS keyboard: reposition fixed reply-area with visualViewport ───
-      if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', () => {
-          // Only apply on mobile (desktop reply-area is position:static)
-          if (window.innerWidth >= 900) return;
-          const bars = document.querySelectorAll('.reply-area');
-          const offset = window.innerHeight
-            - window.visualViewport.height
-            - window.visualViewport.offsetTop;
-          bars.forEach(bar => {
-            bar.style.bottom = Math.max(0, offset) + 'px';
-          });
-        });
-        window.visualViewport.addEventListener('scroll', () => {
-          if (window.innerWidth >= 900) return;
-          const bars = document.querySelectorAll('.reply-area');
-          const offset = window.innerHeight
-            - window.visualViewport.height
-            - window.visualViewport.offsetTop;
-          bars.forEach(bar => {
-            bar.style.bottom = Math.max(0, offset) + 'px';
-          });
-        });
       }
 
       // ─── Init ───
