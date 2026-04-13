@@ -1187,8 +1187,19 @@
         border-top: 1px solid var(--color-border);
         padding: 12px 16px;
         background: var(--color-bg);
-        padding-bottom: calc(86px + env(safe-area-inset-bottom, 0px) + 12px);
+        padding-bottom: env(safe-area-inset-bottom, 8px);
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
       }
+      /* chat-container padding keeps messages above fixed reply bar */
+      .chat-container {
+        padding-bottom: calc(80px + env(safe-area-inset-bottom, 16px)) !important;
+      }
+      /* Hide bottom nav when keyboard is open */
+      body.keyboard-open .bottom-nav { display: none !important; }
       .reply-row {
         display: flex;
         align-items: flex-end;
@@ -1494,10 +1505,16 @@
           min-height: 0;
           padding: 0 20px 12px;
         }
-        #desktop-panel-entry .reply-area {
+        #desktop-panel-entry .reply-area,
+        #desktop-panel-read .reply-area {
+          position: static;
           flex-shrink: 0;
           padding: 12px 20px;
           padding-bottom: 12px;
+        }
+        #desktop-panel-entry .chat-container,
+        #desktop-panel-read .chat-container {
+          padding-bottom: 16px !important;
         }
 
         /* ── Hide redundant voice and theme toggles in desktop entry panel header ── */
@@ -5051,13 +5068,6 @@
           sendReply(chatContainer, replyInput, sendBtn);
         }
       });
-      replyInput.addEventListener("focus", () => {
-        if (isMobile()) document.body.classList.add("keyboard-open");
-      });
-      replyInput.addEventListener("blur", () => {
-        setTimeout(() => document.body.classList.remove("keyboard-open"), 200);
-      });
-
       sendBtn.addEventListener("click", () =>
         sendReply(chatContainer, replyInput, sendBtn),
       );
@@ -7174,6 +7184,25 @@
             .catch(() => {
               localStorage.setItem("reflekt_mic_asked", "1");
             });
+      }
+
+      // ─── iOS: fix reply bar position + hide bottom nav when keyboard open ───
+      function updateReplyBarPosition() {
+        if (window.innerWidth >= 900) return; // desktop: reply-area is in normal flow
+        const bars = document.querySelectorAll('.reply-area');
+        if (!window.visualViewport) return;
+        const offsetFromBottom = window.innerHeight
+          - window.visualViewport.height
+          - window.visualViewport.offsetTop;
+        const bottom = Math.max(0, offsetFromBottom);
+        bars.forEach(bar => { bar.style.bottom = bottom + 'px'; });
+        // Show/hide bottom nav: >100px difference means keyboard is open
+        const keyboardOpen = (window.innerHeight - window.visualViewport.height) > 100;
+        document.body.classList.toggle('keyboard-open', keyboardOpen);
+      }
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', updateReplyBarPosition);
+        window.visualViewport.addEventListener('scroll', updateReplyBarPosition);
       }
 
       // ─── Init ───
