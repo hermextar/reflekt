@@ -5051,6 +5051,13 @@
           sendReply(chatContainer, replyInput, sendBtn);
         }
       });
+      replyInput.addEventListener("focus", () => {
+        if (isMobile()) document.body.classList.add("keyboard-open");
+      });
+      replyInput.addEventListener("blur", () => {
+        setTimeout(() => document.body.classList.remove("keyboard-open"), 200);
+      });
+
       sendBtn.addEventListener("click", () =>
         sendReply(chatContainer, replyInput, sendBtn),
       );
