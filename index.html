@@ -1196,10 +1196,14 @@
       }
       /* chat-container padding keeps messages above fixed reply bar */
       .chat-container {
-        padding-bottom: calc(80px + env(safe-area-inset-bottom, 16px)) !important;
+        padding-bottom: calc(
+          80px + env(safe-area-inset-bottom, 16px)
+        ) !important;
       }
       /* Hide bottom nav when keyboard is open */
-      body.keyboard-open .bottom-nav { display: none !important; }
+      body.keyboard-open .bottom-nav {
+        display: none !important;
+      }
       .reply-row {
         display: flex;
         align-items: flex-end;
@@ -2104,7 +2108,13 @@
           padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
         }
         #page-entry {
-          padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+          padding-bottom: 0; /* reply-area handles its own bottom spacing */
+        }
+        #page-entry .reply-area {
+          position: sticky;
+          bottom: 0;
+          /* Add room below the reply bar for the fixed bottom-nav + safe area */
+          padding-bottom: calc(12px + 56px + env(safe-area-inset-bottom, 0px));
         }
       }
 
@@ -7189,20 +7199,30 @@
       // ─── iOS: fix reply bar position + hide bottom nav when keyboard open ───
       function updateReplyBarPosition() {
         if (window.innerWidth >= 900) return; // desktop: reply-area is in normal flow
-        const bars = document.querySelectorAll('.reply-area');
+        const bars = document.querySelectorAll(".reply-area");
         if (!window.visualViewport) return;
-        const offsetFromBottom = window.innerHeight
-          - window.visualViewport.height
-          - window.visualViewport.offsetTop;
+        const offsetFromBottom =
+          window.innerHeight -
+          window.visualViewport.height -
+          window.visualViewport.offsetTop;
         const bottom = Math.max(0, offsetFromBottom);
-        bars.forEach(bar => { bar.style.bottom = bottom + 'px'; });
+        bars.forEach((bar) => {
+          bar.style.bottom = bottom + "px";
+        });
         // Show/hide bottom nav: >100px difference means keyboard is open
-        const keyboardOpen = (window.innerHeight - window.visualViewport.height) > 100;
-        document.body.classList.toggle('keyboard-open', keyboardOpen);
+        const keyboardOpen =
+          window.innerHeight - window.visualViewport.height > 100;
+        document.body.classList.toggle("keyboard-open", keyboardOpen);
       }
       if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', updateReplyBarPosition);
-        window.visualViewport.addEventListener('scroll', updateReplyBarPosition);
+        window.visualViewport.addEventListener(
+          "resize",
+          updateReplyBarPosition,
+        );
+        window.visualViewport.addEventListener(
+          "scroll",
+          updateReplyBarPosition,
+        );
       }
 
       // ─── Init ───
