@@ -1187,12 +1187,7 @@
         border-top: 1px solid var(--color-border);
         padding: 12px 16px;
         background: var(--color-bg);
-        padding-bottom: calc(12px + 86px + env(safe-area-inset-bottom, 0px));
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 10;
+        padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
       }
       /* chat-container padding keeps messages above fixed reply bar */
       .chat-container {
@@ -2108,13 +2103,19 @@
           padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
         }
         #page-entry {
-          padding-bottom: 0; /* reply-area handles its own bottom spacing */
+          height: 100dvh;
+          max-height: 100dvh;
+          overflow: hidden;
+          padding-bottom: 0;
+        }
+        #page-entry .chat-container {
+          flex: 1;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
         }
         #page-entry .reply-area {
-          position: sticky;
-          bottom: 0;
-          /* Add room below the reply bar for the fixed bottom-nav + safe area */
-          padding-bottom: calc(12px + 56px + env(safe-area-inset-bottom, 0px));
+          flex-shrink: 0;
+          padding-bottom: calc(12px + 86px + env(safe-area-inset-bottom, 0px));
         }
       }
 
