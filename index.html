@@ -2108,10 +2108,14 @@
           overflow: hidden;
           padding-bottom: 0;
         }
-        #page-entry .chat-container {
+        #page-entry .entry-scroll-body {
           flex: 1;
           overflow-y: auto;
           -webkit-overflow-scrolling: touch;
+          min-height: 0;
+        }
+        #page-entry .chat-container {
+          overflow-y: visible;
         }
         #page-entry .reply-area {
           flex-shrink: 0;
@@ -3351,67 +3355,67 @@
             </button>
           </div>
         </header>
+        <div class="entry-scroll-body">
+          <div class="journal-read-area" id="journal-read-area-mobile">
+            <p class="journal-read-date" id="journal-read-date-mobile"></p>
+            <div
+              class="journal-read-text"
+              id="journal-read-text-mobile"
+              title="Click to edit"
+              onclick="journalStartEdit('mobile')"
+            ></div>
+            <textarea
+              class="journal-read-edit-ta"
+              id="journal-read-edit-mobile"
+              rows="1"
+              spellcheck="true"
+            ></textarea>
+          </div>
 
-        <div class="journal-read-area" id="journal-read-area-mobile">
-          <p class="journal-read-date" id="journal-read-date-mobile"></p>
-          <div
-            class="journal-read-text"
-            id="journal-read-text-mobile"
-            title="Click to edit"
-            onclick="journalStartEdit('mobile')"
-          ></div>
-          <textarea
-            class="journal-read-edit-ta"
-            id="journal-read-edit-mobile"
-            rows="1"
-            spellcheck="true"
-          ></textarea>
-        </div>
-
-        <div class="journal-read-footer" id="journal-read-footer-mobile">
-          <span class="journal-edit-hint" id="journal-edit-hint-mobile"
-            >Tap text to edit</span
-          >
-          <div style="display: flex; align-items: center; gap: 8px">
-            <span
-              class="journal-autosave-label"
-              id="journal-read-autosave-mobile"
-            ></span>
-            <button
-              class="journal-read-save-btn"
-              id="journal-read-save-mobile"
-              onclick="journalReadSave('mobile')"
+          <div class="journal-read-footer" id="journal-read-footer-mobile">
+            <span class="journal-edit-hint" id="journal-edit-hint-mobile"
+              >Tap text to edit</span
             >
-              Save changes
-            </button>
+            <div style="display: flex; align-items: center; gap: 8px">
+              <span
+                class="journal-autosave-label"
+                id="journal-read-autosave-mobile"
+              ></span>
+              <button
+                class="journal-read-save-btn"
+                id="journal-read-save-mobile"
+                onclick="journalReadSave('mobile')"
+              >
+                Save changes
+              </button>
+            </div>
           </div>
-        </div>
 
-        <div
-          class="journal-read-summary visible"
-          id="journal-read-summary-mobile"
-        ></div>
+          <div
+            class="journal-read-summary visible"
+            id="journal-read-summary-mobile"
+          ></div>
 
-        <div class="ai-label" style="margin-top: 8px">
-          <div class="ai-dot">
-            <img
-              src="/novu%20logo.png"
-              style="
-                width: 100%;
-                height: 100%;
-                border-radius: 50%;
-                object-fit: contain;
-                padding: 2px;
-                box-sizing: border-box;
-              "
-              alt="Novu"
-            />
+          <div class="ai-label" style="margin-top: 8px">
+            <div class="ai-dot">
+              <img
+                src="/novu%20logo.png"
+                style="
+                  width: 100%;
+                  height: 100%;
+                  border-radius: 50%;
+                  object-fit: contain;
+                  padding: 2px;
+                  box-sizing: border-box;
+                "
+                alt="Novu"
+              />
+            </div>
+            Novu is exploring with you
           </div>
-          Novu is exploring with you
+
+          <div class="chat-container" id="chat-container"></div>
         </div>
-
-        <div class="chat-container" id="chat-container"></div>
-
         <div class="reply-area">
           <div class="reply-row">
             <button
