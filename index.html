@@ -5086,7 +5086,20 @@
       sendBtn.addEventListener("click", () =>
         sendReply(chatContainer, replyInput, sendBtn),
       );
-
+      // Hide bottom nav when keyboard opens on mobile
+      const replyInputEl = document.getElementById("reply-input");
+      const bottomNavEl = document.getElementById("bottom-nav");
+      if (replyInputEl && bottomNavEl && isMobile()) {
+        replyInputEl.addEventListener("focus", () => {
+          document.body.classList.add("keyboard-open");
+        });
+        replyInputEl.addEventListener("blur", () => {
+          setTimeout(
+            () => document.body.classList.remove("keyboard-open"),
+            150,
+          );
+        });
+      }
       // ─── Chat (desktop) ───
       const chatContainerD = document.getElementById("chat-container-desktop");
       const replyInputD = document.getElementById("reply-input-desktop");
