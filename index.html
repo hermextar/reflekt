@@ -1366,11 +1366,13 @@
           align-items: center;
           justify-content: space-between;
           flex-shrink: 0;
-          height: 53px;
-          padding: 0 16px;
+          height: 60px;
+          padding: 0 24px;
           background: var(--color-surface);
           border-bottom: 1px solid var(--color-border);
+          box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
           z-index: 30;
+          position: relative;
         }
 
         /* ── Auth page: centred full-screen overlay (unchanged feel) ── */
@@ -2644,45 +2646,138 @@
         height: 16px;
       }
 
-      /* ── Desktop topnav tabs (centered) ── */
+      /* ── Desktop topnav tabs — floating pill capsule ── */
       #desktop-topnav {
         position: relative;
       }
+      /* The pill container */
       .topnav-tabs {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 2px;
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
+        /* Floating capsule */
+        background: var(--color-surface-2);
+        border: 1px solid var(--color-border);
+        border-radius: 999px;
+        padding: 4px;
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.07), 0 0 0 0.5px rgba(0,0,0,0.04);
       }
+      /* Individual tab button */
       .topnav-tab {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 36px;
-        height: 36px;
-        border-radius: var(--radius-md);
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
         border: none;
         background: transparent;
         color: var(--color-text-faint);
         cursor: pointer;
-        transition:
-          color var(--transition),
-          background var(--transition);
+        transition: color 200ms ease, background 200ms ease, box-shadow 200ms ease;
+        position: relative;
       }
-      .topnav-tab:hover {
+      .topnav-tab svg {
+        width: 18px;
+        height: 18px;
+        stroke-width: 1.8;
+        flex-shrink: 0;
+      }
+      /* Hover: soft tint, slightly more visible */
+      .topnav-tab:hover:not(.active) {
         color: var(--color-text-muted);
-        background: var(--color-surface-2);
+        background: rgba(139, 114, 232, 0.07);
       }
+      /* Active: soft lavender fill — like Apple Calendar selected pill */
       .topnav-tab.active {
         color: var(--color-primary);
         background: var(--color-primary-bg);
+        box-shadow: 0 1px 4px rgba(139, 114, 232, 0.18);
+      }
+      /* Focus visible for accessibility */
+      .topnav-tab:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
       }
       @media (max-width: 899px) {
         .topnav-tabs {
           display: none;
         }
+      }
+
+      /* ── Desktop header-actions — lighter, elegant utility strip ── */
+      #desktop-topnav .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      /* Shared utility button base */
+      #desktop-topnav .icon-btn,
+      #desktop-topnav .voice-toggle {
+        width: 34px;
+        height: 34px;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        background: transparent;
+        color: var(--color-text-faint);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 200ms ease, background 200ms ease, border-color 200ms ease;
+      }
+      #desktop-topnav .icon-btn:hover,
+      #desktop-topnav .voice-toggle:hover {
+        color: var(--color-text);
+        background: var(--color-surface-2);
+        border-color: var(--color-border);
+      }
+      #desktop-topnav .voice-toggle.active {
+        color: var(--color-primary);
+        background: var(--color-primary-bg);
+        border-color: rgba(139, 114, 232, 0.3);
+      }
+      /* Sign out: subtle outlined pill */
+      #desktop-topnav .logout-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        height: 32px;
+        padding: 0 12px;
+        border-radius: 999px;
+        border: 1px solid var(--color-border);
+        background: transparent;
+        color: var(--color-text-faint);
+        font-family: var(--font-body);
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: color 200ms ease, background 200ms ease, border-color 200ms ease;
+        white-space: nowrap;
+      }
+      #desktop-topnav .logout-btn:hover {
+        color: var(--color-text);
+        background: var(--color-surface-2);
+        border-color: var(--color-text-faint);
+      }
+      #desktop-topnav .logout-btn svg {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+      }
+      /* Slightly larger, bolder Novu wordmark in desktop nav */
+      #desktop-topnav .logo-name {
+        font-size: 17px;
+        font-weight: 600;
+        letter-spacing: -0.2px;
+        color: var(--color-text);
+      }
+      #desktop-topnav .logo-icon {
+        width: 30px;
+        height: 30px;
       }
 
       /* ─── Voice gender toggle in Settings ─── */
