@@ -122,13 +122,13 @@ Notes by date
 
         ✅ 8. on mobile it says "enter to send shift + enter for new line" it shouldn't say that on mobile, just desktop"
 
-        ❗ 9. design new "rounder" "liquid glass style" menu bar (similar to calendar menu bar) for desktop/tablet
+        ✅ 9. design new "rounder" "liquid glass style" menu bar (similar to calendar menu bar) for desktop/tablet
 
         ✅10. highlight feature gone?
 
         ❗11. custom delete (non apple) popup? (needs capacitor set up first)
 
-        ❗12. new background color?
+        ✅12. new background color?
 
         ✅13. get rid of scroll bar on righthand side
 
@@ -136,7 +136,7 @@ Notes by date
 
         ✅15. make doc same size as all other apps
 
-        ❗16. fix empty space at top of display on iphone
+        ✅16. fix empty space at top of display on iphone(capacitor)
 
         ✅17. dock should not be visible when typing in an entry
 
@@ -146,5 +146,5 @@ Notes by date
 
         ❗20. custom reminder alerts? (needs capacitor set up first)
 
-        ❗21. when scrolling through entries dock sometimes appears
+        ✅21. when scrolling through entries dock sometimes appears
         

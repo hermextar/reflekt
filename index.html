@@ -1521,7 +1521,14 @@
         #desktop-panel-read .chat-container {
           padding-bottom: 16px !important;
         }
-
+        #desktop-panel-read .entry-scroll-body {
+          flex: 1;
+          overflow-y: auto;
+          min-height: 0;
+        }
+        #desktop-panel-read .chat-container {
+          overflow-y: visible;
+        }
         /* ── Hide redundant voice and theme toggles in desktop entry panel header ── */
         #desktop-panel-read .voice-toggle,
         #desktop-panel-read [id^="theme-toggle-entry"] {
@@ -4234,66 +4241,67 @@
                 </button>
               </div>
             </header>
+            <div class="entry-scroll-body">
+              <div class="journal-read-area" id="journal-read-area-desktop">
+                <p class="journal-read-date" id="journal-read-date-desktop"></p>
+                <div
+                  class="journal-read-text"
+                  id="journal-read-text-desktop"
+                  title="Click to edit"
+                  onclick="journalStartEdit('desktop')"
+                ></div>
+                <textarea
+                  class="journal-read-edit-ta"
+                  id="journal-read-edit-desktop"
+                  rows="1"
+                  spellcheck="true"
+                ></textarea>
+              </div>
 
-            <div class="journal-read-area" id="journal-read-area-desktop">
-              <p class="journal-read-date" id="journal-read-date-desktop"></p>
-              <div
-                class="journal-read-text"
-                id="journal-read-text-desktop"
-                title="Click to edit"
-                onclick="journalStartEdit('desktop')"
-              ></div>
-              <textarea
-                class="journal-read-edit-ta"
-                id="journal-read-edit-desktop"
-                rows="1"
-                spellcheck="true"
-              ></textarea>
-            </div>
-
-            <div class="journal-read-footer" id="journal-read-footer-desktop">
-              <span class="journal-edit-hint" id="journal-edit-hint-desktop"
-                >Click text to edit</span
-              >
-              <div style="display: flex; align-items: center; gap: 8px">
-                <span
-                  class="journal-autosave-label"
-                  id="journal-read-autosave-desktop"
-                ></span>
-                <button
-                  class="journal-read-save-btn"
-                  id="journal-read-save-desktop"
-                  onclick="journalReadSave('desktop')"
+              <div class="journal-read-footer" id="journal-read-footer-desktop">
+                <span class="journal-edit-hint" id="journal-edit-hint-desktop"
+                  >Click text to edit</span
                 >
-                  Save changes
-                </button>
+                <div style="display: flex; align-items: center; gap: 8px">
+                  <span
+                    class="journal-autosave-label"
+                    id="journal-read-autosave-desktop"
+                  ></span>
+                  <button
+                    class="journal-read-save-btn"
+                    id="journal-read-save-desktop"
+                    onclick="journalReadSave('desktop')"
+                  >
+                    Save changes
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <div
-              class="journal-read-summary visible"
-              id="journal-read-summary-desktop"
-            ></div>
+              <div
+                class="journal-read-summary visible"
+                id="journal-read-summary-desktop"
+              ></div>
 
-            <div class="ai-label">
-              <div class="ai-dot">
-                <img
-                  src="/novu%20logo.png"
-                  style="
-                    width: 100%;
-                    height: 100%;
-                    border-radius: 50%;
-                    object-fit: contain;
-                    padding: 2px;
-                    box-sizing: border-box;
-                  "
-                  alt="Novu"
-                />
+              <div class="ai-label">
+                <div class="ai-dot">
+                  <img
+                    src="/novu%20logo.png"
+                    style="
+                      width: 100%;
+                      height: 100%;
+                      border-radius: 50%;
+                      object-fit: contain;
+                      padding: 2px;
+                      box-sizing: border-box;
+                    "
+                    alt="Novu"
+                  />
+                </div>
+                Novu is exploring with you
               </div>
-              Novu is exploring with you
-            </div>
 
-            <div class="chat-container" id="chat-container-desktop"></div>
+              <div class="chat-container" id="chat-container-desktop"></div>
+            </div>
 
             <div class="reply-area">
               <div class="reply-row">
