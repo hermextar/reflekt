@@ -147,4 +147,10 @@ Notes by date
         ❗20. custom reminder alerts? (needs capacitor set up first)
 
         ✅21. when scrolling through entries dock sometimes appears
+
+          ❗  iPad specific issues
+
+            ❗    1. TTS not working
+            ❗   2. fix tablet vertical layout
+            ❗    3. app not consuming full screen?
         
