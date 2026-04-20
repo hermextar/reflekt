@@ -6343,41 +6343,28 @@
             .querySelectorAll(".voice-toggle")
             .forEach((b) => b.classList.add("speaking"));
 
-          if (!isMobile() && !("ontouchstart" in window)) {
-            // Desktop: autoplay
-            try {
-              const ctx = new (
-                window.AudioContext || window.webkitAudioContext
-              )();
-              await ctx.resume();
-              ctx.close();
-            } catch (e) {}
-            await audio.play();
-            updatePlayPause(true);
-          } else {
-            // Mobile: show player, wait for user tap
-            updatePlayPause(false);
-            document
-              .querySelectorAll(".voice-toggle")
-              .forEach((b) => b.classList.remove("speaking"));
-            if (btnPlayPause) {
-              const desktopClick = btnPlayPause.onclick;
-              btnPlayPause.onclick = async () => {
-                try {
-                  const ctx = new (
-                    window.AudioContext || window.webkitAudioContext
-                  )();
-                  await ctx.resume();
-                  ctx.close();
-                } catch (e) {}
-                await audio.play();
-                updatePlayPause(true);
-                document
-                  .querySelectorAll(".voice-toggle")
-                  .forEach((b) => b.classList.add("speaking"));
-                btnPlayPause.onclick = desktopClick;
-              };
-            }
+          // Universal: always show play button, wait for user tap
+          updatePlayPause(false);
+          document
+            .querySelectorAll(".voice-toggle")
+            .forEach((b) => b.classList.remove("speaking"));
+          if (btnPlayPause) {
+            const desktopClick = btnPlayPause.onclick;
+            btnPlayPause.onclick = async () => {
+              try {
+                const ctx = new (
+                  window.AudioContext || window.webkitAudioContext
+                )();
+                await ctx.resume();
+                ctx.close();
+              } catch (e) {}
+              await audio.play();
+              updatePlayPause(true);
+              document
+                .querySelectorAll(".voice-toggle")
+                .forEach((b) => b.classList.add("speaking"));
+              btnPlayPause.onclick = desktopClick;
+            };
           }
         } catch (e) {
           console.error("[speakText] TTS failed:", e);
