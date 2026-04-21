@@ -12,10 +12,10 @@ BUGS
         ✅- have tts stop when entry is exited
         ✅- have volume button and theme toggle       visible in entries (only on mobile)
         ✅- have delete entry button visible inside entries
-        ✅ save entry not only takes forever but also just freezes, the ai analyzation only works when you exit the entry and reload. please resolve this as it used to be so incredibly fast it was almost scary.
+        ✅ save entry not only takes forever but also just freezes, the ai analyzation only works when you exit the entry and reload. 
         ✅- TTS doesn't work while connected to a bluetooth device
         ✅- inability to scroll during entry while dictating 
-        ❗- when i generate a new insight there is an  empty placeholder at the top of the screen that doesn't disappear until i refresh the page
+        ✅- when i generate a new insight there is an  empty placeholder at the top of the screen that doesn't disappear until i refresh the page
         ✅- dictation on follow up should have a stop button that user has to press before mic stops listening
         
         iOS only
@@ -48,10 +48,9 @@ UI/UX
         ✅-in desktop, no way to go back to "home" screen while already in an entry
         ✅-drop shadow when hovering over entries for floating feel
         ✅-volume toggle should not appear in entry on desktop, rather only on mobile
-        ❗- control+enter should = submit entry
+        ✅- control+enter should = submit entry
 Future features 
-    -
-    
+
     Pages
     ✅ -home 
             -
@@ -61,12 +60,13 @@ Future features
             -
         ✅-about us
             -
-        -breathing workouts/visualization?
+        ❔-breathing workouts/visualization?
             -
             
         ✅-settings
             -
         ✅other   
+        
         ✅ -error screens / messaging
 
 
@@ -89,9 +89,6 @@ Other/misc
     
 
 
-for computer
-    curl -o index.html https://raw.githubusercontent.com/hermextar/reflekt/main/index.html
-    curl -o server.py https://raw.githubusercontent.com/hermextar/reflekt/main/server.py
 
 
 EXPENSES LIST
