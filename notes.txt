@@ -103,7 +103,7 @@ EXPENSES LIST
 Notes by date
     04/08/26
         theres a few bugs that ive noticed on iOS (i still have to get my hands on an android to bug test there as well) 
-        ❗1. there is no way i can refresh without quitting and reopening the app (id like to be able to pull down and see an animation like you see in most apps)
+        ✅1. there is no way i can refresh without quitting and reopening the app (id like to be able to pull down and see an animation like you see in most apps)
 
         ✅ 2. the ai response TTS doesn't read responses aloud (im assuming this problem is localized to iOS as a webkit issue?), however once ai has analyzed and responded to what ive said, if i swipe down into the control center of my phone and look at the "now playing section" where music usually resides, there is audio that i can press play on and the ai voice comes through: 
 
@@ -129,7 +129,7 @@ Notes by date
 
         ✅13. get rid of scroll bar on righthand side
 
-        ❗14. autoscroll to bottom when in an entry
+        ✅14. autoscroll to bottom when in an entry
 
         ✅15. make doc same size as all other apps
 
@@ -150,6 +150,6 @@ Notes by date
           ❗  iPad specific issues
 
             ✅    1. TTS not working
-            ❗   2. fix tablet vertical layout
+            ❗    2. fix tablet vertical layout
             ❗    3. app not consuming full screen?
         
