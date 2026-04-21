@@ -148,6 +148,8 @@ Notes by date
 
         ✅21. when scrolling through entries dock sometimes appears
 
+        ❗22. swipe left to go back from entry view
+
           ❗  iPad specific issues
 
             ✅    1. TTS not working
