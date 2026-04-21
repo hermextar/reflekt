@@ -4741,6 +4741,12 @@
           if (nav)
             nav.style.display =
               id === "auth" || id === "new" || id === "entry" ? "none" : "";
+          if (id === "entry") {
+            setTimeout(() => {
+              const cc = document.getElementById("chat-container");
+              if (cc) cc.scrollTop = cc.scrollHeight;
+            }, 50);
+          }
         }
       }
 
