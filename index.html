@@ -4734,8 +4734,10 @@
               id === "auth" || id === "new" || id === "entry" ? "none" : "";
           if (id === "entry") {
             setTimeout(() => {
-              const cc = document.getElementById("chat-container");
-              if (cc) cc.scrollTop = cc.scrollHeight;
+              const scrollEl = document.querySelector(
+                "#page-entry .entry-scroll-body",
+              );
+              if (scrollEl) scrollEl.scrollTop = scrollEl.scrollHeight;
             }, 50);
           }
         }
