@@ -2112,25 +2112,25 @@
           padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
         }
         #page-entry {
-        height: 100dvh;
-        max-height: 100dvh;
-        overflow: hidden;
-       }
-      #page-entry .entry-scroll-body {
-        flex: 1;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        min-height: 0;
+          height: 100dvh;
+          max-height: 100dvh;
+          overflow: hidden;
         }
-       #page-entry .reply-area {
-        flex-shrink: 0;
-        padding-bottom: env(safe-area-inset-bottom, 0px);
+        #page-entry .entry-scroll-body {
+          flex: 1;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+          min-height: 0;
+        }
+        #page-entry .reply-area {
+          flex-shrink: 0;
+          padding-bottom: env(safe-area-inset-bottom, 0px);
         }
         /* auth page doesn't need the offset */
         #page-auth {
           padding-bottom: 0;
         }
-
+      }
       /* ─── Sidebar nav icons (desktop) ─── */
       .sidebar-nav {
         display: flex;
