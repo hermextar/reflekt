@@ -439,7 +439,7 @@ def insights():
         try:
             saved = supabase.table('insights').insert({
                 'user_id': user_id,
-                'content': json.dumps(result)
+                'content': encrypt(json.dumps(result))
             }).execute()
             if saved.data:
                 result['id'] = saved.data[0]['id']
@@ -460,7 +460,7 @@ def insights_history():
     history = []
     for row in (rows.data or []):
         try:
-            data = json.loads(row['content'])
+            data = json.loads(decrypt(row['content']))
         except Exception:
             continue
         import datetime as _dt
